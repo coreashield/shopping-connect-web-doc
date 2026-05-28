@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+User-agent: Yeti
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+Sitemap: https://shopping-log.pages.dev/sitemap-index.xml
