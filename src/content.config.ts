@@ -12,7 +12,7 @@ const blog = defineCollection({
 			description: z.string(),
 			pubDate: z.coerce.date(),
 			updatedDate: z.coerce.date().optional(),
-			heroImage: z.optional(image()),
+			heroImage: z.union([image(), z.string().url()]).optional(),
 			// 쇼핑 리뷰 전용 필드 (모두 optional)
 			productName: z.string().optional(),
 			productPrice: z.number().optional(),
