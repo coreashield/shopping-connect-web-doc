@@ -1,5 +1,5 @@
 {
-  "measured_at": "2026-05-29T02:18:12.377Z",
+  "measured_at": "2026-05-29T05:01:51.309Z",
   "domain": "shopping-log.pages.dev",
   "naver": {
     "indexed_count": null,
@@ -7,7 +7,7 @@
       "https://map.naver.com/v5/search/site%3Ashopping-log.pages.dev"
     ],
     "captcha_detected": false,
-    "html_size": 160484
+    "html_size": 160487
   },
   "google": {
     "indexed_count": null,
@@ -16,7 +16,7 @@
     "stats_raw": null
   },
   "published": {
-    "total": 13,
+    "total": 27,
     "mature": 0
   },
   "index_rate": {
