@@ -6,7 +6,7 @@ import { defineConfig, fontProviders } from 'astro/config';
 
 // https://astro.build/config
 export default defineConfig({
-	site: 'https://shopping-log.pages.dev',
+	site: 'https://shopping-log.com',
 	integrations: [mdx(), sitemap()],
 	fonts: [
 		{
