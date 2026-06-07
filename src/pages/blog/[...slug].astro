@@ -13,8 +13,18 @@ type Props = CollectionEntry<'blog'>;
 
 const post = Astro.props;
 const { Content } = await render(post);
+
+// 관련 글 (토픽 클러스터 — 같은 카테고리 우선, 부족하면 최신글로 채움)
+const all = (await getCollection('blog')).filter((p) => p.id !== post.id);
+const byDate = (a: CollectionEntry<'blog'>, b: CollectionEntry<'blog'>) =>
+	b.data.pubDate.valueOf() - a.data.pubDate.valueOf();
+const sameCat = post.data.category
+	? all.filter((p) => p.data.category === post.data.category).sort(byDate)
+	: [];
+const rest = all.filter((p) => !sameCat.includes(p)).sort(byDate);
+const relatedPosts = [...sameCat, ...rest].slice(0, 6);
 ---
 
-<BlogPost {...post.data}>
+<BlogPost {...post.data} relatedPosts={relatedPosts}>
 	<Content />
 </BlogPost>
