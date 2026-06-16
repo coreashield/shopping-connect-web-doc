@@ -1,0 +1,68 @@
+---
+import { getCollection } from 'astro:content';
+import BaseHead from '../../components/BaseHead.astro';
+import Footer from '../../components/Footer.astro';
+import Header from '../../components/Header.astro';
+import { categoryList } from '../../lib/categories';
+import { SITE_TITLE } from '../../consts';
+
+const posts = await getCollection('blog');
+const cats = categoryList(posts);
+const title = `카테고리 | ${SITE_TITLE}`;
+const description = '쇼핑로그 추천 글을 카테고리별로 모아 보세요 — 식품, 디지털/가전, 패션, 생활/건강 등.';
+---
+
+<!doctype html>
+<html lang="ko">
+	<head>
+		<BaseHead title={title} description={description} />
+		<style>
+			h1 {
+				margin-bottom: 1.5rem;
+			}
+			ul.cats {
+				list-style: none;
+				margin: 0;
+				padding: 0;
+				display: flex;
+				flex-wrap: wrap;
+				gap: 0.75rem;
+			}
+			ul.cats li a {
+				display: inline-block;
+				padding: 0.6rem 1rem;
+				border: 1px solid rgb(var(--gray-light));
+				border-radius: 10px;
+				text-decoration: none;
+				color: rgb(var(--black));
+				transition: 0.2s ease;
+			}
+			ul.cats li a:hover {
+				border-color: rgb(var(--accent));
+				color: rgb(var(--accent));
+			}
+			ul.cats .count {
+				color: rgb(var(--gray));
+				font-size: 0.9em;
+			}
+		</style>
+	</head>
+	<body>
+		<Header />
+		<main>
+			<h1>카테고리</h1>
+			<ul class="cats">
+				{
+					cats.map((c) => (
+						<li>
+							<a href={`/category/${c.slug}/`}>
+								{c.name} <span class="count">{c.count}</span>
+							</a>
+						</li>
+					))
+				}
+			</ul>
+		</main>
+		<Footer />
+	</body>
+</html>

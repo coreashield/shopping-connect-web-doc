@@ -1,0 +1,91 @@
+---
+import { getCollection } from 'astro:content';
+import BaseHead from '../../components/BaseHead.astro';
+import Footer from '../../components/Footer.astro';
+import FormattedDate from '../../components/FormattedDate.astro';
+import Header from '../../components/Header.astro';
+import { categoryList } from '../../lib/categories';
+import { SITE_TITLE } from '../../consts';
+
+export async function getStaticPaths() {
+	const posts = await getCollection('blog');
+	return categoryList(posts).map((c) => ({
+		params: { category: c.slug },
+		props: { name: c.name, posts: c.posts },
+	}));
+}
+
+const { name, posts } = Astro.props;
+const title = `${name} 추천 모음 (${posts.length}개) | ${SITE_TITLE}`;
+const description = `${name} 카테고리의 쇼핑 추천 글 ${posts.length}개 — 가격·후기·스펙을 비교해 정리했습니다.`;
+---
+
+<!doctype html>
+<html lang="ko">
+	<head>
+		<BaseHead title={title} description={description} />
+		<style>
+			.cat-head {
+				margin-bottom: 1rem;
+			}
+			.cat-head h1 {
+				margin: 0 0 0.3rem 0;
+			}
+			.cat-head .count {
+				color: rgb(var(--gray));
+			}
+			.back {
+				font-size: 0.9rem;
+			}
+			ul.posts {
+				list-style: none;
+				margin: 1.5rem 0 0 0;
+				padding: 0;
+			}
+			ul.posts li {
+				padding: 0.6rem 0;
+				border-bottom: 1px solid rgb(var(--gray-light));
+			}
+			ul.posts li a {
+				display: flex;
+				justify-content: space-between;
+				gap: 1rem;
+				text-decoration: none;
+			}
+			ul.posts .title {
+				color: rgb(var(--black));
+			}
+			ul.posts .date {
+				color: rgb(var(--gray));
+				white-space: nowrap;
+			}
+			ul.posts li a:hover .title {
+				color: rgb(var(--accent));
+			}
+		</style>
+	</head>
+	<body>
+		<Header />
+		<main>
+			<div class="cat-head">
+				<h1>{name} <span class="count">{posts.length}개</span></h1>
+				<a class="back" href="/category/">← 전체 카테고리 보기</a>
+			</div>
+			<ul class="posts">
+				{
+					posts.map((post) => (
+						<li>
+							<a href={`/blog/${post.id}/`}>
+								<span class="title">{post.data.title}</span>
+								<span class="date">
+									<FormattedDate date={post.data.pubDate} />
+								</span>
+							</a>
+						</li>
+					))
+				}
+			</ul>
+		</main>
+		<Footer />
+	</body>
+</html>

@@ -4,12 +4,14 @@ import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import Header from '../components/Header.astro';
+import { categoryList } from '../lib/categories';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 
 const posts = (await getCollection('blog')).sort(
 	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
 const recent = posts.slice(0, 12);
+const cats = categoryList(posts);
 ---
 
 <!doctype html>
@@ -35,6 +37,37 @@ const recent = posts.slice(0, 12);
 			}
 			.recent-head a {
 				font-size: 0.9rem;
+			}
+			.categories {
+				margin-bottom: 2.5rem;
+			}
+			.categories h2 {
+				margin-bottom: 1rem;
+			}
+			ul.cat-chips {
+				list-style: none;
+				margin: 0;
+				padding: 0;
+				display: flex;
+				flex-wrap: wrap;
+				gap: 0.6rem;
+			}
+			ul.cat-chips li a {
+				display: inline-block;
+				padding: 0.5rem 0.9rem;
+				border: 1px solid rgb(var(--gray-light));
+				border-radius: 999px;
+				text-decoration: none;
+				color: rgb(var(--black));
+				transition: 0.2s ease;
+			}
+			ul.cat-chips li a:hover {
+				border-color: rgb(var(--accent));
+				color: rgb(var(--accent));
+			}
+			ul.cat-chips .count {
+				color: rgb(var(--gray));
+				font-size: 0.85em;
 			}
 			ul.posts {
 				list-style: none;
@@ -69,6 +102,23 @@ const recent = posts.slice(0, 12);
 			<section class="intro">
 				<h1>{SITE_TITLE}</h1>
 				<p>{SITE_DESCRIPTION}</p>
+			</section>
+			<section class="categories">
+				<div class="recent-head">
+					<h2>카테고리</h2>
+					<a href="/category/">전체 보기 →</a>
+				</div>
+				<ul class="cat-chips">
+					{
+						cats.map((c) => (
+							<li>
+								<a href={`/category/${c.slug}/`}>
+									{c.name} <span class="count">{c.count}</span>
+								</a>
+							</li>
+						))
+					}
+				</ul>
 			</section>
 			<section>
 				<div class="recent-head">

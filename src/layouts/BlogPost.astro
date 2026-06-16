@@ -5,12 +5,16 @@ import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import Header from '../components/Header.astro';
+import { categorySlug, topCategory } from '../lib/categories';
 
 type Props = CollectionEntry<'blog'>['data'] & {
 	relatedPosts?: CollectionEntry<'blog'>[];
 };
 
-const { title, description, pubDate, updatedDate, heroImage, relatedPosts = [] } = Astro.props;
+const { title, description, pubDate, updatedDate, heroImage, category, relatedPosts = [] } =
+	Astro.props;
+const catName = topCategory(category);
+const catSlug = categorySlug(category);
 ---
 
 <html lang="ko">
@@ -51,6 +55,18 @@ const { title, description, pubDate, updatedDate, heroImage, relatedPosts = [] }
 				margin-bottom: 0.5em;
 				color: rgb(var(--gray));
 			}
+			.cat-link {
+				color: rgb(var(--accent));
+				text-decoration: none;
+				font-weight: 600;
+			}
+			.cat-link:hover {
+				text-decoration: underline;
+			}
+			.dot {
+				margin: 0 0.4em;
+				color: rgb(var(--gray-light));
+			}
 			.last-updated-on {
 				font-style: italic;
 			}
@@ -69,6 +85,8 @@ const { title, description, pubDate, updatedDate, heroImage, relatedPosts = [] }
 				<div class="prose">
 					<div class="title">
 						<div class="date">
+							<a class="cat-link" href={`/category/${catSlug}/`}>{catName}</a>
+							<span class="dot">·</span>
 							<FormattedDate date={pubDate} />
 							{
 								updatedDate && (
