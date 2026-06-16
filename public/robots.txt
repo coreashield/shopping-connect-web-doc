@@ -7,4 +7,4 @@ Allow: /
 User-agent: Googlebot
 Allow: /
 
-Sitemap: https://shopping-log.pages.dev/sitemap-index.xml
+Sitemap: https://shopping-log.com/sitemap-index.xml
