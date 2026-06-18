@@ -2,6 +2,7 @@
 import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
 import BaseHead from '../components/BaseHead.astro';
+import SeoSchema from '../components/SeoSchema.astro';
 import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import Header from '../components/Header.astro';
@@ -15,11 +16,22 @@ const { title, description, pubDate, updatedDate, heroImage, category, relatedPo
 	Astro.props;
 const catName = topCategory(category);
 const catSlug = categorySlug(category);
+const rawImg = typeof heroImage === 'string' ? heroImage : heroImage?.src;
+const imageUrl = rawImg ? new URL(rawImg, Astro.site).href : undefined;
 ---
 
 <html lang="ko">
 	<head>
-		<BaseHead title={title} description={description} />
+		<BaseHead title={title} description={description} type="article" />
+		<SeoSchema
+			title={title}
+			description={description}
+			pubDate={pubDate}
+			updatedDate={updatedDate}
+			catName={catName}
+			catSlug={catSlug}
+			imageUrl={imageUrl}
+		/>
 		<style>
 			main {
 				width: calc(100% - 2em);
@@ -70,6 +82,18 @@ const catSlug = categorySlug(category);
 			.last-updated-on {
 				font-style: italic;
 			}
+			.breadcrumb {
+				font-size: 0.85rem;
+				color: rgb(var(--gray));
+				padding-top: 0.5em;
+			}
+			.breadcrumb a {
+				color: rgb(var(--gray));
+				text-decoration: none;
+			}
+			.breadcrumb a:hover {
+				color: rgb(var(--accent));
+			}
 		</style>
 	</head>
 
@@ -83,6 +107,11 @@ const catSlug = categorySlug(category);
 						: <Image width={1020} height={510} src={heroImage} alt={title} />)}
 				</div>
 				<div class="prose">
+					<nav class="breadcrumb" aria-label="breadcrumb">
+						<a href="/">홈</a>
+						<span class="dot">›</span>
+						<a href={`/category/${catSlug}/`}>{catName}</a>
+					</nav>
 					<div class="title">
 						<div class="date">
 							<a class="cat-link" href={`/category/${catSlug}/`}>{catName}</a>

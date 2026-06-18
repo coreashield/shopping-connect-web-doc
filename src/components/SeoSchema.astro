@@ -1,0 +1,53 @@
+---
+// 서버 렌더 JSON-LD (BlogPosting + BreadcrumbList).
+// ⚠️ Review/AggregateRating(스타 평점)은 직접 리뷰한 제품이 아니므로 넣지 않음
+//    (정책 위반 → 리치결과 자격 박탈·수동조치 위험. 2026 리서치 근거).
+import { SITE_TITLE } from '../consts';
+
+interface Props {
+	title: string;
+	description: string;
+	pubDate: Date;
+	updatedDate?: Date;
+	catName?: string;
+	catSlug?: string;
+	imageUrl?: string;
+}
+
+const { title, description, pubDate, updatedDate, catName, catSlug, imageUrl } = Astro.props;
+const siteBase = (Astro.site?.href || 'https://shopping-log.com/').replace(/\/$/, '');
+const pageUrl = new URL(Astro.url.pathname, Astro.site).href;
+
+const breadcrumb: Record<string, unknown> = {
+	'@context': 'https://schema.org',
+	'@type': 'BreadcrumbList',
+	itemListElement: [
+		{ '@type': 'ListItem', position: 1, name: '홈', item: `${siteBase}/` },
+		...(catName && catSlug
+			? [{ '@type': 'ListItem', position: 2, name: catName, item: `${siteBase}/category/${catSlug}/` }]
+			: []),
+		{ '@type': 'ListItem', position: catName ? 3 : 2, name: title, item: pageUrl },
+	],
+};
+
+const article: Record<string, unknown> = {
+	'@context': 'https://schema.org',
+	'@type': 'BlogPosting',
+	headline: title.slice(0, 110),
+	description,
+	datePublished: pubDate.toISOString(),
+	dateModified: (updatedDate ?? pubDate).toISOString(),
+	mainEntityOfPage: { '@type': 'WebPage', '@id': pageUrl },
+	author: { '@type': 'Organization', name: SITE_TITLE, url: `${siteBase}/` },
+	publisher: {
+		'@type': 'Organization',
+		name: SITE_TITLE,
+		url: `${siteBase}/`,
+		logo: { '@type': 'ImageObject', url: `${siteBase}/favicon.svg` },
+	},
+	...(imageUrl ? { image: [imageUrl] } : {}),
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(breadcrumb)} />
+<script type="application/ld+json" set:html={JSON.stringify(article)} />
