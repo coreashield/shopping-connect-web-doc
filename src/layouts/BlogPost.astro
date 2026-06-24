@@ -12,8 +12,8 @@ type Props = CollectionEntry<'blog'>['data'] & {
 	relatedPosts?: CollectionEntry<'blog'>[];
 };
 
-const { title, description, pubDate, updatedDate, heroImage, category, relatedPosts = [] } =
-	Astro.props;
+const { title, description, pubDate, updatedDate, heroImage, category, relatedPosts = [],
+	affiliateUrl, productStore, rating } = Astro.props;
 const catName = topCategory(category);
 const catSlug = categorySlug(category);
 const rawImg = typeof heroImage === 'string' ? heroImage : heroImage?.src;
@@ -94,6 +94,53 @@ const imageUrl = rawImg ? new URL(rawImg, Astro.site).href : undefined;
 			.breadcrumb a:hover {
 				color: rgb(var(--accent));
 			}
+			.buy-cta {
+				text-align: center;
+				margin: 1.6em auto;
+			}
+			.buy-cta-top {
+				margin: 1.2em auto 2em;
+			}
+			.buy-cta-bottom {
+				margin: 2.5em auto 1em;
+			}
+			.buy-btn {
+				display: block;
+				width: 100%;
+				box-sizing: border-box;
+				background: #03c75a;
+				color: #fff;
+				font-size: 1.15rem;
+				font-weight: 700;
+				text-decoration: none;
+				padding: 0.95em 1.2em;
+				border-radius: 12px;
+				box-shadow: 0 4px 14px rgba(3, 199, 90, 0.35);
+				transition: transform 0.1s ease, box-shadow 0.1s ease;
+			}
+			.buy-btn:hover {
+				transform: translateY(-2px);
+				box-shadow: 0 6px 18px rgba(3, 199, 90, 0.45);
+				text-decoration: none;
+				color: #fff;
+			}
+			.buy-meta {
+				margin: 0 0 0.6em 0;
+				color: rgb(var(--gray));
+				font-size: 0.95rem;
+			}
+			.buy-meta span {
+				margin: 0 0.45em;
+			}
+			.buy-rating {
+				color: #f5a623;
+				font-weight: 700;
+			}
+			.buy-note {
+				margin: 0.55em 0 0 0;
+				font-size: 0.8rem;
+				color: rgb(var(--gray));
+			}
 		</style>
 	</head>
 
@@ -128,7 +175,28 @@ const imageUrl = rawImg ? new URL(rawImg, Astro.site).href : undefined;
 						<h1>{title}</h1>
 						<hr />
 					</div>
+					{affiliateUrl && (
+						<div class="buy-cta buy-cta-top">
+							{(productStore || rating) && (
+								<p class="buy-meta">
+									{productStore && <span>🏪 {productStore}</span>}
+									{rating ? <span class="buy-rating">★ {rating.toFixed(1)}</span> : null}
+								</p>
+							)}
+							<a class="buy-btn" href={affiliateUrl} target="_blank" rel="nofollow sponsored noopener">
+								🛒 네이버 최저가 확인하고 구매하기
+							</a>
+							<p class="buy-note">가격·재고는 판매처에서 실시간 확인하세요</p>
+						</div>
+					)}
 					<slot />
+					{affiliateUrl && (
+						<div class="buy-cta buy-cta-bottom">
+							<a class="buy-btn" href={affiliateUrl} target="_blank" rel="nofollow sponsored noopener">
+								🛒 네이버에서 지금 구매하기
+							</a>
+						</div>
+					)}
 					{relatedPosts.length > 0 && (
 						<aside class="related">
 							<h2>함께 보면 좋은 글</h2>
