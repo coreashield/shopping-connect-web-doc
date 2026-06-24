@@ -1,13 +1,14 @@
 {
-  "measured_at": "2026-05-29T02:13:52.120Z",
-  "domain": "shopping-log.pages.dev",
+  "measured_at": "2026-06-21T06:29:26.624Z",
+  "domain": "shopping-log.com",
   "naver": {
     "indexed_count": null,
     "sample_urls": [
-      "https://map.naver.com/v5/search/site%3Ashopping-log.pages.dev"
+      "https://map.naver.com/v5/search/site%3Ashopping-log.com",
+      "https://shopping-log.com/"
     ],
     "captcha_detected": false,
-    "html_size": 160481
+    "html_size": 224669
   },
   "google": {
     "indexed_count": null,
@@ -16,8 +17,8 @@
     "stats_raw": null
   },
   "published": {
-    "total": 13,
-    "mature": 0
+    "total": 351,
+    "mature": 291
   },
   "index_rate": {
     "naver_total": null,
