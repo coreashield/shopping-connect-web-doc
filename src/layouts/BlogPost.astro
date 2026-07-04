@@ -13,9 +13,14 @@ type Props = CollectionEntry<'blog'>['data'] & {
 };
 
 const { title, description, pubDate, updatedDate, heroImage, category, relatedPosts = [],
-	affiliateUrl, productStore, rating } = Astro.props;
+	affiliateUrl, productStore, rating, productId } = Astro.props;
 const catName = topCategory(category);
 const catSlug = categorySlug(category);
+// 구매 링크를 자체 도메인 /go/ 리다이렉트로 감싸 클릭을 귀속 측정(자율 성장 엔진 E1).
+//   productId 없으면(구버전 글) 어필리에이트 링크 직접 사용(무손상).
+const buyHref = (affiliateUrl && productId)
+	? `/go/${encodeURIComponent(productId)}?u=${encodeURIComponent(affiliateUrl)}`
+	: affiliateUrl;
 const rawImg = typeof heroImage === 'string' ? heroImage : heroImage?.src;
 const imageUrl = rawImg ? new URL(rawImg, Astro.site).href : undefined;
 ---
@@ -183,7 +188,7 @@ const imageUrl = rawImg ? new URL(rawImg, Astro.site).href : undefined;
 									{rating ? <span class="buy-rating">★ {rating.toFixed(1)}</span> : null}
 								</p>
 							)}
-							<a class="buy-btn" href={affiliateUrl} target="_blank" rel="nofollow sponsored noopener">
+							<a class="buy-btn" href={buyHref} target="_blank" rel="nofollow sponsored noopener">
 								🛒 네이버 최저가 확인하고 구매하기
 							</a>
 							<p class="buy-note">가격·재고는 판매처에서 실시간 확인하세요</p>
@@ -192,7 +197,7 @@ const imageUrl = rawImg ? new URL(rawImg, Astro.site).href : undefined;
 					<slot />
 					{affiliateUrl && (
 						<div class="buy-cta buy-cta-bottom">
-							<a class="buy-btn" href={affiliateUrl} target="_blank" rel="nofollow sponsored noopener">
+							<a class="buy-btn" href={buyHref} target="_blank" rel="nofollow sponsored noopener">
 								🛒 네이버에서 지금 구매하기
 							</a>
 						</div>

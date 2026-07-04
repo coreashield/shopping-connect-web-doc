@@ -19,6 +19,7 @@ const blog = defineCollection({
 			productStore: z.string().optional(),
 			affiliateUrl: z.string().url().optional(),
 			naverUrl: z.string().url().optional(),
+			productId: z.string().optional(),  // 클릭 귀속 추적용 (/go/{productId})
 			category: z.string().optional(),
 			rating: z.number().min(0).max(5).optional(),
 			tags: z.array(z.string()).optional(),
