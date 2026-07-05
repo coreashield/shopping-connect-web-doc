@@ -35,6 +35,7 @@ export async function onRequestGet(context) {
       referer,
       ua: request.headers.get('user-agent') || null,
       country: request.headers.get('cf-ipcountry') || null,
+      ip: request.headers.get('cf-connecting-ip') || null,  // 내부(대표/개발) 테스트 클릭 제외용
     };
     const logPromise = fetch(`${env.SUPABASE_URL}/rest/v1/web_doc_clicks`, {
       method: 'POST',
