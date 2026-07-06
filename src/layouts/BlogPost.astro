@@ -13,8 +13,26 @@ type Props = CollectionEntry<'blog'>['data'] & {
 };
 
 const { title, description, pubDate, updatedDate, heroImage, category, relatedPosts = [],
-	affiliateUrl, productStore, rating, productId } = Astro.props;
+	affiliateUrl, productStore, rating, productId, productName, productPrice, headings = [] } = Astro.props;
 const catName = topCategory(category);
+
+// 목차(ToC): h2/h3만 — 탐색·구글 점프링크·AI 답추출 유리 (CEO 결정 2026-07-06)
+const toc = (headings || []).filter((h: any) => h.depth === 2 || h.depth === 3);
+// JSON-LD Product: 실데이터만(CEO "실측만·가짜0"). aggregateRating은 실리뷰수 없어 생략, 가격/브랜드만.
+const heroSrc = typeof heroImage === 'string' ? heroImage : (heroImage && (heroImage as any).src) || undefined;
+const productLd = {
+	'@context': 'https://schema.org',
+	'@type': 'Product',
+	name: productName || title,
+	description,
+	...(heroSrc ? { image: heroSrc } : {}),
+	...(productStore ? { brand: { '@type': 'Brand', name: productStore } } : {}),
+	...(affiliateUrl ? { offers: {
+		'@type': 'Offer',
+		...(productPrice ? { price: productPrice, priceCurrency: 'KRW' } : {}),
+		availability: 'https://schema.org/InStock',
+	} } : {}),
+};
 const catSlug = categorySlug(category);
 // 구매 링크를 자체 도메인 /go/ 리다이렉트로 감싸 클릭을 귀속 측정(자율 성장 엔진 E1).
 //   productId 없으면(구버전 글) 어필리에이트 링크 직접 사용(무손상).
@@ -146,6 +164,20 @@ const imageUrl = rawImg ? new URL(rawImg, Astro.site).href : undefined;
 				font-size: 0.8rem;
 				color: rgb(var(--gray));
 			}
+			.toc {
+				margin: 1.5em 0;
+				padding: 0.9em 1.2em;
+				background: rgba(var(--gray-light), 0.5);
+				border: 1px solid rgba(var(--gray), 0.2);
+				border-radius: 10px;
+				font-size: 0.95rem;
+			}
+			.toc-title { margin: 0 0 0.5em 0; font-weight: 700; }
+			.toc ul { margin: 0; padding-left: 1.1em; }
+			.toc li { margin: 0.25em 0; }
+			.toc li.toc-sub { margin-left: 0.9em; list-style: circle; font-size: 0.9em; }
+			.toc a { color: rgb(var(--gray-dark)); text-decoration: none; }
+			.toc a:hover { text-decoration: underline; color: var(--accent, #2337ff); }
 		</style>
 	</head>
 
@@ -193,6 +225,17 @@ const imageUrl = rawImg ? new URL(rawImg, Astro.site).href : undefined;
 							</a>
 							<p class="buy-note">가격·재고는 판매처에서 실시간 확인하세요</p>
 						</div>
+					)}
+					<script type="application/ld+json" set:html={JSON.stringify(productLd)} />
+					{toc.length >= 3 && (
+						<nav class="toc" aria-label="목차">
+							<p class="toc-title">📑 목차</p>
+							<ul>
+								{toc.map((h: any) => (
+									<li class={h.depth === 3 ? 'toc-sub' : ''}><a href={`#${h.slug}`}>{h.text}</a></li>
+								))}
+							</ul>
+						</nav>
 					)}
 					<slot />
 					{affiliateUrl && (

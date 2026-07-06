@@ -13,7 +13,7 @@ export async function getStaticPaths() {
 type Props = CollectionEntry<'blog'>;
 
 const post = Astro.props;
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
 
 // 관련 글 (토픽 클러스터 — 같은 최상위 카테고리 우선, 부족하면 최신글로 채움)
 const all = (await getCollection('blog')).filter((p) => p.id !== post.id);
@@ -25,6 +25,6 @@ const rest = all.filter((p) => !sameCat.includes(p)).sort(byDate);
 const relatedPosts = [...sameCat, ...rest].slice(0, 6);
 ---
 
-<BlogPost {...post.data} relatedPosts={relatedPosts}>
+<BlogPost {...post.data} relatedPosts={relatedPosts} headings={headings}>
 	<Content />
 </BlogPost>
