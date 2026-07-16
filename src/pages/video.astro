@@ -1,0 +1,149 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import { SITE_TITLE } from '../consts';
+import products from '../data/video_products.json';
+
+const items = [...products].sort((a, b) => (a.date < b.date ? 1 : -1));
+const fmtPrice = (n) => (n > 0 ? n.toLocaleString('ko-KR') + '원' : '');
+const fmtDate = (d) => {
+	const [, m, day] = d.split('-');
+	return `${Number(m)}월 ${Number(day)}일 영상`;
+};
+---
+
+<!doctype html>
+<html lang="ko">
+	<head>
+		<BaseHead
+			title={`영상 속 상품 - ${SITE_TITLE}`}
+			description="쇼핑로그 데일리 유튜브 쇼츠·틱톡 영상에서 소개한 상품과 구매 링크 모음"
+		/>
+		<style>
+			.intro {
+				margin-bottom: 1.5rem;
+			}
+			.intro h1 {
+				margin: 0 0 0.5rem 0;
+			}
+			.intro p {
+				color: rgb(var(--gray));
+				margin: 0;
+			}
+			.disclosure {
+				font-size: 0.85rem;
+				color: rgb(var(--gray));
+				border: 1px solid rgb(var(--gray-light));
+				border-radius: 8px;
+				padding: 0.7rem 1rem;
+				margin-bottom: 2rem;
+			}
+			ul.cards {
+				list-style: none;
+				margin: 0;
+				padding: 0;
+				display: grid;
+				grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+				gap: 1.2rem;
+			}
+			ul.cards li {
+				border: 1px solid rgb(var(--gray-light));
+				border-radius: 12px;
+				overflow: hidden;
+				display: flex;
+				flex-direction: column;
+			}
+			.thumb {
+				aspect-ratio: 1 / 1;
+				background: rgb(var(--gray-light));
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				overflow: hidden;
+			}
+			.thumb img {
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+			}
+			.thumb .noimg {
+				color: rgb(var(--gray));
+				font-size: 0.85rem;
+			}
+			.card-body {
+				padding: 0.8rem 0.9rem 1rem;
+				display: flex;
+				flex-direction: column;
+				gap: 0.4rem;
+				flex: 1;
+			}
+			.date {
+				font-size: 0.75rem;
+				color: rgb(var(--gray));
+			}
+			.name {
+				font-size: 0.95rem;
+				line-height: 1.35;
+				color: rgb(var(--black));
+				flex: 1;
+			}
+			.price {
+				font-weight: 700;
+				color: rgb(var(--black));
+			}
+			a.buy {
+				display: block;
+				text-align: center;
+				padding: 0.55rem 0;
+				border-radius: 8px;
+				background: rgb(var(--accent));
+				color: #fff;
+				text-decoration: none;
+				font-size: 0.9rem;
+				margin-top: 0.3rem;
+			}
+			a.buy:hover {
+				opacity: 0.85;
+			}
+		</style>
+	</head>
+	<body>
+		<Header />
+		<main>
+			<section class="intro">
+				<h1>영상 속 상품</h1>
+				<p>
+					쇼핑로그 데일리(유튜브 쇼츠·틱톡) 영상에서 소개한 상품을 모았습니다. 최신 영상
+					상품이 맨 위에 있어요.
+				</p>
+			</section>
+			<div class="disclosure">
+				본 페이지의 링크는 네이버 쇼핑커넥트 활동의 일환으로, 판매 발생 시 수수료를
+				제공받습니다. 구매자에게 추가 비용은 발생하지 않습니다.
+			</div>
+			<ul class="cards">
+				{
+					items.map((p) => (
+						<li>
+							<a href={p.link} target="_blank" rel="nofollow sponsored noopener">
+								<div class="thumb">
+									{p.img ? <img src={p.img} alt={p.name} loading="lazy" /> : <span class="noimg">이미지 준비중</span>}
+								</div>
+							</a>
+							<div class="card-body">
+								<span class="date">{fmtDate(p.date)}</span>
+								<span class="name">{p.name}</span>
+								{fmtPrice(p.price) && <span class="price">{fmtPrice(p.price)}</span>}
+								<a class="buy" href={p.link} target="_blank" rel="nofollow sponsored noopener">
+									최저가 확인하기
+								</a>
+							</div>
+						</li>
+					))
+				}
+			</ul>
+		</main>
+		<Footer />
+	</body>
+</html>
