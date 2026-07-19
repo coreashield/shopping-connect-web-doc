@@ -3,11 +3,12 @@ import { getCollection } from 'astro:content';
 import BaseHead from '../../components/BaseHead.astro';
 import Footer from '../../components/Footer.astro';
 import Header from '../../components/Header.astro';
-import { categoryList } from '../../lib/categories';
+import { categoryList, topicHubs } from '../../lib/categories';
 import { SITE_TITLE } from '../../consts';
 
 const posts = await getCollection('blog');
 const cats = categoryList(posts);
+const hubs = topicHubs(posts, 15);
 const title = `카테고리 | ${SITE_TITLE}`;
 const description = '쇼핑로그 추천 글을 카테고리별로 모아 보세요 — 식품, 디지털/가전, 패션, 생활/건강 등.';
 ---
@@ -45,6 +46,8 @@ const description = '쇼핑로그 추천 글을 카테고리별로 모아 보세
 				color: rgb(var(--gray));
 				font-size: 0.9em;
 			}
+			h2.sec { margin: 2.4rem 0 1rem; font-size: 1.15rem; }
+			h2.sec + p { color: rgb(var(--gray)); margin: -0.6rem 0 1rem; font-size: 0.9rem; }
 		</style>
 	</head>
 	<body>
@@ -57,6 +60,20 @@ const description = '쇼핑로그 추천 글을 카테고리별로 모아 보세
 						<li>
 							<a href={`/category/${c.slug}/`}>
 								{c.name} <span class="count">{c.count}</span>
+							</a>
+						</li>
+					))
+				}
+			</ul>
+
+			<h2 class="sec">주제별 추천 모음</h2>
+			<p>인기 주제별로 상품을 비교·정리한 모음 페이지입니다.</p>
+			<ul class="cats">
+				{
+					hubs.map((h) => (
+						<li>
+							<a href={`/topic/${h.slug}/`}>
+								{h.sub} <span class="count">{h.count}</span>
 							</a>
 						</li>
 					))

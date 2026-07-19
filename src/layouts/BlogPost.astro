@@ -10,9 +10,10 @@ import { categorySlug, topCategory } from '../lib/categories';
 
 type Props = CollectionEntry<'blog'>['data'] & {
 	relatedPosts?: CollectionEntry<'blog'>[];
+	hub?: { sub: string; slug: string } | null;
 };
 
-const { title, description, pubDate, updatedDate, heroImage, category, relatedPosts = [],
+const { title, description, pubDate, updatedDate, heroImage, category, relatedPosts = [], hub = null,
 	affiliateUrl, productStore, rating, productId, productName, productPrice, headings = [] } = Astro.props;
 const catName = topCategory(category);
 
@@ -255,6 +256,11 @@ const imageUrl = rawImg ? new URL(rawImg, Astro.site).href : undefined;
 									</li>
 								))}
 							</ul>
+							{hub && (
+								<p class="hub-link">
+									<a href={`/topic/${hub.slug}/`}><strong>{hub.sub}</strong> 추천 모음 전체 보기 →</a>
+								</p>
+							)}
 						</aside>
 					)}
 				</div>

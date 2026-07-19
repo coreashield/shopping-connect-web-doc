@@ -1,7 +1,7 @@
 ---
 import { type CollectionEntry, getCollection, render } from 'astro:content';
 import BlogPost from '../../layouts/BlogPost.astro';
-import { topCategory } from '../../lib/categories';
+import { topCategory, subPath, hubForPost } from '../../lib/categories';
 
 export async function getStaticPaths() {
 	const posts = await getCollection('blog');
@@ -15,16 +15,21 @@ type Props = CollectionEntry<'blog'>;
 const post = Astro.props;
 const { Content, headings } = await render(post);
 
-// 관련 글 (토픽 클러스터 — 같은 최상위 카테고리 우선, 부족하면 최신글로 채움)
+// 관련 글 (토픽 클러스터 — 2026 SEO: 같은 2단계 분류(진짜 같은 주제) 우선 → 같은 대분류 → 나머지).
+//   같은 주제 글끼리 촘촘히 링크해야 구글이 클러스터로 인식하고 색인·랭킹이 붙는다.
 const all = (await getCollection('blog')).filter((p) => p.id !== post.id);
 const byDate = (a: CollectionEntry<'blog'>, b: CollectionEntry<'blog'>) =>
 	b.data.pubDate.valueOf() - a.data.pubDate.valueOf();
+const sub = subPath(post.data.category);
 const top = topCategory(post.data.category);
-const sameCat = all.filter((p) => topCategory(p.data.category) === top).sort(byDate);
-const rest = all.filter((p) => !sameCat.includes(p)).sort(byDate);
-const relatedPosts = [...sameCat, ...rest].slice(0, 6);
+const sameSub = sub ? all.filter((p) => subPath(p.data.category) === sub).sort(byDate) : [];
+const sameTop = all.filter((p) => topCategory(p.data.category) === top && !sameSub.includes(p)).sort(byDate);
+const rest = all.filter((p) => !sameSub.includes(p) && !sameTop.includes(p)).sort(byDate);
+const relatedPosts = [...sameSub, ...sameTop, ...rest].slice(0, 6);
+// 이 글이 속한 토픽 허브(필러) — 글에서 허브로 링크(양방향 클러스터).
+const hub = hubForPost(post);
 ---
 
-<BlogPost {...post.data} relatedPosts={relatedPosts} headings={headings}>
+<BlogPost {...post.data} relatedPosts={relatedPosts} hub={hub} headings={headings}>
 	<Content />
 </BlogPost>

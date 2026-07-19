@@ -4,7 +4,7 @@ import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import Header from '../components/Header.astro';
-import { categoryList } from '../lib/categories';
+import { categoryList, topicHubs } from '../lib/categories';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 
 const posts = (await getCollection('blog')).sort(
@@ -12,6 +12,8 @@ const posts = (await getCollection('blog')).sort(
 );
 const recent = posts.slice(0, 12);
 const cats = categoryList(posts);
+// 토픽 클러스터 허브 — 홈에서 필러(허브)로 직링크해 크롤러가 허브→클러스터 순으로 효율 색인하게 한다.
+const hubs = topicHubs(posts, 15).slice(0, 12);
 ---
 
 <!doctype html>
@@ -114,6 +116,23 @@ const cats = categoryList(posts);
 							<li>
 								<a href={`/category/${c.slug}/`}>
 									{c.name} <span class="count">{c.count}</span>
+								</a>
+							</li>
+						))
+					}
+				</ul>
+			</section>
+			<section class="categories">
+				<div class="recent-head">
+					<h2>주제별 추천 모음</h2>
+					<a href="/category/">전체 보기 →</a>
+				</div>
+				<ul class="cat-chips">
+					{
+						hubs.map((h) => (
+							<li>
+								<a href={`/topic/${h.slug}/`}>
+									{h.sub} <span class="count">{h.count}</span>
 								</a>
 							</li>
 						))

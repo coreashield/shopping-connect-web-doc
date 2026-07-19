@@ -1,0 +1,78 @@
+---
+import { getCollection } from 'astro:content';
+import BaseHead from '../../components/BaseHead.astro';
+import Footer from '../../components/Footer.astro';
+import Header from '../../components/Header.astro';
+import { topicHubs } from '../../lib/categories';
+import { SITE_TITLE } from '../../consts';
+
+export async function getStaticPaths() {
+	const posts = await getCollection('blog');
+	return topicHubs(posts, 15).map((h) => ({
+		params: { topic: h.slug },
+		props: { sub: h.sub, count: h.count, posts: h.posts },
+	}));
+}
+
+const { sub, count, posts } = Astro.props;
+const title = `${sub} 추천 모음 ${count}선 — 가격·후기 비교 | ${SITE_TITLE}`;
+const description = `${sub} 인기 상품 ${count}개를 가격·후기·스펙으로 비교해 한 곳에 정리했습니다. 구매 전 꼭 확인하세요.`;
+const fmtPrice = (n?: number) => (n && n > 0 ? n.toLocaleString('ko-KR') + '원' : '');
+---
+
+<!doctype html>
+<html lang="ko">
+	<head>
+		<BaseHead title={title} description={description} />
+		<style>
+			.hub-head { margin-bottom: 0.5rem; }
+			.hub-head h1 { margin: 0 0 0.4rem; }
+			.hub-head p { color: rgb(var(--gray)); margin: 0; }
+			.crumb { font-size: 0.85rem; margin-bottom: 1rem; }
+			.crumb a { color: rgb(var(--gray)); }
+			ul.cards { list-style: none; margin: 1.4rem 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1.1rem; }
+			ul.cards li { border: 1px solid rgb(var(--gray-light)); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; background: #fff; }
+			.thumb { aspect-ratio: 1/1; background: #f4f4f6; overflow: hidden; }
+			.thumb img { width: 100%; height: 100%; object-fit: cover; }
+			.body { padding: 0.7rem 0.85rem 0.9rem; display: flex; flex-direction: column; gap: 0.35rem; flex: 1; }
+			.body .name { font-size: 0.92rem; line-height: 1.35; color: rgb(var(--black)); text-decoration: none; flex: 1; }
+			.body .name:hover { color: rgb(var(--accent)); }
+			.price { font-weight: 700; color: rgb(var(--black)); font-size: 0.95rem; }
+			a.buy { display: block; text-align: center; padding: 0.5rem 0; border-radius: 8px; background: rgb(var(--accent)); color: #fff; text-decoration: none; font-size: 0.88rem; margin-top: 0.2rem; }
+			a.buy:hover { opacity: 0.88; }
+		</style>
+	</head>
+	<body>
+		<Header />
+		<main>
+			<div class="crumb"><a href="/category/">카테고리</a> › <span>{sub}</span></div>
+			<div class="hub-head">
+				<h1>{sub} 추천 모음 <span style="color:rgb(var(--gray))">{count}선</span></h1>
+				<p>{sub} 인기 상품을 가격·후기·스펙으로 비교했습니다. 상품명을 누르면 상세 비교 글로, 최저가 버튼은 판매처로 이동합니다.</p>
+			</div>
+			<ul class="cards">
+				{
+					posts.map((post) => (
+						<li>
+							<a href={`/blog/${post.id}/`} aria-label={post.data.productName || post.data.title}>
+								<div class="thumb">
+									{post.data.heroImage && <img src={post.data.heroImage} alt={post.data.productName || post.data.title} loading="lazy" />}
+								</div>
+							</a>
+							<div class="body">
+								<a class="name" href={`/blog/${post.id}/`}>{post.data.productName || post.data.title}</a>
+								{fmtPrice(post.data.productPrice) && <span class="price">{fmtPrice(post.data.productPrice)}</span>}
+								{post.data.productId && post.data.affiliateUrl && (
+									<a class="buy" href={`/go/${encodeURIComponent(post.data.productId)}?u=${encodeURIComponent(post.data.affiliateUrl)}`} rel="nofollow sponsored noopener" target="_blank">
+										최저가 보기
+									</a>
+								)}
+							</div>
+						</li>
+					))
+				}
+			</ul>
+		</main>
+		<Footer />
+	</body>
+</html>
