@@ -1,0 +1,37 @@
+{
+  "measured_at": "2026-07-24T04:50:34.524Z",
+  "domain": "shopping-log.com",
+  "naver": {
+    "indexed_count": null,
+    "sample_urls": [
+      "https://map.naver.com/v5/search/site%3Ashopping-log.com",
+      "https://shopping-log.com/",
+      "https://shopping-log.com/category",
+      "https://shopping-log.com/about",
+      "https://shopping-log.com/category/interior/",
+      "https://shopping-log.com/category/food/",
+      "https://shopping-log.com/category/digital/",
+      "https://shopping-log.com/category/living/",
+      "https://shopping-log.com/blog/",
+      "https://shopping-log.com/about/"
+    ],
+    "captcha_detected": false,
+    "html_size": 415217
+  },
+  "google": {
+    "indexed_count": null,
+    "sample_urls": [],
+    "blocked": true,
+    "stats_raw": null
+  },
+  "published": {
+    "total": 2575,
+    "mature": 2404
+  },
+  "index_rate": {
+    "naver_total": null,
+    "naver_mature_3d": null,
+    "google_total": null,
+    "google_mature_3d": null
+  }
+}
