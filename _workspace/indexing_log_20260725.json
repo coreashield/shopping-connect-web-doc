@@ -1,0 +1,42 @@
+{
+  "measured_at": "2026-07-25T04:47:00.875Z",
+  "domain": "shopping-log.com",
+  "naver": {
+    "indexed_count": null,
+    "sample_urls": [
+      "https://map.naver.com/v5/search/site%3Ashopping-log.com",
+      "https://shopping-log.com/",
+      "https://shopping-log.com/category",
+      "https://shopping-log.com/about",
+      "https://shopping-log.com/category/interior/",
+      "https://shopping-log.com/category/food/",
+      "https://shopping-log.com/category/digital/",
+      "https://shopping-log.com/category/living/",
+      "https://shopping-log.com/blog/",
+      "https://shopping-log.com/about/"
+    ],
+    "captcha_detected": false,
+    "html_size": 416559
+  },
+  "google": {
+    "indexed_count": 4,
+    "sample_urls": [
+      "https://shopping-log.com/",
+      "https://shopping-log.com/blog/misc-961987481780096-20260628/",
+      "https://shopping-log.com/blog/misc-958450574609088-20260603/",
+      "https://shopping-log.com/blog/misc-956228643045473-20260617/"
+    ],
+    "blocked": true,
+    "stats_raw": "검색결과 약 4개 (0.26초) "
+  },
+  "published": {
+    "total": 2674,
+    "mature": 2455
+  },
+  "index_rate": {
+    "naver_total": null,
+    "naver_mature_3d": null,
+    "google_total": 0.0014958863126402393,
+    "google_mature_3d": 0.001629327902240326
+  }
+}
