@@ -1,0 +1,17 @@
+{
+ "month": "202607",
+ "count": 2,
+ "deployments": [
+  {
+   "url": "https://f2f39c66.shopping-log.pages.dev",
+   "time": "2026-07-16T15:40:56.784Z",
+   "note": "video hub page"
+  },
+  {
+   "url": "https://d524f68c.shopping-log.pages.dev",
+   "time": "2026-07-19T17:44:03.961Z",
+   "posts": 55,
+   "note": "topic cluster hubs phase1 + 7/19 posts"
+  }
+ ]
+}
