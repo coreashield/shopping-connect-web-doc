@@ -15,21 +15,60 @@ export async function getStaticPaths() {
 }
 
 const { sub, count, posts } = Astro.props;
-const title = `${sub} 추천 모음 ${count}선 — 가격·후기 비교 | ${SITE_TITLE}`;
-const description = `${sub} 인기 상품 ${count}개를 가격·후기·스펙으로 비교해 한 곳에 정리했습니다. 구매 전 꼭 확인하세요.`;
 const fmtPrice = (n?: number) => (n && n > 0 ? n.toLocaleString('ko-KR') + '원' : '');
+
+// 비교 허브의 존재 이유는 "이 카테고리의 가격대가 어느 정도인가"에 답하는 것이다.
+//   프론트매터의 실제 가격만 쓴다(추정·보정 없음). 가격 없는 글은 통계에서 제외.
+const priced = posts.filter((p: any) => p.data.productPrice > 0);
+const prices = priced.map((p: any) => p.data.productPrice).sort((a: number, b: number) => a - b);
+const median = prices.length ? prices[Math.floor(prices.length / 2)] : 0;
+const stores = new Set(posts.map((p: any) => p.data.productStore).filter(Boolean));
+
+// 비교 페이지이므로 가격 오름차순이 기본 정렬이다(원래는 최신순).
+//   가격 없는 글은 뒤로 보내 목록에서 빠지지 않게 한다.
+const sorted = [...posts].sort((a: any, b: any) => {
+	const pa = a.data.productPrice > 0 ? a.data.productPrice : Infinity;
+	const pb = b.data.productPrice > 0 ? b.data.productPrice : Infinity;
+	if (pa !== pb) return pa - pb;
+	return b.data.pubDate.valueOf() - a.data.pubDate.valueOf();
+});
+
+const title = `${sub} 추천 ${count}선 가격 비교${prices.length ? ` (${fmtPrice(prices[0])}~${fmtPrice(prices[prices.length - 1])})` : ''} | ${SITE_TITLE}`;
+const description = prices.length
+	? `${sub} 상품 ${count}개를 가격순으로 비교했습니다. 최저 ${fmtPrice(prices[0])}, 중간값 ${fmtPrice(median)}, 최고 ${fmtPrice(prices[prices.length - 1])}. 판매처 ${stores.size}곳.`
+	: `${sub} 상품 ${count}개를 한 곳에 모아 비교했습니다.`;
+
+// ItemList 구조화 데이터 — 허브가 목록 페이지임을 명시해 리치결과·AI 인용 대상이 되게 한다.
+//   가격은 실제 값만, 리뷰·평점은 직접 리뷰가 아니므로 넣지 않는다(BlogPost의 정책과 동일).
+const itemListLd = {
+	'@context': 'https://schema.org',
+	'@type': 'ItemList',
+	name: `${sub} 추천 ${count}선`,
+	numberOfItems: count,
+	itemListElement: sorted.slice(0, 30).map((p: any, i: number) => ({
+		'@type': 'ListItem',
+		position: i + 1,
+		name: p.data.productName || p.data.title,
+		url: new URL(`/blog/${p.id}/`, Astro.site).href,
+	})),
+};
 ---
 
 <!doctype html>
 <html lang="ko">
 	<head>
 		<BaseHead title={title} description={description} />
+		<script type="application/ld+json" set:html={JSON.stringify(itemListLd)} />
 		<style>
 			.hub-head { margin-bottom: 0.5rem; }
 			.hub-head h1 { margin: 0 0 0.4rem; }
 			.hub-head p { color: rgb(var(--gray)); margin: 0; }
 			.crumb { font-size: 0.85rem; margin-bottom: 1rem; }
 			.crumb a { color: rgb(var(--gray)); }
+			.pricebar { display: flex; flex-wrap: wrap; gap: 0.5rem 2rem; margin: 1rem 0 0; padding: 0.9rem 1.1rem; border: 1px solid rgb(var(--gray-light)); border-radius: 10px; background: #fafafb; }
+			.pricebar div { display: flex; flex-direction: column; gap: 0.15rem; }
+			.pricebar dt { font-size: 0.78rem; color: rgb(var(--gray)); margin: 0; }
+			.pricebar dd { margin: 0; font-weight: 700; font-size: 1rem; color: rgb(var(--black)); }
 			ul.cards { list-style: none; margin: 1.4rem 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1.1rem; }
 			ul.cards li { border: 1px solid rgb(var(--gray-light)); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; background: #fff; }
 			.thumb { aspect-ratio: 1/1; background: #f4f4f6; overflow: hidden; }
@@ -48,11 +87,19 @@ const fmtPrice = (n?: number) => (n && n > 0 ? n.toLocaleString('ko-KR') + '원'
 			<div class="crumb"><a href="/category/">카테고리</a> › <span>{sub}</span></div>
 			<div class="hub-head">
 				<h1>{sub} 추천 모음 <span style="color:rgb(var(--gray))">{count}선</span></h1>
-				<p>{sub} 인기 상품을 가격·후기·스펙으로 비교했습니다. 상품명을 누르면 상세 비교 글로, 최저가 버튼은 판매처로 이동합니다.</p>
+				<p>{sub} 상품을 <strong>가격 낮은 순</strong>으로 정리했습니다. 상품명을 누르면 상세 글로, 최저가 버튼은 판매처로 이동합니다.</p>
 			</div>
+			{prices.length > 0 && (
+				<dl class="pricebar">
+					<div><dt>최저가</dt><dd>{fmtPrice(prices[0])}</dd></div>
+					<div><dt>중간값</dt><dd>{fmtPrice(median)}</dd></div>
+					<div><dt>최고가</dt><dd>{fmtPrice(prices[prices.length - 1])}</dd></div>
+					<div><dt>판매처</dt><dd>{stores.size}곳</dd></div>
+				</dl>
+			)}
 			<ul class="cards">
 				{
-					posts.map((post) => (
+					sorted.map((post: any) => (
 						<li>
 							<a href={`/blog/${post.id}/`} aria-label={post.data.productName || post.data.title}>
 								<div class="thumb">
