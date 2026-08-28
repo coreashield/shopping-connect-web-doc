@@ -7,14 +7,16 @@ import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import Header from '../components/Header.astro';
 import { categorySlug, topCategory } from '../lib/categories';
+import { SITE_TITLE } from '../consts';
 
 type Props = CollectionEntry<'blog'>['data'] & {
 	relatedPosts?: CollectionEntry<'blog'>[];
 	hub?: { sub: string; slug: string } | null;
+	canonicalPath?: string;
 };
 
 const { title, description, pubDate, updatedDate, heroImage, category, relatedPosts = [], hub = null,
-	affiliateUrl, productStore, rating, productId, productName, productPrice, headings = [] } = Astro.props;
+	canonicalPath, affiliateUrl, productStore, rating, productId, productName, productPrice, headings = [] } = Astro.props;
 const catName = topCategory(category);
 
 // 목차(ToC): h2/h3만 — 탐색·구글 점프링크·AI 답추출 유리 (CEO 결정 2026-07-06)
@@ -46,7 +48,7 @@ const imageUrl = rawImg ? new URL(rawImg, Astro.site).href : undefined;
 
 <html lang="ko">
 	<head>
-		<BaseHead title={title} description={description} type="article" />
+		<BaseHead title={title} description={description} type="article" imageUrl={imageUrl} canonicalPath={canonicalPath} />
 		<SeoSchema
 			title={title}
 			description={description}
@@ -70,6 +72,26 @@ const imageUrl = rawImg ? new URL(rawImg, Astro.site).href : undefined;
 				margin: 0 auto;
 				border-radius: 12px;
 				box-shadow: var(--box-shadow);
+				/* 원본 치수를 프론트매터에 갖고 있지 않아 width/height 속성을 못 준다.
+				   정사각 비율 박스로 공간을 미리 확보해 CLS를 막고, contain으로 왜곡은 피한다.
+				   (네이버 상품 이미지는 대부분 1:1) */
+				aspect-ratio: 1 / 1;
+				object-fit: contain;
+				max-height: 520px;
+				width: auto;
+				max-width: 100%;
+			}
+			.byline {
+				margin: 0.4rem 0 0.2rem;
+				font-size: 0.9rem;
+				color: rgb(var(--gray));
+			}
+			.byline a {
+				color: rgb(var(--gray-dark));
+				text-decoration: none;
+			}
+			.byline a:hover {
+				text-decoration: underline;
 			}
 			.prose {
 				width: 720px;
@@ -188,7 +210,7 @@ const imageUrl = rawImg ? new URL(rawImg, Astro.site).href : undefined;
 			<article>
 				<div class="hero-image">
 					{heroImage && (typeof heroImage === 'string'
-						? <img src={heroImage} alt={title} loading="eager" />
+						? <img src={heroImage} alt={title} loading="eager" fetchpriority="high" decoding="async" />
 						: <Image width={1020} height={510} src={heroImage} alt={title} />)}
 				</div>
 				<div class="prose">
@@ -211,6 +233,15 @@ const imageUrl = rawImg ? new URL(rawImg, Astro.site).href : undefined;
 							}
 						</div>
 						<h1>{title}</h1>
+						{/* E-E-A-T "Who": 발행 주체를 눈에 보이게 명시.
+						    실제로 제품을 써보지 않으므로 개인 리뷰어 이름을 지어내지 않는다.
+						    편집 주체(조직)와 방법론 페이지로 연결하는 것이 정직한 최대치다. */}
+						<div class="byline">
+							<span class="by">글 ·</span>
+							<a rel="author" href="/about/">{SITE_TITLE} 편집팀</a>
+							<span class="dot">·</span>
+							<a class="method" href="/about/">작성 기준 안내</a>
+						</div>
 						<hr />
 					</div>
 					{affiliateUrl && (

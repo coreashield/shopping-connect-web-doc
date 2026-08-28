@@ -7,15 +7,28 @@ import FormattedDate from '../../components/FormattedDate.astro';
 import Header from '../../components/Header.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../../consts';
 
-const posts = (await getCollection('blog')).sort(
-	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
-);
+// 글 3,698개를 한 페이지에 전부 뿌리면 링크 신호가 희석되고 크롤 예산이 낭비된다.
+// paginate로 쪼갠다. [...page] 라우트라 1페이지는 기존 URL(/blog/)이 그대로 유지된다.
+export async function getStaticPaths({ paginate }: { paginate: any }) {
+	const posts = (await getCollection('blog')).sort(
+		(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+	);
+	return paginate(posts, { pageSize: 24 });
+}
+
+const { page } = Astro.props;
+const pageTitle = page.currentPage === 1 ? SITE_TITLE : `${SITE_TITLE} — ${page.currentPage}페이지`;
+const pageDesc = page.currentPage === 1
+	? SITE_DESCRIPTION
+	: `${SITE_DESCRIPTION} (${page.currentPage}/${page.lastPage} 페이지)`;
 ---
 
 <!doctype html>
 <html lang="ko">
 	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+		<BaseHead title={pageTitle} description={pageDesc} />
+		{page.url.prev && <link rel="prev" href={page.url.prev} />}
+		{page.url.next && <link rel="next" href={page.url.next} />}
 		<style>
 			main {
 				width: 960px;
@@ -84,6 +97,24 @@ const posts = (await getCollection('blog')).sort(
 					font-size: 1.563em;
 				}
 			}
+			.pager {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				gap: 1.5rem;
+				margin: 2.5rem 0 1rem;
+				font-size: 0.95rem;
+			}
+			.pager a {
+				text-decoration: none;
+			}
+			.pager .off {
+				color: rgb(var(--gray));
+				opacity: 0.5;
+			}
+			.pager .pos {
+				color: rgb(var(--gray));
+			}
 		</style>
 	</head>
 	<body>
@@ -92,7 +123,7 @@ const posts = (await getCollection('blog')).sort(
 			<section>
 				<ul>
 					{
-						posts.map((post) => (
+						page.data.map((post: any) => (
 							<li>
 								<a href={`/blog/${post.id}/`}>
 									{post.data.heroImage && (
@@ -107,6 +138,12 @@ const posts = (await getCollection('blog')).sort(
 						))
 					}
 				</ul>
+				{/* 크롤러가 페이지를 순회할 수 있도록 실제 <a> 링크로 노출 */}
+				<nav class="pager" aria-label="페이지 이동">
+					{page.url.prev ? <a href={page.url.prev}>← 이전</a> : <span class="off">← 이전</span>}
+					<span class="pos">{page.currentPage} / {page.lastPage}</span>
+					{page.url.next ? <a href={page.url.next}>다음 →</a> : <span class="off">다음 →</span>}
+				</nav>
 			</section>
 		</main>
 		<Footer />

@@ -28,8 +28,29 @@ const rest = all.filter((p) => !sameSub.includes(p) && !sameTop.includes(p)).sor
 const relatedPosts = [...sameSub, ...sameTop, ...rest].slice(0, 6);
 // 이 글이 속한 토픽 허브(필러) — 글에서 허브로 링크(양방향 클러스터).
 const hub = hubForPost(post);
+
+// 같은 상품(productId)에 글이 여러 개면 최신 글을 대표로 삼아 canonical을 모은다.
+//   재발행으로 234개 상품에 중복 글이 생겼고, 각자 자기를 canonical해 신호가 쪼개져 있었다.
+//   canonical만 모으고 페이지는 그대로 둔다(내용이 완전 동일하진 않아 삭제·noindex는 과함).
+//   구버전 글 626개는 프론트매터에 productId가 없다. 파일명(cat-productId-YYYYMMDD)에서 복구한다
+//   — canonical 묶음에만 쓰고 /go/ 추적링크 동작은 건드리지 않는다.
+const pidOf = (p: CollectionEntry<'blog'>): string | undefined =>
+	p.data.productId ?? p.id.match(/-(\d{6,})-\d{8}$/)?.[1];
+
+const pid = pidOf(post);
+let canonicalPath: string | undefined;
+if (pid) {
+	const siblings = [post, ...all].filter((p) => pidOf(p) === pid);
+	if (siblings.length > 1) {
+		const primary = siblings.sort((a, b) => {
+			const d = byDate(a, b);
+			return d !== 0 ? d : a.id.localeCompare(b.id); // 날짜 동률이면 id로 결정적 선택
+		})[0];
+		if (primary.id !== post.id) canonicalPath = `/blog/${primary.id}/`;
+	}
+}
 ---
 
-<BlogPost {...post.data} relatedPosts={relatedPosts} hub={hub} headings={headings}>
+<BlogPost {...post.data} relatedPosts={relatedPosts} hub={hub} headings={headings} canonicalPath={canonicalPath}>
 	<Content />
 </BlogPost>
