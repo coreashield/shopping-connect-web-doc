@@ -1,5 +1,5 @@
 ---
-import { getPosts } from '../lib/site';
+import { getPosts, getGuides } from '../lib/site';
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
@@ -11,6 +11,7 @@ const posts = (await getPosts()).sort(
 	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
 const recent = posts.slice(0, 12);
+const guides = (await getGuides()).slice(0, 8);
 const cats = categoryList(posts);
 // 토픽 클러스터 허브 — 홈에서 필러(허브)로 직링크해 크롤러가 허브→클러스터 순으로 효율 색인하게 한다.
 const hubs = topicHubs(posts, 15).slice(0, 12);
@@ -101,6 +102,12 @@ const hubs = topicHubs(posts, 15).slice(0, 12);
 	<body>
 		<Header />
 		<main>
+			{guides.length > 0 && (
+				<section class="categories">
+					<h2>구매 가이드</h2>
+					<ul class="cat-chips">{guides.map((g) => <li><a href={`/guide/${g.id}/`}>{g.data.title}</a></li>)}</ul>
+				</section>
+			)}
 			<section class="intro">
 				<h1>{SITE_TITLE}</h1>
 				<p>{SITE_DESCRIPTION}</p>

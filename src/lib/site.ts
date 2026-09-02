@@ -39,3 +39,9 @@ export function movedTo(category?: string, slug?: string): string | null {
 	const sub = SUB_SITES.find((s) => s.category === top);
 	return sub && slug ? `https://${sub.host}/blog/${slug}/` : null;
 }
+
+/** 가이드 페이지 — 호스트 필터 적용 */
+export async function getGuides(): Promise<CollectionEntry<'guides'>[]> {
+	const all = await getCollection('guides');
+	return all.filter((g) => belongsHere(g.data.category)).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+}

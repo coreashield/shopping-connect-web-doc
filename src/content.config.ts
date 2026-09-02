@@ -26,4 +26,25 @@ const blog = defineCollection({
 		}),
 });
 
-export const collections = { blog };
+// 질문·비교형 가이드(카테고리 분리 실험 2026-09-02): 소분류 하나 = 페이지 하나, 상품 5~7개 묶음
+const guides = defineCollection({
+	loader: glob({ base: './src/content/guides', pattern: '**/*.{md,mdx}' }),
+	schema: z.object({
+		title: z.string(),
+		description: z.string(),
+		pubDate: z.coerce.date(),
+		updatedDate: z.coerce.date().optional(),
+		category: z.string(),          // "디지털/가전>계절가전>제습기"
+		query: z.string(),             // 검색어 핵심 (소분류명)
+		related: z.array(z.string()).optional(),
+		heroImage: z.string().url().optional(),
+		products: z.array(z.object({
+			productId: z.string(), name: z.string(), price: z.number(), image: z.string().url(),
+			affiliateUrl: z.string().url(), naverUrl: z.string().url().optional(),
+			rating: z.number().optional(), reviewCount: z.number().optional(), store: z.string().optional(),
+		})),
+		faq: z.array(z.object({ q: z.string(), a: z.string() })).optional(),
+	}),
+});
+
+export const collections = { blog, guides };
