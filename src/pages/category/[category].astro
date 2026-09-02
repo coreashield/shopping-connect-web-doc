@@ -1,5 +1,5 @@
 ---
-import { getCollection } from 'astro:content';
+import { getPosts } from '../../lib/site';
 import BaseHead from '../../components/BaseHead.astro';
 import Footer from '../../components/Footer.astro';
 import FormattedDate from '../../components/FormattedDate.astro';
@@ -8,7 +8,7 @@ import { categoryList } from '../../lib/categories';
 import { SITE_TITLE } from '../../consts';
 
 export async function getStaticPaths() {
-	const posts = await getCollection('blog');
+	const posts = await getPosts();
 	return categoryList(posts).map((c) => ({
 		params: { category: c.slug },
 		props: { name: c.name, posts: c.posts },

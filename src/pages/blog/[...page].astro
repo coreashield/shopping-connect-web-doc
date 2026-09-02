@@ -1,6 +1,6 @@
 ---
 import { Image } from 'astro:assets';
-import { getCollection } from 'astro:content';
+import { getPosts } from '../../lib/site';
 import BaseHead from '../../components/BaseHead.astro';
 import Footer from '../../components/Footer.astro';
 import FormattedDate from '../../components/FormattedDate.astro';
@@ -10,7 +10,7 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../../consts';
 // 글 3,698개를 한 페이지에 전부 뿌리면 링크 신호가 희석되고 크롤 예산이 낭비된다.
 // paginate로 쪼갠다. [...page] 라우트라 1페이지는 기존 URL(/blog/)이 그대로 유지된다.
 export async function getStaticPaths({ paginate }: { paginate: any }) {
-	const posts = (await getCollection('blog')).sort(
+	const posts = (await getPosts()).sort(
 		(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 	);
 	return paginate(posts, { pageSize: 24 });

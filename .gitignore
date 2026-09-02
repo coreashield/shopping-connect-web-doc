@@ -22,3 +22,6 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# 빌드 시 생성 (scripts/gen_redirects.mjs)
+public/_redirects

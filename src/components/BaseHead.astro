@@ -5,6 +5,7 @@ import '../styles/global.css';
 import type { ImageMetadata } from 'astro';
 import FallbackImage from '../assets/blog-placeholder-1.jpg';
 import { SITE_TITLE } from '../consts';
+import { NAVER_SITE_VERIFICATION, GOOGLE_SITE_VERIFICATION } from '../lib/site';
 import { Font } from 'astro:assets';
 
 interface Props {
@@ -29,8 +30,8 @@ const ogImage = imageUrl ?? new URL(image.src, Astro.url).href;
 <!-- Global Metadata -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<meta name="naver-site-verification" content="7bb6ac531df1fe950cba4b95228c33104dc73fce" />
-<meta name="google-site-verification" content="L4XkgtlpgPwwbh27YhByAmN_-uIv8n8hhiEqwcBc8JU" />
+{NAVER_SITE_VERIFICATION && <meta name="naver-site-verification" content={NAVER_SITE_VERIFICATION} />}
+{GOOGLE_SITE_VERIFICATION && <meta name="google-site-verification" content={GOOGLE_SITE_VERIFICATION} />}
 <!-- 상품 이미지 CDN 핸드셰이크를 조기 시작 → LCP 단축 -->
 <link rel="preconnect" href="https://shop-phinf.pstatic.net" crossorigin />
 <link rel="dns-prefetch" href="https://shop-phinf.pstatic.net" />

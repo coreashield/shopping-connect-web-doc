@@ -1,10 +1,11 @@
 ---
-import { type CollectionEntry, getCollection, render } from 'astro:content';
+import { type CollectionEntry, render } from 'astro:content';
+import { getPosts } from '../../lib/site';
 import BlogPost from '../../layouts/BlogPost.astro';
 import { topCategory, subPath, hubForPost } from '../../lib/categories';
 
 export async function getStaticPaths() {
-	const posts = await getCollection('blog');
+	const posts = await getPosts();
 	return posts.map((post) => ({
 		params: { slug: post.id },
 		props: post,
@@ -17,7 +18,7 @@ const { Content, headings } = await render(post);
 
 // 관련 글 (토픽 클러스터 — 2026 SEO: 같은 2단계 분류(진짜 같은 주제) 우선 → 같은 대분류 → 나머지).
 //   같은 주제 글끼리 촘촘히 링크해야 구글이 클러스터로 인식하고 색인·랭킹이 붙는다.
-const all = (await getCollection('blog')).filter((p) => p.id !== post.id);
+const all = (await getPosts()).filter((p) => p.id !== post.id);
 const byDate = (a: CollectionEntry<'blog'>, b: CollectionEntry<'blog'>) =>
 	b.data.pubDate.valueOf() - a.data.pubDate.valueOf();
 const sub = subPath(post.data.category);

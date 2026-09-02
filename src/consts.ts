@@ -1,5 +1,2 @@
-// Place any global data in this file.
-// You can import this data from anywhere in your site by using the `import` keyword.
-
-export const SITE_TITLE = '쇼핑로그';
-export const SITE_DESCRIPTION = '꼼꼼히 비교한 쇼핑 추천 — 가격, 후기, 스펙을 한눈에';
+// 호스트별 값은 src/lib/site.ts 에서 결정된다 (카테고리 분리 실험 2026-09-02).
+export { SITE_TITLE, SITE_DESCRIPTION } from './lib/site';
