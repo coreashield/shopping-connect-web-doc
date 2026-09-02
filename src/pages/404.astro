@@ -1,0 +1,48 @@
+---
+// 404 페이지 (2026-09-02): Cloudflare Pages는 404.html이 없으면 SPA로 간주해 모든 미존재 경로에
+//   index.html을 200으로 돌려준다(soft 404 → 검색엔진 색인 낭비). Astro는 이 파일을 dist/404.html로 빌드하고
+//   Pages는 그 파일을 404 상태코드로 서빙한다.
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import { SITE_TITLE } from '../consts';
+---
+
+<!doctype html>
+<html lang="ko">
+	<head>
+		<BaseHead title={`페이지를 찾을 수 없습니다 | ${SITE_TITLE}`} description="요청하신 페이지가 없거나 이동되었습니다." />
+		<meta name="robots" content="noindex" />
+		<style>
+			.notfound {
+				padding: 3rem 0;
+				text-align: center;
+			}
+			.notfound h1 {
+				margin: 0 0 0.75rem 0;
+			}
+			.notfound p {
+				color: rgb(var(--gray));
+				margin: 0 0 1.5rem 0;
+			}
+			.notfound nav a {
+				margin: 0 0.5rem;
+			}
+		</style>
+	</head>
+	<body>
+		<Header />
+		<main>
+			<section class="notfound">
+				<h1>페이지를 찾을 수 없습니다</h1>
+				<p>주소가 잘못되었거나 글이 삭제·이동되었을 수 있습니다.</p>
+				<nav>
+					<a href="/">홈</a>
+					<a href="/blog/">전체 글</a>
+					<a href="/category/">카테고리</a>
+				</nav>
+			</section>
+		</main>
+		<Footer />
+	</body>
+</html>
