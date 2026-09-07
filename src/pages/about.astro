@@ -1,12 +1,13 @@
 ---
 import AboutHeroImage from '../assets/blog-placeholder-about.jpg';
 import Layout from '../layouts/BlogPost.astro';
-import { AUTHOR_NODE, AUTHOR_PERSON, ORGANIZATION, SITE_TITLE } from '../consts';
+import { AUTHOR_NODE, AUTHOR_PERSON, ORGANIZATION, ORGANIZATION_SAME_AS, SITE_TITLE } from '../consts';
 
 // GEO: 소개 페이지는 조직·저자 엔티티의 "홈"이다. BlogPosting.author/publisher 가 가리키는
 //   @id 노드를 여기서 본문(JSON-LD)으로 한 번 더 선언해 엔티티를 고정한다.
 const orgLd = { '@context': 'https://schema.org', ...ORGANIZATION };
 const authorLd = AUTHOR_PERSON ? { '@context': 'https://schema.org', ...AUTHOR_NODE } : null;
+const channelName = (u: string) => (u.includes('youtube.com') ? '유튜브' : u.includes('threads.com') ? '스레드' : u.includes('instagram.com') ? '인스타그램' : u.includes('blog.naver.com') ? '네이버 블로그' : '채널') + ' ' + (u.match(/@[^/]+/)?.[0] ?? '');
 ---
 
 <Layout
@@ -51,6 +52,15 @@ const authorLd = AUTHOR_PERSON ? { '@context': 'https://schema.org', ...AUTHOR_N
 				{AUTHOR_PERSON.jobTitle && <span> · {AUTHOR_PERSON.jobTitle}</span>}
 				{AUTHOR_PERSON.description && <span>. {AUTHOR_PERSON.description}</span>}
 			</p>
+		</>
+	)}
+
+	{ORGANIZATION_SAME_AS.length > 0 && (
+		<>
+			<h2>공식 채널</h2>
+			<ul>
+				{ORGANIZATION_SAME_AS.map((u) => <li><a href={u} rel="me noopener" target="_blank">{channelName(u)}</a></li>)}
+			</ul>
 		</>
 	)}
 

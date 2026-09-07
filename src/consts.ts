@@ -7,7 +7,10 @@ import { CURRENT_SUB, SITE_TITLE, SITE_URL } from './lib/site';
 // AI 검색 엔진이 이 사이트를 별개 엔티티로 인식하려면 (1) 도메인을 병기한 alternateName,
 // (2) 같은 @id로 묶인 Organization 노드, (3) 외부 프로필 sameAs 가 필요하다.
 // sameAs에는 이 사이트가 직접 운영하는 공개 프로필만 넣는다(유튜브·스레드·네이버 블로그 등).
-export const ORGANIZATION_SAME_AS: string[] = [];
+export const ORGANIZATION_SAME_AS: string[] = [
+	'https://www.youtube.com/@shopping_log_daily',   // 유튜브 "쇼핑로그 데일리" (UC6vuM32irt7ANzYo6GT5A8g)
+	'https://www.threads.com/@serin_room',            // 스레드
+];
 
 const MAIN_SITE_URL = 'https://shopping-log.com';
 const MAIN_ORGANIZATION_ID = `${MAIN_SITE_URL}/#organization`;
