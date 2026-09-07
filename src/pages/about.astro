@@ -1,35 +1,64 @@
 ---
 import AboutHeroImage from '../assets/blog-placeholder-about.jpg';
 import Layout from '../layouts/BlogPost.astro';
-import { SITE_TITLE } from '../consts';
+import { AUTHOR_NODE, AUTHOR_PERSON, ORGANIZATION, SITE_TITLE } from '../consts';
+
+// GEO: 소개 페이지는 조직·저자 엔티티의 "홈"이다. BlogPosting.author/publisher 가 가리키는
+//   @id 노드를 여기서 본문(JSON-LD)으로 한 번 더 선언해 엔티티를 고정한다.
+const orgLd = { '@context': 'https://schema.org', ...ORGANIZATION };
+const authorLd = AUTHOR_PERSON ? { '@context': 'https://schema.org', ...AUTHOR_NODE } : null;
 ---
 
 <Layout
-	title="소개"
-	description="쇼핑로그는 가격·후기·스펙을 꼼꼼히 비교해 쇼핑 추천을 정리하는 곳입니다."
+	title="소개·작성 기준"
+	description="쇼핑로그는 네이버 스마트스토어 상품을 가격·후기·스펙 기준으로 비교해 정리하는 쇼핑 정보 사이트입니다. 데이터 출처와 작성 기준을 안내합니다."
 	pubDate={new Date('2026-05-28')}
+	updatedDate={new Date('2026-09-07')}
 	heroImage={AboutHeroImage}
 >
+	<script type="application/ld+json" set:html={JSON.stringify(orgLd)} />
+	{authorLd && <script type="application/ld+json" set:html={JSON.stringify(authorLd)} />}
+
 	<p>
-		<strong>{SITE_TITLE}</strong>은 온라인 쇼핑 상품을 가격·후기·스펙 기준으로 비교해
-		"살까 말까" 고민을 줄여주는 쇼핑 추천 블로그입니다. 패션, 가전, 식품, 생활용품 등
-		다양한 카테고리의 제품을 직접 정리한 비교 리뷰로 소개합니다.
+		<strong>{SITE_TITLE}</strong>(shopping-log.com)은 네이버 스마트스토어 상품을 가격·후기·스펙 기준으로 비교해
+		"살까 말까" 고민을 줄여주는 쇼핑 정보 사이트입니다. 패션, 가전, 식품, 생활용품 등
+		카테고리별 상품을 주제별 가격 비교 허브와 개별 글로 정리합니다.
+		동명의 캐시백 앱 "쇼핑로그"와는 관계가 없습니다.
 	</p>
 
-	<p>각 글은 다음을 담으려 합니다:</p>
+	<h2>무엇을 담나요?</h2>
 	<ul>
-		<li>제품의 핵심 장점과 아쉬운 점</li>
-		<li>어떤 사람에게 잘 맞는지(용도·상황)</li>
+		<li>상품 정의·가격·장점·추천 대상을 한 문단으로 정리한 요약</li>
+		<li>제품의 핵심 특징과 어떤 사람에게 잘 맞는지(용도·상황)</li>
 		<li>구매 전 자주 묻는 질문(FAQ)</li>
-		<li>가격대와 대안 제품 비교 포인트</li>
+		<li>같은 주제 상품의 가격대 비교(최저가·중간값·최고가·판매처 수)</li>
 	</ul>
+
+	<h2>작성 기준</h2>
+	<ul>
+		<li><strong>데이터 출처:</strong> 네이버 스마트스토어에 표시된 상품명, 판매가, 판매처, 구매자 평점, 상품 설명과 구매자 리뷰.</li>
+		<li><strong>가격 기준:</strong> 각 글의 가격은 발행 시점 기준이며 본문에 기준 연월을 적습니다. 실제 판매가·재고는 판매처에서 확인해야 합니다.</li>
+		<li><strong>평점:</strong> 판매처 페이지의 구매자 평점을 그대로 옮기며, 사이트 자체 평점이나 별점 리치결과는 만들지 않습니다.</li>
+		<li><strong>갱신:</strong> 새 글은 매일 발행되고, 주제별 비교 허브는 새 글이 추가될 때마다 다시 계산됩니다.</li>
+		<li><strong>하지 않는 것:</strong> 확인되지 않은 스펙을 지어내지 않고, 리뷰를 창작하지 않습니다.</li>
+	</ul>
+
+	{AUTHOR_PERSON && (
+		<>
+			<h2>글쓴이</h2>
+			<p>
+				<strong>{AUTHOR_PERSON.name}</strong>
+				{AUTHOR_PERSON.jobTitle && <span> · {AUTHOR_PERSON.jobTitle}</span>}
+				{AUTHOR_PERSON.description && <span>. {AUTHOR_PERSON.description}</span>}
+			</p>
+		</>
+	)}
 
 	<h2>제휴(affiliate) 안내</h2>
 	<p>
-		본 사이트의 일부 글에는 네이버 쇼핑커넥트·쿠팡파트너스 등의 제휴 링크가 포함되어
+		본 사이트의 글에는 네이버 쇼핑커넥트·쿠팡파트너스 등의 제휴 링크가 포함되어
 		있으며, 링크를 통해 구매가 이루어지면 일정 수수료를 제공받을 수 있습니다. 수수료는
-		독자에게 추가 비용을 발생시키지 않으며, 사이트 운영에 사용됩니다. 추천은 제휴 여부와
-		무관하게 작성하려 노력합니다.
+		독자에게 추가 비용을 발생시키지 않으며, 사이트 운영에 사용됩니다. 모든 글 상단에 대가성을 고지합니다.
 	</p>
 
 	<h2>문의</h2>

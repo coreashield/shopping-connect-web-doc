@@ -5,7 +5,20 @@ import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import Header from '../components/Header.astro';
 import { categoryList, topicHubs } from '../lib/categories';
-import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import { ORGANIZATION, SITE_DESCRIPTION, SITE_TITLE, SITE_URL } from '../consts';
+
+// GEO: 사이트·조직 엔티티 노드. BlogPosting.publisher 와 같은 @id 로 묶인다.
+const websiteLd = {
+	'@context': 'https://schema.org',
+	'@type': 'WebSite',
+	'@id': `${SITE_URL}/#website`,
+	name: SITE_TITLE,
+	alternateName: 'shopping-log.com',
+	url: `${SITE_URL}/`,
+	inLanguage: 'ko',
+	publisher: { '@id': ORGANIZATION['@id'] },
+};
+const orgLd = { '@context': 'https://schema.org', ...ORGANIZATION };
 
 const posts = (await getCollection('blog')).sort(
 	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
@@ -20,6 +33,8 @@ const hubs = topicHubs(posts, 15).slice(0, 12);
 <html lang="ko">
 	<head>
 		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+		<script type="application/ld+json" set:html={JSON.stringify(orgLd)} />
+		<script type="application/ld+json" set:html={JSON.stringify(websiteLd)} />
 		<style>
 			.intro {
 				margin-bottom: 2rem;

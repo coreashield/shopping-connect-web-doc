@@ -2,11 +2,15 @@
 // 서버 렌더 JSON-LD (BlogPosting + BreadcrumbList).
 // ⚠️ Review/AggregateRating(스타 평점)은 직접 리뷰한 제품이 아니므로 넣지 않음
 //    (정책 위반 → 리치결과 자격 박탈·수동조치 위험. 2026 리서치 근거).
-import { SITE_TITLE } from '../consts';
+// GEO(2026-09-07): author 를 consts 의 AUTHOR_NODE(Person 또는 편집팀 Organization)로,
+//    publisher 를 @id 가 있는 ORGANIZATION 노드로 통일해 사이트 전역에서 같은 엔티티를 가리키게 한다.
+//    summary 는 abstract 로 실어 AI 답변 엔진이 본문을 읽기 전에 요약을 얻게 한다.
+import { AUTHOR_NODE, ORGANIZATION } from '../consts';
 
 interface Props {
 	title: string;
 	description: string;
+	summary?: string;
 	pubDate: Date;
 	updatedDate?: Date;
 	catName?: string;
@@ -14,7 +18,7 @@ interface Props {
 	imageUrl?: string;
 }
 
-const { title, description, pubDate, updatedDate, catName, catSlug, imageUrl } = Astro.props;
+const { title, description, summary, pubDate, updatedDate, catName, catSlug, imageUrl } = Astro.props;
 const siteBase = (Astro.site?.href || 'https://shopping-log.com/').replace(/\/$/, '');
 const pageUrl = new URL(Astro.url.pathname, Astro.site).href;
 
@@ -35,16 +39,13 @@ const article: Record<string, unknown> = {
 	'@type': 'BlogPosting',
 	headline: title.slice(0, 110),
 	description,
+	...(summary ? { abstract: summary } : {}),
+	inLanguage: 'ko',
 	datePublished: pubDate.toISOString(),
 	dateModified: (updatedDate ?? pubDate).toISOString(),
 	mainEntityOfPage: { '@type': 'WebPage', '@id': pageUrl },
-	author: { '@type': 'Organization', name: SITE_TITLE, url: `${siteBase}/` },
-	publisher: {
-		'@type': 'Organization',
-		name: SITE_TITLE,
-		url: `${siteBase}/`,
-		logo: { '@type': 'ImageObject', url: `${siteBase}/favicon.svg` },
-	},
+	author: AUTHOR_NODE,
+	publisher: ORGANIZATION,
 	...(imageUrl ? { image: [imageUrl] } : {}),
 };
 ---

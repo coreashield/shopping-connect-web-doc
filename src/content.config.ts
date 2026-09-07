@@ -10,6 +10,8 @@ const blog = defineCollection({
 		z.object({
 			title: z.string(),
 			description: z.string(),
+			// GEO(2026-09-07): 정의문+숫자로 된 자기완결 요약 문단. 본문 최상단·BlogPosting.abstract 에 노출
+			summary: z.string().optional(),
 			pubDate: z.coerce.date(),
 			updatedDate: z.coerce.date().optional(),
 			heroImage: z.union([image(), z.string().url()]).optional(),

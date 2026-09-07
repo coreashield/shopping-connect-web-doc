@@ -7,7 +7,7 @@ import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import Header from '../components/Header.astro';
 import { categorySlug, topCategory } from '../lib/categories';
-import { SITE_TITLE } from '../consts';
+import { AUTHOR_DISPLAY_NAME, SITE_TITLE } from '../consts';
 
 type Props = CollectionEntry<'blog'>['data'] & {
 	relatedPosts?: CollectionEntry<'blog'>[];
@@ -15,7 +15,7 @@ type Props = CollectionEntry<'blog'>['data'] & {
 	canonicalPath?: string;
 };
 
-const { title, description, pubDate, updatedDate, heroImage, category, relatedPosts = [], hub = null,
+const { title, description, summary, pubDate, updatedDate, heroImage, category, relatedPosts = [], hub = null,
 	canonicalPath, affiliateUrl, productStore, rating, productId, productName, productPrice, headings = [] } = Astro.props;
 const catName = topCategory(category);
 
@@ -52,6 +52,7 @@ const imageUrl = rawImg ? new URL(rawImg, Astro.site).href : undefined;
 		<SeoSchema
 			title={title}
 			description={description}
+			summary={summary}
 			pubDate={pubDate}
 			updatedDate={updatedDate}
 			catName={catName}
@@ -187,6 +188,17 @@ const imageUrl = rawImg ? new URL(rawImg, Astro.site).href : undefined;
 				font-size: 0.8rem;
 				color: rgb(var(--gray));
 			}
+			/* GEO: 정의문+숫자 요약 문단. 페이지 첫 30% 안에 인용 가능한 자기완결 답을 둔다 */
+			.key-answer {
+				margin: 0 0 1.4em;
+				padding: 1em 1.2em;
+				border-left: 4px solid #03c75a;
+				background: rgba(var(--gray-light), 0.35);
+				border-radius: 0 10px 10px 0;
+				font-size: 1.02rem;
+				line-height: 1.75;
+			}
+			.key-answer p { margin: 0; }
 			.toc {
 				margin: 1.5em 0;
 				padding: 0.9em 1.2em;
@@ -238,12 +250,17 @@ const imageUrl = rawImg ? new URL(rawImg, Astro.site).href : undefined;
 						    편집 주체(조직)와 방법론 페이지로 연결하는 것이 정직한 최대치다. */}
 						<div class="byline">
 							<span class="by">글 ·</span>
-							<a rel="author" href="/about/">{SITE_TITLE} 편집팀</a>
+							<a rel="author" href="/about/">{AUTHOR_DISPLAY_NAME}</a>
 							<span class="dot">·</span>
 							<a class="method" href="/about/">작성 기준 안내</a>
 						</div>
 						<hr />
 					</div>
+					{summary && (
+						<section class="key-answer" aria-label="핵심 요약">
+							<p>{summary}</p>
+						</section>
+					)}
 					{affiliateUrl && (
 						<div class="buy-cta buy-cta-top">
 							{(productStore || rating) && (
@@ -258,7 +275,8 @@ const imageUrl = rawImg ? new URL(rawImg, Astro.site).href : undefined;
 							<p class="buy-note">가격·재고는 판매처에서 실시간 확인하세요</p>
 						</div>
 					)}
-					<script type="application/ld+json" set:html={JSON.stringify(productLd)} />
+					{/* 상품 글에만 Product 노드. 소개 페이지 등 일반 글에 붙으면 스키마 오류(가짜 상품)가 된다 */}
+					{(productName || affiliateUrl) && <script type="application/ld+json" set:html={JSON.stringify(productLd)} />}
 					{toc.length >= 3 && (
 						<nav class="toc" aria-label="목차">
 							<p class="toc-title">📑 목차</p>
