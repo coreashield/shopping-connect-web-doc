@@ -7,6 +7,11 @@ import { ORGANIZATION_SAME_AS, SITE_DESCRIPTION, SITE_TITLE, SITE_URL } from '..
 //   Google 검색은 이 파일을 무시한다고 명시했으므로 순위 레버가 아니라 "사이트 지도 요약"으로만 쓴다.
 //   빌드 시 정적 생성되며 토픽 허브·카테고리·최신 글을 실데이터에서 뽑는다(추정치 없음).
 const won = (n: number) => n.toLocaleString('ko-KR') + '원';
+// 주격 조사 (서브사이트 제목 '쇼핑로그 식품' → '은')
+const eunNeun = (w: string) => {
+	const c = w.charCodeAt(w.length - 1);
+	return c >= 0xac00 && c <= 0xd7a3 && (c - 0xac00) % 28 !== 0 ? '은' : '는';
+};
 
 export const GET: APIRoute = async () => {
 	const posts = (await getPosts()).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
@@ -28,7 +33,7 @@ export const GET: APIRoute = async () => {
 		`# ${SITE_TITLE} (${SITE_URL.replace('https://', '')})`,
 		`> ${SITE_DESCRIPTION}`,
 		'',
-		`${SITE_TITLE}는 네이버 스마트스토어 상품을 카테고리·주제별로 가격 비교하고 구매 전 확인할 정보를 정리하는 한국어 쇼핑 정보 사이트다. 동명의 캐시백 앱(shoppinglog.store)과는 관계가 없다.`,
+		`${SITE_TITLE}${eunNeun(SITE_TITLE)} 네이버 스마트스토어 상품을 카테고리·주제별로 가격 비교하고 구매 전 확인할 정보를 정리하는 한국어 쇼핑 정보 사이트다. 동명의 캐시백 앱(shoppinglog.store)과는 관계가 없다.`,
 		`글 ${posts.length}개, 주제별 가격 비교 허브 ${hubs.length}개, 비교 가이드 ${guides.length}개, 카테고리 ${cats.length}개. 갱신 ${today}.`,
 		'',
 		'## 사이트 안내',
