@@ -50,8 +50,9 @@ const channelName = (u: string) => (u.includes('youtube.com') ? '유튜브' : u.
 			<p>
 				<strong>{AUTHOR_PERSON.name}</strong>
 				{AUTHOR_PERSON.jobTitle && <span> · {AUTHOR_PERSON.jobTitle}</span>}
-				{AUTHOR_PERSON.description && <span>. {AUTHOR_PERSON.description}</span>}
+				{AUTHOR_PERSON.sameAs?.map((u) => <span> · <a href={u} rel="me noopener" target="_blank">{u.match(/@[^/]+/)?.[0] ?? '프로필'}</a></span>)}
 			</p>
+			{AUTHOR_PERSON.description && <p>{AUTHOR_PERSON.description}</p>}
 		</>
 	)}
 

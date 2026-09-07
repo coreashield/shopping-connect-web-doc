@@ -40,7 +40,12 @@ export interface AuthorPerson {
 	description?: string;
 	sameAs?: string[];
 }
-export const AUTHOR_PERSON: AuthorPerson | null = null;
+export const AUTHOR_PERSON: AuthorPerson | null = {
+	name: '정세린',
+	jobTitle: '쇼핑로그 운영자',
+	description: '네이버 스마트스토어 상품을 가격·후기·스펙 기준으로 비교해 정리합니다. 유튜브 쇼핑로그 데일리와 스레드를 함께 운영합니다.',
+	sameAs: ['https://www.threads.com/@serin_room'],
+};
 export const AUTHOR_ID = `${SITE_URL}/about/#author`;
 
 // BlogPosting.author 로 그대로 직렬화되는 노드
