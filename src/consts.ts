@@ -1,9 +1,6 @@
-// Place any global data in this file.
-// You can import this data from anywhere in your site by using the `import` keyword.
-
-export const SITE_TITLE = '쇼핑로그';
-export const SITE_DESCRIPTION = '꼼꼼히 비교한 쇼핑 추천 — 가격, 후기, 스펙을 한눈에';
-export const SITE_URL = 'https://shopping-log.com';
+// 호스트별 값은 src/lib/site.ts 에서 결정된다 (카테고리 분리 실험 2026-09-02).
+export { SITE_TITLE, SITE_DESCRIPTION, SITE_URL } from './lib/site';
+import { CURRENT_SUB, SITE_TITLE, SITE_URL } from './lib/site';
 
 // ── 브랜드 엔티티 (GEO 2026-09-07) ──
 // 웹 검색에서 "쇼핑로그"는 동명 캐시백 앱(shoppinglog.store)이 선점하고 있다.
@@ -12,17 +9,23 @@ export const SITE_URL = 'https://shopping-log.com';
 // sameAs에는 이 사이트가 직접 운영하는 공개 프로필만 넣는다(유튜브·스레드·네이버 블로그 등).
 export const ORGANIZATION_SAME_AS: string[] = [];
 
+const MAIN_SITE_URL = 'https://shopping-log.com';
+const MAIN_ORGANIZATION_ID = `${MAIN_SITE_URL}/#organization`;
 export const ORGANIZATION_ID = `${SITE_URL}/#organization`;
 export const ORGANIZATION = {
 	'@type': 'Organization',
 	'@id': ORGANIZATION_ID,
 	name: SITE_TITLE,
-	alternateName: ['쇼핑로그 shopping-log.com', 'Shopping Log'],
+	alternateName: CURRENT_SUB
+		? [`${SITE_TITLE} ${CURRENT_SUB.host}`, '쇼핑로그']
+		: ['쇼핑로그 shopping-log.com', 'Shopping Log'],
 	url: `${SITE_URL}/`,
 	logo: { '@type': 'ImageObject', url: `${SITE_URL}/favicon.svg` },
 	description:
 		'네이버 스마트스토어 상품을 카테고리·주제별로 가격 비교하고 구매 전 확인할 정보를 정리하는 한국어 쇼핑 정보 사이트',
 	...(ORGANIZATION_SAME_AS.length ? { sameAs: ORGANIZATION_SAME_AS } : {}),
+	// 서브도메인(digital/food)은 본체 조직의 하위 엔티티로 묶는다
+	...(CURRENT_SUB ? { parentOrganization: { '@type': 'Organization', '@id': MAIN_ORGANIZATION_ID, name: '쇼핑로그', url: `${MAIN_SITE_URL}/` } } : {}),
 };
 
 // ── 저자(E-E-A-T "Who") ──

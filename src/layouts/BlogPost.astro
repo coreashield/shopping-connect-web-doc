@@ -48,7 +48,7 @@ const imageUrl = rawImg ? new URL(rawImg, Astro.site).href : undefined;
 
 <html lang="ko">
 	<head>
-		<BaseHead title={title} description={description} type="article" imageUrl={imageUrl} canonicalPath={canonicalPath} />
+		<BaseHead title={title} description={description} type="article" imageUrl={imageUrl} canonicalPath={canonicalPath} publishedTime={pubDate} modifiedTime={updatedDate} />
 		<SeoSchema
 			title={title}
 			description={description}

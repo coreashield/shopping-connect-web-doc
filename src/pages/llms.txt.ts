@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { getCollection } from 'astro:content';
+import { getGuides, getPosts } from '../lib/site';
 import { categoryList, topicHubs } from '../lib/categories';
 import { ORGANIZATION_SAME_AS, SITE_DESCRIPTION, SITE_TITLE, SITE_URL } from '../consts';
 
@@ -9,9 +9,10 @@ import { ORGANIZATION_SAME_AS, SITE_DESCRIPTION, SITE_TITLE, SITE_URL } from '..
 const won = (n: number) => n.toLocaleString('ko-KR') + '원';
 
 export const GET: APIRoute = async () => {
-	const posts = (await getCollection('blog')).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+	const posts = (await getPosts()).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 	const hubs = topicHubs(posts, 15);
 	const cats = categoryList(posts);
+	const guides = await getGuides();
 	const today = new Date().toISOString().slice(0, 10);
 
 	const hubLines = hubs.map((h) => {
@@ -24,11 +25,11 @@ export const GET: APIRoute = async () => {
 	const recent = posts.slice(0, 20).map((p) => `- [${p.data.title}](${SITE_URL}/blog/${p.id}/): ${p.data.pubDate.toISOString().slice(0, 10)}`);
 
 	const body = [
-		`# ${SITE_TITLE} (shopping-log.com)`,
+		`# ${SITE_TITLE} (${SITE_URL.replace('https://', '')})`,
 		`> ${SITE_DESCRIPTION}`,
 		'',
 		`${SITE_TITLE}는 네이버 스마트스토어 상품을 카테고리·주제별로 가격 비교하고 구매 전 확인할 정보를 정리하는 한국어 쇼핑 정보 사이트다. 동명의 캐시백 앱(shoppinglog.store)과는 관계가 없다.`,
-		`글 ${posts.length}개, 주제별 가격 비교 허브 ${hubs.length}개, 카테고리 ${cats.length}개. 갱신 ${today}.`,
+		`글 ${posts.length}개, 주제별 가격 비교 허브 ${hubs.length}개, 비교 가이드 ${guides.length}개, 카테고리 ${cats.length}개. 갱신 ${today}.`,
 		'',
 		'## 사이트 안내',
 		`- [소개·작성 기준](${SITE_URL}/about/): 데이터 출처, 가격 기준, 제휴 고지`,
@@ -41,6 +42,7 @@ export const GET: APIRoute = async () => {
 		'',
 		'## 카테고리',
 		...catLines,
+		...(guides.length ? ['', '## 비교 가이드', ...guides.map((g) => `- [${g.data.title}](${SITE_URL}/guide/${g.id}/): ${g.data.query} 상품 ${g.data.products.length}개 비교`)] : []),
 		'',
 		'## 최근 글',
 		...recent,

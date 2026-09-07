@@ -28,6 +28,7 @@ const topicSlugify = (s) =>
 	s.replace(/[\/\s]+/g, '-').replace(/[^0-9A-Za-z가-힣-]/g, '').replace(/-+/g, '-').replace(/^-|-$/g, '');
 
 function buildLastmodMap() {
+	const B = SITE_BASE;
 	const dir = path.join(path.dirname(fileURLToPath(import.meta.url)), 'src/content/blog');
 	const map = new Map();
 	let files = [];
@@ -50,16 +51,18 @@ function buildLastmodMap() {
 		if (!date) continue;
 		const iso = new Date(`${date}T00:00:00Z`).toISOString();
 		const slug = file.replace(/\.mdx?$/, '');
-		map.set(`https://shopping-log.com/blog/${slug}/`, iso);
+		map.set(`${B}/blog/${slug}/`, iso);
 
 		// 글이 추가·수정되면 이 글이 실리는 집계 페이지도 함께 바뀐다 → 같은 날짜를 물려준다.
-		bump('https://shopping-log.com/', iso);
-		bump('https://shopping-log.com/blog/', iso);
-		bump('https://shopping-log.com/category/', iso);
+		bump(`${B}/`, iso);
+		bump(`${B}/blog/`, iso);
+		bump(`${B}/category/`, iso);
 
 		const category = head.match(/^category:\s*"?([^"\n]+)"?/m)?.[1]?.trim();
 		const top = topCategoryOf(category);
-		bump(`https://shopping-log.com/category/${top ? CATEGORY_SLUGS[top] : ETC_SLUG}/`, iso);
+		// 호스트 필터: 서브 빌드는 해당 카테고리만, 본체는 분리 카테고리 제외
+		if (SITE_CATEGORY_ENV ? top !== SITE_CATEGORY_ENV : SUB_CATEGORIES.includes(top)) continue;
+		bump(`${B}/category/${top ? CATEGORY_SLUGS[top] : ETC_SLUG}/`, iso);
 
 		// categories.ts의 topicHubs는 대분류가 미등록이어도 허브를 만든다(etc로 폴백).
 		//   예: '도서>만화>…' → etc-만화. 여기서도 동일하게 처리해야 슬러그가 일치한다.
@@ -67,18 +70,23 @@ function buildLastmodMap() {
 		if (parts.length >= 2) {
 			const key = `${parts[0]}>${parts[1]}`;
 			topicCount.set(key, (topicCount.get(key) ?? 0) + 1);
-			bump(`https://shopping-log.com/topic/${CATEGORY_SLUGS[parts[0]] ?? ETC_SLUG}-${topicSlugify(parts[1])}/`, iso);
+			bump(`${B}/topic/${CATEGORY_SLUGS[parts[0]] ?? ETC_SLUG}-${topicSlugify(parts[1])}/`, iso);
 		}
 	}
 	// 15건 미만 토픽은 허브가 만들어지지 않으므로 사이트맵에도 없다 — 남겨둬도 매칭되지 않을 뿐이다.
 	for (const [url, iso] of newest) map.set(url, iso);
 	return map;
 }
+const SITE_URL_ENV = (process.env.SITE_URL || '').trim();
+const SITE_CATEGORY_ENV = (process.env.SITE_CATEGORY || '').trim();
+const SUB_CATEGORIES = ['디지털/가전', '식품'];   // src/lib/site.ts SUB_SITES 와 동일하게 유지
+const SUB_HOSTS = { '디지털/가전': 'https://digital.shopping-log.com', '식품': 'https://food.shopping-log.com' };
+const SITE_BASE = SITE_URL_ENV || (SITE_CATEGORY_ENV ? SUB_HOSTS[SITE_CATEGORY_ENV] : 'https://shopping-log.com');
 const LASTMOD = buildLastmodMap();
 
 // https://astro.build/config
 export default defineConfig({
-	site: 'https://shopping-log.com',
+	site: SITE_BASE,
 	integrations: [
 		mdx(),
 		sitemap({
