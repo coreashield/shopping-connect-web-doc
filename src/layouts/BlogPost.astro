@@ -17,10 +17,11 @@ type Props = CollectionEntry<'blog'>['data'] & {
 };
 
 const { title, description, summary, pubDate, updatedDate, heroImage, category, relatedPosts = [], hub = null,
-	canonicalPath, affiliateUrl, productStore, rating, productId, productName, productPrice, headings = [] } = Astro.props;
+	canonicalPath, affiliateUrl, productStore, rating, reviewCount, priceCheckedAt, saleStatus, productId, productName, productPrice, headings = [] } = Astro.props;
 const catName = topCategory(category);
 // GEO: 요약 문단 = 저장된 summary(정의·핵심·장점·대상) + 렌더 시점 가격·평점 문장(productPrice·rating·updatedDate 기준)
-const answer = keyAnswer(summary, { productPrice, rating, productStore, pubDate, updatedDate });
+const answer = keyAnswer(summary, { productPrice, rating, reviewCount, priceCheckedAt, saleStatus, productStore, pubDate, updatedDate });
+const discontinued = saleStatus === 'discontinued';
 
 // 목차(ToC): h2/h3만 — 탐색·구글 점프링크·AI 답추출 유리 (CEO 결정 2026-07-06)
 const toc = (headings || []).filter((h: any) => h.depth === 2 || h.depth === 3);
@@ -36,7 +37,8 @@ const productLd = {
 	...(affiliateUrl ? { offers: {
 		'@type': 'Offer',
 		...(productPrice ? { price: productPrice, priceCurrency: 'KRW' } : {}),
-		availability: 'https://schema.org/InStock',
+		// 가격 갱신 스크립트가 판매처 페이지 삭제를 확인하면 Discontinued (2026-09-08)
+		availability: discontinued ? 'https://schema.org/Discontinued' : 'https://schema.org/InStock',
 	} } : {}),
 };
 const catSlug = categorySlug(category);
@@ -202,6 +204,7 @@ const imageUrl = rawImg ? new URL(rawImg, Astro.site).href : undefined;
 				line-height: 1.75;
 			}
 			.key-answer p { margin: 0; }
+			.sold-out { margin: 0 0 1.4em; padding: 0.8em 1em; border: 1px dashed rgb(var(--gray)); border-radius: 10px; font-size: 0.95rem; }
 			.toc {
 				margin: 1.5em 0;
 				padding: 0.9em 1.2em;
@@ -264,7 +267,10 @@ const imageUrl = rawImg ? new URL(rawImg, Astro.site).href : undefined;
 							<p>{answer}</p>
 						</section>
 					)}
-					{affiliateUrl && (
+					{discontinued && (
+						<p class="buy-note sold-out">이 상품은 판매처 페이지가 삭제되어 현재 구매할 수 없습니다. 아래 "함께 보면 좋은 글"에서 같은 주제의 다른 상품을 확인하세요.</p>
+					)}
+					{affiliateUrl && !discontinued && (
 						<div class="buy-cta buy-cta-top">
 							{(productStore || rating) && (
 								<p class="buy-meta">
@@ -291,7 +297,7 @@ const imageUrl = rawImg ? new URL(rawImg, Astro.site).href : undefined;
 						</nav>
 					)}
 					<slot />
-					{affiliateUrl && (
+					{affiliateUrl && !discontinued && (
 						<div class="buy-cta buy-cta-bottom">
 							<a class="buy-btn" href={buyHref} target="_blank" rel="nofollow sponsored noopener">
 								🛒 네이버에서 지금 구매하기
