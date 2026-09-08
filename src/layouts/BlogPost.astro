@@ -8,6 +8,7 @@ import FormattedDate from '../components/FormattedDate.astro';
 import Header from '../components/Header.astro';
 import { categorySlug, topCategory } from '../lib/categories';
 import { AUTHOR_DISPLAY_NAME, SITE_TITLE } from '../consts';
+import { keyAnswer } from '../lib/summary';
 
 type Props = CollectionEntry<'blog'>['data'] & {
 	relatedPosts?: CollectionEntry<'blog'>[];
@@ -18,6 +19,8 @@ type Props = CollectionEntry<'blog'>['data'] & {
 const { title, description, summary, pubDate, updatedDate, heroImage, category, relatedPosts = [], hub = null,
 	canonicalPath, affiliateUrl, productStore, rating, productId, productName, productPrice, headings = [] } = Astro.props;
 const catName = topCategory(category);
+// GEO: 요약 문단 = 저장된 summary(정의·핵심·장점·대상) + 렌더 시점 가격·평점 문장(productPrice·rating·updatedDate 기준)
+const answer = keyAnswer(summary, { productPrice, rating, productStore, pubDate, updatedDate });
 
 // 목차(ToC): h2/h3만 — 탐색·구글 점프링크·AI 답추출 유리 (CEO 결정 2026-07-06)
 const toc = (headings || []).filter((h: any) => h.depth === 2 || h.depth === 3);
@@ -52,7 +55,7 @@ const imageUrl = rawImg ? new URL(rawImg, Astro.site).href : undefined;
 		<SeoSchema
 			title={title}
 			description={description}
-			summary={summary}
+			summary={answer}
 			pubDate={pubDate}
 			updatedDate={updatedDate}
 			catName={catName}
@@ -256,9 +259,9 @@ const imageUrl = rawImg ? new URL(rawImg, Astro.site).href : undefined;
 						</div>
 						<hr />
 					</div>
-					{summary && (
+					{answer && (
 						<section class="key-answer" aria-label="핵심 요약">
-							<p>{summary}</p>
+							<p>{answer}</p>
 						</section>
 					)}
 					{affiliateUrl && (

@@ -84,12 +84,6 @@ function leafCategory(category) {
 	return leaf === '기타' && parts.length > 1 ? parts[parts.length - 2] : leaf;
 }
 
-function yearMonth(dateLike) {
-	const d = dateLike ? new Date(dateLike) : new Date();
-	if (Number.isNaN(d.valueOf())) return '';
-	return `${d.getFullYear()}년 ${d.getMonth() + 1}월`;
-}
-
 // TL;DR 라벨 줄들 → {core, price, pros, target, scenario, plain[]}
 export function classifyTldrLines(lines) {
 	const out = { core: '', price: '', pros: '', target: '', scenario: '', plain: [] };
@@ -111,7 +105,7 @@ export function classifyTldrLines(lines) {
 }
 
 /**
- * @param {object} p  { productName, title, productStore, productPrice, rating, category, pubDate, description }
+ * @param {object} p  { productName, title, productStore, category, description }  (가격·평점은 렌더 시점에 붙임)
  * @param {object} t  classifyTldrLines() 결과 (없으면 {})
  * @returns {string}  요약 문단 (빈 문자열이면 생성 불가)
  */
@@ -139,13 +133,9 @@ export function buildSummary(p, t = {}) {
 		const st = plain.replace(/^결론부터\s*(말하면|말하자면|말씀드리면)[,\s]*/, '').replace(/[.\s]+$/, '');
 		if (st) sentences.push(st + '.');
 	}
-	// 3. 가격·평점 (실데이터만, 기준 연월 명시)
-	const price = Number(p.productPrice) || 0;
-	const rating = Number(p.rating) || 0;
-	const ym = yearMonth(p.pubDate);
-	if (price > 0 && rating > 0) sentences.push(`${ym} 기준 ${store || '판매처'} 판매가는 ${price.toLocaleString('ko-KR')}원이고 구매자 평점은 5점 만점에 ${rating.toFixed(1)}점이다.`);
-	else if (price > 0) sentences.push(`${ym} 기준 ${store || '판매처'} 판매가는 ${price.toLocaleString('ko-KR')}원이다.`);
-	else if (rating > 0) sentences.push(`${ym} 기준 구매자 평점은 5점 만점에 ${rating.toFixed(1)}점이다.`);
+	// 3. 가격·평점 문장은 여기서 만들지 않는다 (2026-09-08).
+	//    summary 문자열에 굳혀 두면 productPrice 갱신 시 요약만 옛 값으로 남는다.
+	//    레이아웃(src/lib/summary.ts)이 productPrice·rating·updatedDate 로 렌더 시점에 붙인다.
 	// 4. 장점
 	if (t.pros) { const st = toStatement(t.pros); if (st) sentences.push(`주요 장점은 ${st}.`); }
 	// 5. 대상
