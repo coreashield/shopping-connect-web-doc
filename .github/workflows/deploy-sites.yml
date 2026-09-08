@@ -112,8 +112,8 @@ jobs:
           CHAT: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: |
           [ -z "$TOKEN" ] || [ -z "$CHAT" ] && { echo "telegram secrets 없음 — 알림 생략"; exit 0; }
-          MSG="🔴 shopping-log 배포 실패 (${{ matrix.site }} · ${{ github.event_name }})
-커밋: ${{ github.sha }}
-${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          MSG=$(printf '🔴 shopping-log 배포 실패 (%s · %s)\n커밋: %s\n%s' \
+            "${{ matrix.site }}" "${{ github.event_name }}" "${{ github.sha }}" \
+            "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}")
           curl -s -X POST "https://api.telegram.org/bot${TOKEN}/sendMessage" \
             -d chat_id="$CHAT" --data-urlencode "text=$MSG" -o /dev/null -w "telegram HTTP %{http_code}\n"
