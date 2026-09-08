@@ -1,0 +1,119 @@
+name: Deploy sites (main + digital + food)
+
+# 코드(템플릿·설정·스크립트)가 main 에 push 되면 세 호스트를 즉시 빌드·배포한다.
+#   - 콘텐츠 커밋(발행 워크플로 publish:*, shop-01 publish(digital|food), monitor 로그)은
+#     paths-ignore 로 제외 → 그쪽은 기존 발행 흐름(auto-publish-web-doc.yml, subsite_publish.sh)이 배포.
+#   - 수동 실행(workflow_dispatch)으로 특정 호스트만 다시 배포할 수 있다.
+#   - 실패하면 텔레그램으로 알린다(시크릿 TELEGRAM_TOKEN / TELEGRAM_CHAT_ID).
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'src/content/**'
+      - '_workspace/**'
+  workflow_dispatch:
+    inputs:
+      sites:
+        description: '배포할 호스트 (쉼표 구분: main,digital,food)'
+        required: false
+        default: 'main,digital,food'
+
+# 같은 브랜치의 배포는 순서대로. 진행 중인 배포를 끊지 않는다(부분 배포 방지).
+concurrency:
+  group: deploy-sites-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  TZ: Asia/Seoul
+  NODE_OPTIONS: --max-old-space-size=6144
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    # 수동 실행이면 inputs.sites 에 포함된 호스트만(아래 첫 단계에서 판정), push 면 전부.
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - site: main
+            category: ''
+            project: shopping-log
+            host: shopping-log.com
+          - site: digital
+            category: 디지털/가전
+            project: shopping-log-digital
+            host: digital.shopping-log.com
+          - site: food
+            category: 식품
+            project: shopping-log-food
+            host: food.shopping-log.com
+    name: ${{ matrix.site }}
+    steps:
+      - name: Skip if not selected (workflow_dispatch)
+        id: sel
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && ! echo "${{ github.event.inputs.sites }}" | tr -d ' ' | tr ',' '\n' | grep -qx "${{ matrix.site }}"; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"; echo "선택되지 않음: ${{ matrix.site }}"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout
+        if: steps.sel.outputs.skip == 'false'
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        if: steps.sel.outputs.skip == 'false'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install deps
+        if: steps.sel.outputs.skip == 'false'
+        run: npm install --no-audit --no-fund
+
+      - name: Build (${{ matrix.host }})
+        if: steps.sel.outputs.skip == 'false'
+        env:
+          SITE_CATEGORY: ${{ matrix.category }}
+        run: npm run build
+
+      - name: Verify build (빈 본문 방지 가드)
+        if: steps.sel.outputs.skip == 'false'
+        run: node scripts/verify_build.mjs dist
+
+      - name: Deploy to Cloudflare Pages (${{ matrix.project }})
+        if: steps.sel.outputs.skip == 'false'
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          npx wrangler pages deploy dist \
+            --project-name "${{ matrix.project }}" \
+            --branch main \
+            --commit-dirty=true
+
+      - name: Smoke check (live)
+        if: steps.sel.outputs.skip == 'false'
+        run: |
+          sleep 10
+          for i in 1 2 3; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' "https://${{ matrix.host }}/?v=$(date +%s)")
+            [ "$code" = "200" ] && { echo "✅ https://${{ matrix.host }}/ 200"; exit 0; }
+            echo "attempt $i: HTTP $code"; sleep 10
+          done
+          echo "::error::https://${{ matrix.host }}/ 가 200 이 아님"; exit 1
+
+      - name: Telegram alert on failure
+        if: failure()
+        env:
+          TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          CHAT: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          [ -z "$TOKEN" ] || [ -z "$CHAT" ] && { echo "telegram secrets 없음 — 알림 생략"; exit 0; }
+          MSG="🔴 shopping-log 배포 실패 (${{ matrix.site }} · ${{ github.event_name }})
+커밋: ${{ github.sha }}
+${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          curl -s -X POST "https://api.telegram.org/bot${TOKEN}/sendMessage" \
+            -d chat_id="$CHAT" --data-urlencode "text=$MSG" -o /dev/null -w "telegram HTTP %{http_code}\n"

@@ -4,11 +4,12 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { topCategory } from './categories';
 
-export type SubSite = { category: string; host: string; slug: string; title: string; description: string };
+export type SubSite = { category: string; host: string; slug: string; title: string; description: string; naverVerification: string };
 // 서브도메인으로 분리된 카테고리 (본체에서는 제외 + 301). 새 카테고리를 분리하면 여기에만 추가한다.
+// naverVerification: 서치어드바이저 HTML 태그 인증값(공개 메타). env NAVER_SITE_VERIFICATION 이 있으면 그것이 우선.
 export const SUB_SITES: SubSite[] = [
-	{ category: '디지털/가전', host: 'digital.shopping-log.com', slug: 'digital', title: '쇼핑로그 디지털·가전', description: '가전·디지털 기기 스펙 비교와 구매 가이드 — 평수·소음·전기세·호환성 기준으로 고르는 법' },
-	{ category: '식품', host: 'food.shopping-log.com', slug: 'food', title: '쇼핑로그 식품', description: '식품·건강식품 비교 가이드 — 성분·용량·보관·가격 기준으로 고르는 법' },
+	{ category: '디지털/가전', host: 'digital.shopping-log.com', slug: 'digital', title: '쇼핑로그 디지털·가전', description: '가전·디지털 기기 스펙 비교와 구매 가이드 — 평수·소음·전기세·호환성 기준으로 고르는 법', naverVerification: '01636de0491b0bd12d5fa437c52b6cb725bb1bc6' },
+	{ category: '식품', host: 'food.shopping-log.com', slug: 'food', title: '쇼핑로그 식품', description: '식품·건강식품 비교 가이드 — 성분·용량·보관·가격 기준으로 고르는 법', naverVerification: 'ecc31ff9b1d10e864fdb95ecab620979984376b8' },
 ];
 
 const env = (k: string) => (import.meta.env[k] as string | undefined)?.trim() || '';
@@ -17,7 +18,7 @@ export const CURRENT_SUB = SUB_SITES.find((s) => s.category === SITE_CATEGORY) ?
 export const SITE_URL = env('SITE_URL') || (CURRENT_SUB ? `https://${CURRENT_SUB.host}` : 'https://shopping-log.com');
 export const SITE_TITLE = env('SITE_TITLE') || CURRENT_SUB?.title || '쇼핑로그';
 export const SITE_DESCRIPTION = env('SITE_DESCRIPTION') || CURRENT_SUB?.description || '꼼꼼히 비교한 쇼핑 추천 — 가격, 후기, 스펙을 한눈에';
-export const NAVER_SITE_VERIFICATION = env('NAVER_SITE_VERIFICATION') || (CURRENT_SUB ? '' : '7bb6ac531df1fe950cba4b95228c33104dc73fce');
+export const NAVER_SITE_VERIFICATION = env('NAVER_SITE_VERIFICATION') || CURRENT_SUB?.naverVerification || (CURRENT_SUB ? '' : '7bb6ac531df1fe950cba4b95228c33104dc73fce');
 export const GOOGLE_SITE_VERIFICATION = env('GOOGLE_SITE_VERIFICATION') || (CURRENT_SUB ? '' : 'L4XkgtlpgPwwbh27YhByAmN_-uIv8n8hhiEqwcBc8JU');
 
 /** 이 호스트에 속하는 글인가 */
