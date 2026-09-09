@@ -6,10 +6,10 @@ import { CURRENT_SUB, SITE_TITLE, SITE_URL } from './lib/site';
 // 웹 검색에서 "쇼핑로그"는 동명 캐시백 앱(shoppinglog.store)이 선점하고 있다.
 // AI 검색 엔진이 이 사이트를 별개 엔티티로 인식하려면 (1) 도메인을 병기한 alternateName,
 // (2) 같은 @id로 묶인 Organization 노드, (3) 외부 프로필 sameAs 가 필요하다.
-// sameAs에는 이 사이트가 직접 운영하는 공개 프로필만 넣는다(유튜브·스레드·네이버 블로그 등).
+// sameAs에는 이 사이트가 직접 운영하는 공개 프로필만 넣는다(유튜브·인스타그램·네이버 블로그 등). 정지·삭제된 계정은 넣지 않는다.
 export const ORGANIZATION_SAME_AS: string[] = [
 	'https://www.youtube.com/@shopping_log_daily',   // 유튜브 "쇼핑로그 데일리" (UC6vuM32irt7ANzYo6GT5A8g)
-	'https://www.threads.com/@serin_room',            // 스레드
+	'https://www.instagram.com/serin_room',           // 인스타그램 (스레드 @serin_room 은 2026-09 정지 상태라 제외)
 ];
 
 const MAIN_SITE_URL = 'https://shopping-log.com';
@@ -43,8 +43,8 @@ export interface AuthorPerson {
 export const AUTHOR_PERSON: AuthorPerson | null = {
 	name: '정세린',
 	jobTitle: '쇼핑로그 운영자',
-	description: '네이버 스마트스토어 상품을 가격·후기·스펙 기준으로 비교해 정리합니다. 유튜브 쇼핑로그 데일리와 스레드를 함께 운영합니다.',
-	sameAs: ['https://www.threads.com/@serin_room'],
+	description: '네이버 스마트스토어 상품을 가격·후기·스펙 기준으로 비교해 정리합니다. 유튜브 쇼핑로그 데일리와 인스타그램을 함께 운영합니다.',
+	sameAs: ['https://www.instagram.com/serin_room'],
 };
 export const AUTHOR_ID = `${SITE_URL}/about/#author`;
 

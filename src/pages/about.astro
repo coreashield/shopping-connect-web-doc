@@ -7,7 +7,8 @@ import { AUTHOR_NODE, AUTHOR_PERSON, ORGANIZATION, ORGANIZATION_SAME_AS, SITE_TI
 //   @id 노드를 여기서 본문(JSON-LD)으로 한 번 더 선언해 엔티티를 고정한다.
 const orgLd = { '@context': 'https://schema.org', ...ORGANIZATION };
 const authorLd = AUTHOR_PERSON ? { '@context': 'https://schema.org', ...AUTHOR_NODE } : null;
-const channelName = (u: string) => (u.includes('youtube.com') ? '유튜브' : u.includes('threads.com') ? '스레드' : u.includes('instagram.com') ? '인스타그램' : u.includes('blog.naver.com') ? '네이버 블로그' : '채널') + ' ' + (u.match(/@[^/]+/)?.[0] ?? '');
+const handle = (u: string) => u.match(/@[^/]+/)?.[0] ?? (u.match(/\/([^/]+)\/?$/)?.[1] ? '@' + u.match(/\/([^/]+)\/?$/)![1] : '');
+const channelName = (u: string) => (u.includes('youtube.com') ? '유튜브' : u.includes('threads.com') ? '스레드' : u.includes('instagram.com') ? '인스타그램' : u.includes('blog.naver.com') ? '네이버 블로그' : '채널') + ' ' + handle(u);
 ---
 
 <Layout
@@ -50,7 +51,7 @@ const channelName = (u: string) => (u.includes('youtube.com') ? '유튜브' : u.
 			<p>
 				<strong>{AUTHOR_PERSON.name}</strong>
 				{AUTHOR_PERSON.jobTitle && <span> · {AUTHOR_PERSON.jobTitle}</span>}
-				{AUTHOR_PERSON.sameAs?.map((u) => <span> · <a href={u} rel="me noopener" target="_blank">{u.match(/@[^/]+/)?.[0] ?? '프로필'}</a></span>)}
+				{AUTHOR_PERSON.sameAs?.map((u) => <span> · <a href={u} rel="me noopener" target="_blank">{handle(u) || '프로필'}</a></span>)}
 			</p>
 			{AUTHOR_PERSON.description && <p>{AUTHOR_PERSON.description}</p>}
 		</>
