@@ -1,0 +1,13 @@
+---
+import { render } from 'astro:content';
+import TravelPost from '../../layouts/TravelPost.astro';
+import { getTravel } from '../../lib/site';
+export async function getStaticPaths() {
+	const trips = await getTravel();
+	return trips.map((t) => ({ params: { slug: t.id }, props: t }));
+}
+const trip = Astro.props;
+const { Content } = await render(trip);
+---
+
+<TravelPost {...trip.data} slug={trip.id}><Content /></TravelPost>

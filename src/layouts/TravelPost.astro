@@ -1,0 +1,184 @@
+---
+// 여행 커넥트 패키지 상세 (2026-09-10).
+//   JSON-LD: BlogPosting(abstract=summary) + TouristTrip(Offer) + VideoObject(릴스) + BreadcrumbList
+//   GEO 설계: 첫 화면에 자기완결 요약 → 스펙 표 → 질문형 H2 본문 → FAQ 순. 상단 30%에 사실을 몰아둔다.
+import type { CollectionEntry } from 'astro:content';
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import { SITE_URL } from '../lib/site';
+import { AUTHOR_NODE, AUTHOR_DISPLAY_NAME, ORGANIZATION } from '../consts';
+
+type Props = CollectionEntry<'travel'>['data'] & { slug: string };
+const {
+	title, description, summary, pubDate, updatedDate, heroImage,
+	productName, agency, destination, price, salePrice, nights,
+	departureDate, returnDate, airline, departureAirport, status, seats,
+	highlights = [], affiliateUrl, connectId, productUrl,
+	reelUrl, reelId, reelUploadDate, reelDuration,
+	priceCheckedAt, faq = [], slug,
+} = Astro.props;
+
+const url = `${SITE_URL}/travel/${slug}/`;
+// 발급 링크는 그대로 두고 302로만 보낸다(브랜드커넥트 운영정책: 링크 변조 금지).
+const goHref = `/go/${encodeURIComponent(connectId)}?u=${encodeURIComponent(affiliateUrl)}`;
+const won = (n: number) => n.toLocaleString('ko-KR') + '원';
+const STATUS_LABEL: Record<string, string> = {
+	available: '예약 가능', confirmed: '출발 확정', urgent: '긴급 모객', sold_out: '판매 종료',
+};
+const AVAILABILITY: Record<string, string> = {
+	available: 'https://schema.org/InStock',
+	confirmed: 'https://schema.org/InStock',
+	urgent: 'https://schema.org/LimitedAvailability',
+	sold_out: 'https://schema.org/SoldOut',
+};
+const onSale = status !== 'sold_out';
+const payPrice = salePrice ?? price;
+
+const ld: Record<string, unknown>[] = [
+	{
+		'@context': 'https://schema.org', '@type': 'BlogPosting',
+		headline: title, description, abstract: summary,
+		datePublished: pubDate.toISOString(),
+		dateModified: (updatedDate ?? pubDate).toISOString(),
+		mainEntityOfPage: url, ...(heroImage ? { image: heroImage } : {}),
+		author: AUTHOR_NODE, publisher: ORGANIZATION,
+	},
+	{
+		'@context': 'https://schema.org', '@type': 'TouristTrip',
+		name: productName, description, url,
+		touristType: destination,
+		provider: { '@type': 'Organization', name: agency },
+		offers: {
+			'@type': 'Offer', price: payPrice, priceCurrency: 'KRW',
+			availability: AVAILABILITY[status], url: affiliateUrl,
+			priceValidUntil: departureDate,
+			...(salePrice ? { priceSpecification: { '@type': 'PriceSpecification', price, priceCurrency: 'KRW' } } : {}),
+		},
+		...(seats ? { maximumAttendeeCapacity: seats } : {}),
+		...(highlights.length ? { subjectOf: highlights.join(', ') } : {}),
+	},
+	{
+		'@context': 'https://schema.org', '@type': 'BreadcrumbList',
+		itemListElement: [
+			{ '@type': 'ListItem', position: 1, name: '홈', item: `${SITE_URL}/` },
+			{ '@type': 'ListItem', position: 2, name: '여행 패키지', item: `${SITE_URL}/travel/` },
+			{ '@type': 'ListItem', position: 3, name: title, item: url },
+		],
+	},
+];
+if (reelUrl && reelUploadDate) {
+	ld.push({
+		'@context': 'https://schema.org', '@type': 'VideoObject',
+		name: title, description: summary.slice(0, 200),
+		uploadDate: `${reelUploadDate}T00:00:00+09:00`,
+		...(reelDuration ? { duration: reelDuration } : {}),
+		contentUrl: reelUrl,
+		...(reelId ? { embedUrl: `https://www.instagram.com/reel/${reelId}/embed/` } : {}),
+		...(heroImage ? { thumbnailUrl: heroImage } : {}),
+		publisher: ORGANIZATION,
+	});
+}
+
+const disclosure = '이 글은 네이버 여행 커넥트 활동의 일환이며, 링크를 통해 예약이 발생하면 일정 수수료를 받습니다. 가격과 일정은 판매처 표시값을 옮긴 것이고 예약·결제는 네이버 티켓·패키지에서 이뤄집니다.';
+---
+
+<!doctype html>
+<html lang="ko">
+	<head>
+		<BaseHead title={title} description={description} type="article" imageUrl={heroImage} publishedTime={pubDate} modifiedTime={updatedDate} />
+		{ld.map((o) => <script type="application/ld+json" set:html={JSON.stringify(o)} />)}
+		<style>
+			.trip { max-width: 860px; margin: 0 auto; }
+			.trip h1 { font-size: 1.6em; line-height: 1.35; margin: 0 0 .35em; }
+			.meta { color: rgb(var(--gray)); font-size: .9em; margin: 0 0 1em; }
+			.summary { font-size: 1.02em; line-height: 1.75; background: rgb(var(--gray-light)); padding: 1em 1.1em; border-radius: 10px; margin: 0 0 1.4em; }
+			.disclosure { font-size: .85em; color: rgb(var(--gray)); border-left: 3px solid rgb(var(--gray-light)); padding: .4em .8em; margin: 0 0 1.4em; }
+			.spec { width: 100%; border-collapse: collapse; font-size: .95em; margin: 0 0 1.6em; }
+			.spec th, .spec td { border: 1px solid rgb(var(--gray-light)); padding: .5em .7em; text-align: left; vertical-align: top; }
+			.spec th { width: 8em; background: rgb(var(--gray-light)); font-weight: 600; }
+			.price { font-size: 1.35em; font-weight: 700; }
+			.price s { font-size: .62em; font-weight: 400; color: rgb(var(--gray)); margin-right: .4em; }
+			.badge { display: inline-block; font-size: .8em; padding: .18em .55em; border-radius: 1em; background: rgb(var(--gray-light)); margin-left: .4em; }
+			.badge.soldout { background: #ffe3e3; }
+			ul.points { margin: 0 0 1.6em; padding-left: 1.2em; }
+			ul.points li { margin: .3em 0; line-height: 1.6; }
+			.reel { margin: 0 0 1.8em; }
+			.reel iframe { width: 100%; max-width: 420px; aspect-ratio: 9 / 14; border: 1px solid rgb(var(--gray-light)); border-radius: 10px; }
+			a.cta { display: block; text-align: center; background: #03c75a; color: #fff; text-decoration: none; padding: .85em; border-radius: 8px; font-weight: 700; font-size: 1.05em; margin: 1.6em 0; }
+			a.cta.off { background: rgb(var(--gray-light)); color: rgb(var(--gray)); pointer-events: none; }
+			.body h2 { font-size: 1.2em; margin: 1.6em 0 .5em; }
+			.body p { line-height: 1.75; }
+			.body table { display: block; overflow-x: auto; border-collapse: collapse; font-size: .92em; }
+			.body th, .body td { border: 1px solid rgb(var(--gray-light)); padding: .45em .6em; vertical-align: top; }
+			.faq details { border-bottom: 1px solid rgb(var(--gray-light)); padding: .6em 0; }
+			.faq summary { cursor: pointer; font-weight: 600; }
+			.source { font-size: .85em; color: rgb(var(--gray)); margin-top: 2em; }
+		</style>
+	</head>
+	<body>
+		<Header />
+		<main class="trip">
+			<article>
+				<h1>{title}</h1>
+				<p class="meta">
+					{destination} · {nights} · {agency}
+					<span class:list={['badge', status === 'sold_out' && 'soldout']}>{STATUS_LABEL[status]}</span>
+				</p>
+				<p class="disclosure">{disclosure}</p>
+
+				<p class="summary">{summary}</p>
+
+				<table class="spec">
+					<tbody>
+						<tr>
+							<th>1인 요금</th>
+							<td class="price">
+								{salePrice && <s>{won(price)}</s>}{won(payPrice)}
+							</td>
+						</tr>
+						<tr><th>출발일</th><td>{departureDate}{returnDate ? ` → ${returnDate} 귀국` : ''}</td></tr>
+						<tr><th>일정</th><td>{nights}</td></tr>
+						{airline && <tr><th>항공</th><td>{airline}{departureAirport ? ` · ${departureAirport} 출발` : ''}</td></tr>}
+						<tr><th>여행사</th><td>{agency}</td></tr>
+						{seats && <tr><th>모집 인원</th><td>{seats}명 한정</td></tr>}
+						<tr><th>판매 상태</th><td>{STATUS_LABEL[status]} ({priceCheckedAt} 확인)</td></tr>
+					</tbody>
+				</table>
+
+				{highlights.length > 0 && (
+					<ul class="points">
+						{highlights.map((h) => <li>{h}</li>)}
+					</ul>
+				)}
+
+				<a class:list={['cta', !onSale && 'off']} href={onSale ? goHref : '#'} rel="nofollow sponsored noopener" target="_blank">
+					{onSale ? '네이버에서 일정·잔여석 확인하기' : '판매가 종료된 상품입니다'}
+				</a>
+
+				{reelId && (
+					<section class="reel">
+						<h2>영상으로 보기</h2>
+						<iframe src={`https://www.instagram.com/reel/${reelId}/embed/`} title={title} loading="lazy" allowfullscreen frameborder="0"></iframe>
+					</section>
+				)}
+
+				<div class="body"><slot /></div>
+
+				{faq.length > 0 && (
+					<section class="faq">
+						<h2>자주 묻는 질문</h2>
+						{faq.map((f) => <details><summary>{f.q}</summary><p>{f.a}</p></details>)}
+					</section>
+				)}
+
+				<p class="source">
+					가격·일정 출처: 네이버 티켓·패키지 {agency} 판매 페이지, {priceCheckedAt} 확인.
+					{productUrl && <> 상품 코드 기준 원본은 <a href={productUrl} rel="nofollow noopener" target="_blank">판매처 페이지</a>에서 볼 수 있다.</>}
+					{' '}작성 {AUTHOR_DISPLAY_NAME}.
+				</p>
+			</article>
+		</main>
+		<Footer />
+	</body>
+</html>
