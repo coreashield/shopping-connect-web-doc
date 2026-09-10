@@ -1,6 +1,9 @@
 ---
 import { SITE_TITLE } from '../consts';
 import HeaderLink from './HeaderLink.astro';
+import { SITE_CATEGORY } from '../lib/site';
+// 여행 섹션은 본체 사이트에만 있다(서브도메인은 카테고리 전용).
+const showTravel = !SITE_CATEGORY;
 ---
 
 <header>
@@ -10,6 +13,7 @@ import HeaderLink from './HeaderLink.astro';
 			<HeaderLink href="/">홈</HeaderLink>
 			<HeaderLink href="/blog">전체 글</HeaderLink>
 			<HeaderLink href="/category">카테고리</HeaderLink>
+			{showTravel && <HeaderLink href="/travel">여행</HeaderLink>}
 			<HeaderLink href="/about">소개</HeaderLink>
 		</div>
 	</nav>

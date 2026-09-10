@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { getGuides, getPosts } from '../lib/site';
+import { getGuides, getPosts, getTravel } from '../lib/site';
 import { categoryList, topicHubs } from '../lib/categories';
 import { ORGANIZATION_SAME_AS, SITE_DESCRIPTION, SITE_TITLE, SITE_URL } from '../consts';
 
@@ -18,6 +18,7 @@ export const GET: APIRoute = async () => {
 	const hubs = topicHubs(posts, 15);
 	const cats = categoryList(posts);
 	const guides = await getGuides();
+	const trips = await getTravel();
 	const today = new Date().toISOString().slice(0, 10);
 
 	const hubLines = hubs.map((h) => {
@@ -47,6 +48,11 @@ export const GET: APIRoute = async () => {
 		'',
 		'## 카테고리',
 		...catLines,
+		...(trips.length
+			? ['', '## 여행 패키지 (네이버 여행 커넥트 제휴)',
+				`- [해외 패키지여행 ${trips.length}선 가격·출발일 비교](${SITE_URL}/travel/)`,
+				...trips.map((t) => `- [${t.data.title}](${SITE_URL}/travel/${t.id}/): ${won(t.data.salePrice ?? t.data.price)}, ${t.data.departureDate} 출발, ${t.data.nights}, ${t.data.agency}`)]
+			: []),
 		...(guides.length ? ['', '## 비교 가이드', ...guides.map((g) => `- [${g.data.title}](${SITE_URL}/guide/${g.id}/): ${g.data.query} 상품 ${g.data.products.length}개 비교`)] : []),
 		'',
 		'## 최근 글',
@@ -56,6 +62,7 @@ export const GET: APIRoute = async () => {
 		'- 가격·판매처·평점은 각 글 발행 시점의 네이버 스마트스토어 표시값이며 본문에 기준 연월을 적는다.',
 		'- 각 글에는 상품 정의·가격·장점·추천 대상을 담은 요약 문단(summary)과 자주 묻는 질문이 있다.',
 		'- 구매 링크는 네이버 쇼핑커넥트 제휴 링크이며 모든 글 상단에 대가성을 고지한다.',
+		...(trips.length ? ['- 여행 패키지의 가격·출발일은 네이버 티켓·패키지 판매 페이지에서 확인한 값이며 각 페이지에 확인 시점을 적는다. 예약·결제는 판매처에서 이뤄진다.'] : []),
 		...(ORGANIZATION_SAME_AS.length ? ['', '## 공식 채널', ...ORGANIZATION_SAME_AS.map((u) => `- ${u}`)] : []),
 		'',
 	].join('\n');

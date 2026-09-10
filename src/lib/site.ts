@@ -46,3 +46,10 @@ export async function getGuides(): Promise<CollectionEntry<'guides'>[]> {
 	const all = await getCollection('guides');
 	return all.filter((g) => belongsHere(g.data.category)).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 }
+
+/** 여행 커넥트 패키지 — 본체 사이트에만 노출(서브도메인은 카테고리 전용이라 제외) */
+export async function getTravel(): Promise<CollectionEntry<'travel'>[]> {
+	if (SITE_CATEGORY) return [];
+	const all = await getCollection('travel');
+	return all.sort((a, b) => a.data.departureDate.localeCompare(b.data.departureDate));
+}
