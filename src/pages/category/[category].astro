@@ -16,8 +16,22 @@ export async function getStaticPaths() {
 }
 
 const { name, posts } = Astro.props;
-const title = `${name} 추천 모음 (${posts.length}개) | ${SITE_TITLE}`;
-const description = `${name} 카테고리의 쇼핑 추천 글 ${posts.length}개 — 가격·후기·스펙을 비교해 정리했습니다.`;
+
+// 2026-09-10 네이버 실측: 카테고리 페이지 CTR 0.03~0.3%. 같은 목록형인데 가격 범위를 제목·설명에
+//   넣은 토픽 허브는 0.18%로 더 나았다. 카테고리도 같은 방식으로 "무엇을 얻는 페이지인지"를 적는다.
+const fmtPrice = (n?: number) => (n && n > 0 ? n.toLocaleString('ko-KR') + '원' : '');
+const prices = posts
+	.map((p: any) => p.data.productPrice)
+	.filter((n: number) => n > 0)
+	.sort((a: number, b: number) => a - b);
+const stores = new Set(posts.map((p: any) => p.data.productStore).filter(Boolean));
+const range = prices.length ? `${fmtPrice(prices[0])}~${fmtPrice(prices[prices.length - 1])}` : '';
+const title = prices.length
+	? `${name} 추천 ${posts.length}개 가격 비교 (${range}) | ${SITE_TITLE}`
+	: `${name} 추천 ${posts.length}개 모음 | ${SITE_TITLE}`;
+const description = prices.length
+	? `${name} 상품 ${posts.length}개를 가격과 후기, 스펙 기준으로 비교해 정리했습니다. 가격대는 ${range}이고 판매처는 ${stores.size}곳입니다. 각 글에 확인 시점과 추천 대상을 함께 적었습니다.`
+	: `${name} 상품 ${posts.length}개를 가격과 후기, 스펙 기준으로 비교해 정리했습니다. 각 글에 판매처와 확인 시점, 추천 대상을 함께 적었습니다.`;
 ---
 
 <!doctype html>

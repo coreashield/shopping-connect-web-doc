@@ -28,12 +28,17 @@ const guides = (await getGuides()).slice(0, 8);
 const cats = categoryList(posts);
 // 토픽 클러스터 허브 — 홈에서 필러(허브)로 직링크해 크롤러가 허브→클러스터 순으로 효율 색인하게 한다.
 const hubs = topicHubs(posts, 15).slice(0, 12);
+
+// 2026-09-10: 홈 제목이 사이트명 한 단어(4자)뿐이라 검색결과에서 무엇을 주는 곳인지 안 보였다.
+//   브랜드어("쇼핑로그")는 CTR 4.8%로 잘 눌리므로 브랜드는 앞에 두고, 뒤에 실제 제공 가치를 붙인다.
+const homeTitle = `${SITE_TITLE} — 상품 추천 ${posts.length.toLocaleString('ko-KR')}개 가격·후기 비교`;
+const homeDesc = `${SITE_TITLE}는 네이버 스마트스토어 상품을 가격과 후기, 스펙 기준으로 비교해 정리합니다. 글 ${posts.length.toLocaleString('ko-KR')}개와 주제별 가격 비교 허브 ${topicHubs(posts, 15).length}개를 운영하며, 가격은 확인 시점을 함께 적습니다.`;
 ---
 
 <!doctype html>
 <html lang="ko">
 	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+		<BaseHead title={homeTitle} description={homeDesc} />
 		<script type="application/ld+json" set:html={JSON.stringify(orgLd)} />
 		<script type="application/ld+json" set:html={JSON.stringify(websiteLd)} />
 		<style>

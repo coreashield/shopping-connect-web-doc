@@ -20,9 +20,12 @@ interface Props {
 	// article 전용: 검색엔진(네이버·구글) 날짜 인식용 og article 메타 (2026-09-02 네이버 노출 점검)
 	publishedTime?: Date;
 	modifiedTime?: Date;
+	// 색인 제외(2026-09-10). 페이지네이션처럼 검색 가치가 없는데 노출만 먹는 URL에 쓴다.
+	//   follow 는 남겨 링크 신호는 개별 글로 계속 흐르게 한다.
+	noindex?: boolean;
 }
 
-const { title, description, image = FallbackImage, imageUrl, canonicalPath, type = 'website', publishedTime, modifiedTime } = Astro.props;
+const { title, description, image = FallbackImage, imageUrl, canonicalPath, type = 'website', publishedTime, modifiedTime, noindex = false } = Astro.props;
 const canonicalURL = new URL(canonicalPath ?? Astro.url.pathname, Astro.site);
 const ogImage = imageUrl ?? new URL(image.src, Astro.url).href;
 ---
@@ -50,6 +53,7 @@ const ogImage = imageUrl ?? new URL(image.src, Astro.url).href;
 
 <!-- Canonical URL -->
 <link rel="canonical" href={canonicalURL} />
+{noindex && <meta name="robots" content="noindex, follow" />}
 
 <!-- Primary Meta Tags -->
 <title>{title}</title>

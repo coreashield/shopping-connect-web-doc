@@ -95,6 +95,10 @@ export default defineConfig({
 	integrations: [
 		mdx(),
 		sitemap({
+			// /blog/2/ 이후 페이지네이션은 2026-09-10부터 noindex 다. 색인하지 말라고
+			//   해놓고 사이트맵으로 제출하면 서로 어긋난 신호라 여기서도 뺀다.
+			//   /blog/ 1페이지는 슬러그에 숫자가 없어 그대로 남는다.
+			filter: (page) => !/\/blog\/\d+\/?$/.test(page),
 			serialize(item) {
 				// 토픽 허브 슬러그는 한글이라 사이트맵에 퍼센트 인코딩되어 들어온다.
 				//   맵 키는 디코딩된 한글이므로 양쪽 다 시도해야 매칭된다.

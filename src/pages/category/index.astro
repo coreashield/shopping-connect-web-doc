@@ -9,8 +9,9 @@ import { SITE_TITLE } from '../../consts';
 const posts = await getPosts();
 const cats = categoryList(posts);
 const hubs = topicHubs(posts, 15);
-const title = `카테고리 | ${SITE_TITLE}`;
-const description = '쇼핑로그 추천 글을 카테고리별로 모아 보세요 — 식품, 디지털/가전, 패션, 생활/건강 등.';
+// 2026-09-10: 제목이 "카테고리" 한 단어라 검색결과에서 정보량이 없었다. 개수와 구성 카테고리를 적는다.
+const title = `카테고리 ${cats.length}개 · 가격 비교 허브 ${hubs.length}개 | ${SITE_TITLE}`;
+const description = `${SITE_TITLE}의 상품 추천 글을 카테고리 ${cats.length}개와 주제별 가격 비교 허브 ${hubs.length}개로 나눠 정리했습니다. ${cats.slice(0, 4).map((c: any) => c.name).join(', ')} 등에서 가격과 후기를 비교해 보세요.`;
 ---
 
 <!doctype html>
