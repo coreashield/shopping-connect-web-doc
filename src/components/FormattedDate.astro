@@ -8,10 +8,12 @@ const { date } = Astro.props;
 
 <time datetime={date.toISOString()}>
 	{
-		date.toLocaleDateString('en-us', {
+		// 한국어 페이지에 영문 날짜("Sep 27, 2026")가 섞여 있던 것을 한국어로 (2026-09-28)
+		date.toLocaleDateString('ko-KR', {
 			year: 'numeric',
-			month: 'short',
+			month: 'long',
 			day: 'numeric',
+			timeZone: 'Asia/Seoul',
 		})
 	}
 </time>

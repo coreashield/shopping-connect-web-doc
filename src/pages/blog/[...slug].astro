@@ -3,6 +3,7 @@ import { type CollectionEntry, render } from 'astro:content';
 import { getPosts } from '../../lib/site';
 import BlogPost from '../../layouts/BlogPost.astro';
 import { topCategory, subPath, hubForPost } from '../../lib/categories';
+import { compareForPost } from '../../lib/compare';
 
 export async function getStaticPaths() {
 	const posts = await getPosts();
@@ -18,7 +19,8 @@ const { Content, headings } = await render(post);
 
 // 관련 글 (토픽 클러스터 — 2026 SEO: 같은 2단계 분류(진짜 같은 주제) 우선 → 같은 대분류 → 나머지).
 //   같은 주제 글끼리 촘촘히 링크해야 구글이 클러스터로 인식하고 색인·랭킹이 붙는다.
-const all = (await getPosts()).filter((p) => p.id !== post.id);
+const posts = await getPosts();
+const all = posts.filter((p) => p.id !== post.id);
 const byDate = (a: CollectionEntry<'blog'>, b: CollectionEntry<'blog'>) =>
 	b.data.pubDate.valueOf() - a.data.pubDate.valueOf();
 const sub = subPath(post.data.category);
@@ -29,6 +31,8 @@ const rest = all.filter((p) => !sameSub.includes(p) && !sameTop.includes(p)).sor
 const relatedPosts = [...sameSub, ...sameTop, ...rest].slice(0, 6);
 // 이 글이 속한 토픽 허브(필러) — 글에서 허브로 링크(양방향 클러스터).
 const hub = hubForPost(post);
+// 같은 분류 가격 비교 — 글마다 고유한 실데이터(가격 순위·중간값·비교표). 요약 문단과 본문 아래 표에 쓴다
+const comparison = compareForPost(post, posts);
 
 // 같은 상품(productId)에 글이 여러 개면 최신 글을 대표로 삼아 canonical을 모은다.
 //   재발행으로 234개 상품에 중복 글이 생겼고, 각자 자기를 canonical해 신호가 쪼개져 있었다.
@@ -52,6 +56,6 @@ if (pid) {
 }
 ---
 
-<BlogPost {...post.data} relatedPosts={relatedPosts} hub={hub} headings={headings} canonicalPath={canonicalPath}>
+<BlogPost {...post.data} relatedPosts={relatedPosts} hub={hub} comparison={comparison} headings={headings} canonicalPath={canonicalPath}>
 	<Content />
 </BlogPost>

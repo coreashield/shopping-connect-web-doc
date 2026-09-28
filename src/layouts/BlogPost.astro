@@ -9,18 +9,23 @@ import Header from '../components/Header.astro';
 import { categorySlug, topCategory } from '../lib/categories';
 import { AUTHOR_DISPLAY_NAME, SITE_TITLE } from '../consts';
 import { keyAnswer } from '../lib/summary';
+import type { Comparison } from '../lib/compare';
 
 type Props = CollectionEntry<'blog'>['data'] & {
 	relatedPosts?: CollectionEntry<'blog'>[];
 	hub?: { sub: string; slug: string } | null;
+	comparison?: Comparison | null;
 	canonicalPath?: string;
 };
 
-const { title, description, summary, pubDate, updatedDate, heroImage, category, relatedPosts = [], hub = null,
+const { title, description, summary, pubDate, updatedDate, heroImage, category, relatedPosts = [], hub = null, comparison = null,
 	canonicalPath, affiliateUrl, productStore, rating, reviewCount, priceCheckedAt, saleStatus, productId, productName, productPrice, headings = [] } = Astro.props;
 const catName = topCategory(category);
 // GEO: 요약 문단 = 저장된 summary(정의·핵심·장점·대상) + 렌더 시점 가격·평점 문장(productPrice·rating·updatedDate 기준)
-const answer = keyAnswer(summary, { productPrice, rating, reviewCount, priceCheckedAt, saleStatus, productStore, pubDate, updatedDate });
+//   + 같은 분류 가격 순위 문장(2026-09-28): 판매 페이지에 없는, 이 사이트만 가진 비교 사실
+const answer = [keyAnswer(summary, { productPrice, rating, reviewCount, priceCheckedAt, saleStatus, productStore, pubDate, updatedDate }), comparison?.sentence]
+	.filter(Boolean).join(' ');
+const fmtWon = (n: number) => `${n.toLocaleString('ko-KR')}원`;
 const discontinued = saleStatus === 'discontinued';
 
 // 목차(ToC): h2/h3만 — 탐색·구글 점프링크·AI 답추출 유리 (CEO 결정 2026-07-06)
@@ -204,6 +209,16 @@ const imageUrl = rawImg ? new URL(rawImg, Astro.site).href : undefined;
 				line-height: 1.75;
 			}
 			.key-answer p { margin: 0; }
+			.compare { margin: 2.2em 0 1em; }
+			.compare h2 { margin-bottom: 0.3em; }
+			.compare-note { margin: 0 0 0.8em; font-size: 0.85rem; color: rgb(var(--gray)); }
+			.compare-wrap { overflow-x: auto; }
+			.compare table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+			.compare th, .compare td { padding: 0.55em 0.5em; border-bottom: 1px solid rgb(var(--gray-light)); text-align: left; vertical-align: top; }
+			.compare th { font-size: 0.8rem; color: rgb(var(--gray)); font-weight: 600; white-space: nowrap; }
+			.compare td.num { text-align: right; white-space: nowrap; }
+			.compare tr.current td { background: rgba(3, 199, 90, 0.08); font-weight: 600; }
+			.compare td a { color: rgb(var(--gray-dark)); }
 			.sold-out { margin: 0 0 1.4em; padding: 0.8em 1em; border: 1px dashed rgb(var(--gray)); border-radius: 10px; font-size: 0.95rem; }
 			.toc {
 				margin: 1.5em 0;
@@ -245,7 +260,7 @@ const imageUrl = rawImg ? new URL(rawImg, Astro.site).href : undefined;
 							{
 								updatedDate && (
 									<div class="last-updated-on">
-										Last updated on <FormattedDate date={updatedDate} />
+										최종 수정 <FormattedDate date={updatedDate} />
 									</div>
 								)
 							}
@@ -297,6 +312,34 @@ const imageUrl = rawImg ? new URL(rawImg, Astro.site).href : undefined;
 						</nav>
 					)}
 					<slot />
+					{comparison && (
+						<section class="compare" aria-labelledby="compare-title">
+							<h2 id="compare-title">{comparison.label} 가격 비교</h2>
+							<p class="compare-note">
+								쇼핑로그가 정리한 {comparison.label} 상품 {comparison.groupSize}개 중 이 상품과 가격대가 가까운 상품입니다.
+								분류 중간값 {fmtWon(comparison.median)} · 최저 {fmtWon(comparison.min)} · 최고 {fmtWon(comparison.max)}.
+								가격은 기준일의 판매가이며 현재 가격은 판매처에서 확인하세요.
+							</p>
+							<div class="compare-wrap">
+								<table>
+									<thead>
+										<tr><th scope="col">상품</th><th scope="col">판매처</th><th scope="col">판매가</th><th scope="col">평점</th><th scope="col">가격 기준일</th></tr>
+									</thead>
+									<tbody>
+										{comparison.rows.map((r) => (
+											<tr class={r.current ? 'current' : ''}>
+												<td>{r.current ? <>{r.name} <small>(이 글)</small></> : <a href={`/blog/${r.id}/`}>{r.name}</a>}</td>
+												<td>{r.store ?? '-'}</td>
+												<td class="num">{fmtWon(r.price)}</td>
+												<td class="num">{r.rating ? r.rating.toFixed(1) : '-'}</td>
+												<td class="num">{r.checkedAt ?? '-'}</td>
+											</tr>
+										))}
+									</tbody>
+								</table>
+							</div>
+						</section>
+					)}
 					{affiliateUrl && !discontinued && (
 						<div class="buy-cta buy-cta-bottom">
 							<a class="buy-btn" href={buyHref} target="_blank" rel="nofollow sponsored noopener">
