@@ -7,6 +7,7 @@ import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import { defineConfig, fontProviders } from 'astro/config';
 import remarkDiscontinued from './src/lib/remark-discontinued.mjs';
+import remarkFaq from './src/lib/remark-faq.mjs';
 
 // 사이트맵 <lastmod>용 URL→최종수정일 맵.
 // 글이 재발행·수정되는 사이트라 lastmod가 없으면 구글이 재크롤 우선순위를 못 정한다.
@@ -90,7 +91,8 @@ export default defineConfig({
 	site: SITE_BASE,
 	markdown: {
 		// 판매 종료 글의 본문 구매 링크 제거 (src/lib/remark-discontinued.mjs)
-		remarkPlugins: [remarkDiscontinued],
+		// FAQ 섹션을 H2 + 질문별 H3 로 (src/lib/remark-faq.mjs)
+		remarkPlugins: [remarkDiscontinued, remarkFaq],
 	},
 	integrations: [
 		mdx(),

@@ -4,6 +4,7 @@ import { getPosts } from '../../lib/site';
 import BlogPost from '../../layouts/BlogPost.astro';
 import { topCategory, subPath, hubForPost } from '../../lib/categories';
 import { compareForPost } from '../../lib/compare';
+import { extractFaq } from '../../lib/faq';
 
 export async function getStaticPaths() {
 	const posts = await getPosts();
@@ -33,6 +34,8 @@ const relatedPosts = [...sameSub, ...sameTop, ...rest].slice(0, 6);
 const hub = hubForPost(post);
 // 같은 분류 가격 비교 — 글마다 고유한 실데이터(가격 순위·중간값·비교표). 요약 문단과 본문 아래 표에 쓴다
 const comparison = compareForPost(post, posts);
+// FAQ 질문-답 → FAQPage 구조화 데이터 (화면 구조는 remark-faq 가 같은 규칙으로 바꾼다)
+const faq = extractFaq(post.body);
 
 // 같은 상품(productId)에 글이 여러 개면 최신 글을 대표로 삼아 canonical을 모은다.
 //   재발행으로 234개 상품에 중복 글이 생겼고, 각자 자기를 canonical해 신호가 쪼개져 있었다.
@@ -56,6 +59,6 @@ if (pid) {
 }
 ---
 
-<BlogPost {...post.data} relatedPosts={relatedPosts} hub={hub} comparison={comparison} headings={headings} canonicalPath={canonicalPath}>
+<BlogPost {...post.data} relatedPosts={relatedPosts} hub={hub} comparison={comparison} faq={faq} headings={headings} canonicalPath={canonicalPath}>
 	<Content />
 </BlogPost>

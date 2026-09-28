@@ -10,21 +10,29 @@ import { categorySlug, topCategory } from '../lib/categories';
 import { AUTHOR_DISPLAY_NAME, SITE_TITLE } from '../consts';
 import { keyAnswer } from '../lib/summary';
 import type { Comparison } from '../lib/compare';
+import type { FaqItem } from '../lib/faq';
 
 type Props = CollectionEntry<'blog'>['data'] & {
 	relatedPosts?: CollectionEntry<'blog'>[];
 	hub?: { sub: string; slug: string } | null;
 	comparison?: Comparison | null;
+	faq?: FaqItem[];
 	canonicalPath?: string;
 };
 
-const { title, description, summary, pubDate, updatedDate, heroImage, category, relatedPosts = [], hub = null, comparison = null,
+const { title, description, summary, pubDate, updatedDate, heroImage, category, relatedPosts = [], hub = null, comparison = null, faq = [],
 	canonicalPath, affiliateUrl, productStore, rating, reviewCount, priceCheckedAt, saleStatus, productId, productName, productPrice, headings = [] } = Astro.props;
 const catName = topCategory(category);
 // GEO: 요약 문단 = 저장된 summary(정의·핵심·장점·대상) + 렌더 시점 가격·평점 문장(productPrice·rating·updatedDate 기준)
 //   + 같은 분류 가격 순위 문장(2026-09-28): 판매 페이지에 없는, 이 사이트만 가진 비교 사실
 const answer = [keyAnswer(summary, { productPrice, rating, reviewCount, priceCheckedAt, saleStatus, productStore, pubDate, updatedDate }), comparison?.sentence]
 	.filter(Boolean).join(' ');
+// FAQPage: 본문에 실제로 보이는 질문-답만. 2개 미만이면 넣지 않는다
+const faqLd = faq.length >= 2 ? {
+	'@context': 'https://schema.org',
+	'@type': 'FAQPage',
+	mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.question, acceptedAnswer: { '@type': 'Answer', text: f.answer } })),
+} : null;
 const fmtWon = (n: number) => `${n.toLocaleString('ko-KR')}원`;
 const discontinued = saleStatus === 'discontinued';
 
@@ -301,6 +309,7 @@ const imageUrl = rawImg ? new URL(rawImg, Astro.site).href : undefined;
 					)}
 					{/* 상품 글에만 Product 노드. 소개 페이지 등 일반 글에 붙으면 스키마 오류(가짜 상품)가 된다 */}
 					{(productName || affiliateUrl) && <script type="application/ld+json" set:html={JSON.stringify(productLd)} />}
+					{faqLd && <script type="application/ld+json" set:html={JSON.stringify(faqLd)} />}
 					{toc.length >= 3 && (
 						<nav class="toc" aria-label="목차">
 							<p class="toc-title">📑 목차</p>
