@@ -43,7 +43,8 @@ function sitemapUrls(host) {
 			out.push({ url: m[1], lastmod: m[2] ?? null });
 		}
 	}
-	return out.filter((u) => u.url.includes(host));
+	// includes 로 비교하면 host=shopping-log.com 에 digital./food. 서브도메인 URL 이 섞인다 (2026-09-28)
+	return out.filter((u) => new URL(u.url).host === host);
 }
 
 async function submit(host, key, urls, dry) {
