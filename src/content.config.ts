@@ -27,6 +27,7 @@ const blog = defineCollection({
 			reviewCount: z.number().int().optional(),        // 가격 갱신 스크립트(web_doc_price_sync)가 채움
 			priceCheckedAt: z.string().optional(),            // 가격·평점 자료 시점(YYYY-MM-DD). 렌더 문장의 기준 연월에 사용
 			saleStatus: z.enum(['on_sale', 'discontinued']).optional(), // 직접 확인 결과. discontinued = 판매처 상품 페이지 삭제
+			contentRefreshedAt: z.string().optional(),       // 발행기 --refresh 가 본문을 다시 쓴 날(YYYY-MM-DD, 9/28~)
 			tags: z.array(z.string()).optional(),
 		}),
 });

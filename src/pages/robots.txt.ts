@@ -11,6 +11,6 @@ const ALLOW = [
 
 export const GET: APIRoute = () =>
 	new Response(
-		ALLOW.map((ua) => `User-agent: ${ua}\nAllow: /\n`).join('\n') + `\nSitemap: ${SITE_URL}/sitemap-index.xml\n`,
+		ALLOW.map((ua) => `User-agent: ${ua}\nAllow: /\n`).join('\n') + `\nSitemap: ${SITE_URL}/sitemap-index.xml\nSitemap: ${SITE_URL}/sitemap-google.xml\n`,   // google: 구글 색인 대상만 (9/29)
 		{ headers: { 'Content-Type': 'text/plain; charset=utf-8' } },
 	);

@@ -17,10 +17,11 @@ type Props = CollectionEntry<'blog'>['data'] & {
 	hub?: { sub: string; slug: string } | null;
 	comparison?: Comparison | null;
 	faq?: FaqItem[];
+	googleNoindex?: boolean;
 	canonicalPath?: string;
 };
 
-const { title, description, summary, pubDate, updatedDate, heroImage, category, relatedPosts = [], hub = null, comparison = null, faq = [],
+const { title, description, summary, pubDate, updatedDate, heroImage, category, relatedPosts = [], hub = null, comparison = null, faq = [], googleNoindex = false,
 	canonicalPath, affiliateUrl, productStore, rating, reviewCount, priceCheckedAt, saleStatus, productId, productName, productPrice, headings = [] } = Astro.props;
 const catName = topCategory(category);
 // GEO: 요약 문단 = 저장된 summary(정의·핵심·장점·대상) + 렌더 시점 가격·평점 문장(productPrice·rating·updatedDate 기준)
@@ -66,7 +67,7 @@ const imageUrl = rawImg ? new URL(rawImg, Astro.site).href : undefined;
 
 <html lang="ko">
 	<head>
-		<BaseHead title={title} description={description} type="article" imageUrl={imageUrl} canonicalPath={canonicalPath} publishedTime={pubDate} modifiedTime={updatedDate} />
+		<BaseHead title={title} description={description} type="article" imageUrl={imageUrl} canonicalPath={canonicalPath} publishedTime={pubDate} modifiedTime={updatedDate} googleNoindex={googleNoindex} />
 		<SeoSchema
 			title={title}
 			description={description}

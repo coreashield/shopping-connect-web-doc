@@ -5,6 +5,7 @@ import BlogPost from '../../layouts/BlogPost.astro';
 import { topCategory, subPath, hubForPost } from '../../lib/categories';
 import { compareForPost } from '../../lib/compare';
 import { extractFaq } from '../../lib/faq';
+import { isGoogleIndexable } from '../../lib/google-index';
 
 export async function getStaticPaths() {
 	const posts = await getPosts();
@@ -36,6 +37,8 @@ const hub = hubForPost(post);
 const comparison = compareForPost(post, posts);
 // FAQ 질문-답 → FAQPage 구조화 데이터 (화면 구조는 remark-faq 가 같은 규칙으로 바꾼다)
 const faq = extractFaq(post.body);
+// 구글 전용 noindex: 이미 색인된 URL·새 형식 글이 아니면 구글 크롤 대상에서 뺀다(네이버는 그대로)
+const googleNoindex = !isGoogleIndexable(new URL(`/blog/${post.id}/`, Astro.site).href, post.body);
 
 // 같은 상품(productId)에 글이 여러 개면 최신 글을 대표로 삼아 canonical을 모은다.
 //   재발행으로 234개 상품에 중복 글이 생겼고, 각자 자기를 canonical해 신호가 쪼개져 있었다.
@@ -59,6 +62,6 @@ if (pid) {
 }
 ---
 
-<BlogPost {...post.data} relatedPosts={relatedPosts} hub={hub} comparison={comparison} faq={faq} headings={headings} canonicalPath={canonicalPath}>
+<BlogPost {...post.data} relatedPosts={relatedPosts} hub={hub} comparison={comparison} faq={faq} googleNoindex={googleNoindex} headings={headings} canonicalPath={canonicalPath}>
 	<Content />
 </BlogPost>
