@@ -361,17 +361,8 @@ const imageUrl = rawImg ? new URL(rawImg, Astro.site).href : undefined;
 					{/* 상품 글에만 Product 노드. 소개 페이지 등 일반 글에 붙으면 스키마 오류(가짜 상품)가 된다 */}
 					{(productName || affiliateUrl) && <script type="application/ld+json" set:html={JSON.stringify(productLd)} />}
 					{faqLd && <script type="application/ld+json" set:html={JSON.stringify(faqLd)} />}
-					{toc.length >= 3 && (
-						<nav class="toc" aria-label="목차">
-							<p class="toc-title">📑 목차</p>
-							<ul>
-								{toc.map((h: any) => (
-									<li class={h.depth === 3 ? 'toc-sub' : ''}><a href={`#${h.slug}`}>{h.text}</a></li>
-								))}
-							</ul>
-						</nav>
-					)}
-					<slot />
+					{/* 가격 비교표를 본문 앞으로 (10/3): 비교형 콘텐츠가 단일 리뷰보다 구매 클릭이 많다는 업계 분석과,
+					    이 표가 판매 페이지에 없는 이 사이트만의 정보라는 점. 판단에 필요한 숫자를 스크롤 전에 준다 */}
 					{comparison && (
 						<section class="compare" aria-labelledby="compare-title">
 							<h2 id="compare-title">{comparison.label} 가격 비교</h2>
@@ -400,6 +391,17 @@ const imageUrl = rawImg ? new URL(rawImg, Astro.site).href : undefined;
 							</div>
 						</section>
 					)}
+					{toc.length >= 3 && (
+						<nav class="toc" aria-label="목차">
+							<p class="toc-title">📑 목차</p>
+							<ul>
+								{toc.map((h: any) => (
+									<li class={h.depth === 3 ? 'toc-sub' : ''}><a href={`#${h.slug}`}>{h.text}</a></li>
+								))}
+							</ul>
+						</nav>
+					)}
+					<slot />
 					{affiliateUrl && !discontinued && (
 						<div class="buy-cta buy-cta-bottom" id="buy-bottom">
 							<a class="buy-btn" href={buyHref} target="_blank" rel="nofollow sponsored noopener">
