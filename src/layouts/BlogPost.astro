@@ -98,6 +98,9 @@ const imageUrl = rawImg ? new URL(rawImg, Astro.site).href : undefined;
 			.hero-image {
 				width: 100%;
 			}
+			/* 본문 소제목: 전역 h2(2.44em)가 모바일에서 질문형 소제목 한 줄로 화면 절반을 먹었다(10/3) */
+			.prose :global(h2) { font-size: clamp(1.3rem, 5.4vw, 1.9rem); line-height: 1.35; word-break: keep-all; margin-top: 1.6em; }
+			.prose :global(h3) { font-size: clamp(1.1rem, 4.6vw, 1.45rem); line-height: 1.4; word-break: keep-all; }
 			.hero-image { margin: 0 0 1.4em; }
 			.hero-image img {
 				display: block;

@@ -40,6 +40,8 @@ export function priceSentence(f: PriceFacts): string {
 
 /** 저장된 summary + 렌더 시점 가격 문장 → 화면·abstract 에 쓰는 완성 문단 */
 export function keyAnswer(summary: string | undefined, f: PriceFacts): string {
-	const parts = [summary?.trim(), priceSentence(f)].filter(Boolean);
+	// 생성 요약의 "**핵심:** : …" 이중 콜론이 "핵심은 : …"으로 남는 글이 있다(10/3) — 렌더 시점에 조사 뒤 콜론을 지운다
+	const clean = summary?.trim().replace(/(은|는|이|가)\s*:\s*/g, '$1 ').replace(/\s:\s/g, ' ');
+	const parts = [clean, priceSentence(f)].filter(Boolean);
 	return parts.join(' ');
 }
