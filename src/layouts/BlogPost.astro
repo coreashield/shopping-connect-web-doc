@@ -101,6 +101,17 @@ const imageUrl = rawImg ? new URL(rawImg, Astro.site).href : undefined;
 			/* 본문 소제목: 전역 h2(2.44em)가 모바일에서 질문형 소제목 한 줄로 화면 절반을 먹었다(10/3) */
 			.prose :global(h2) { font-size: clamp(1.3rem, 5.4vw, 1.9rem); line-height: 1.35; word-break: keep-all; margin-top: 1.6em; }
 			.prose :global(h3) { font-size: clamp(1.1rem, 4.6vw, 1.45rem); line-height: 1.4; word-break: keep-all; }
+			/* 10/3 대표 지시 "강조할 부분은 색·크기, 내용이 바뀌면 줄바꿈": 소제목 위 구분선, 판단 목록 색 상자, 굵게 = 형광펜 */
+			.prose :global(h2) { padding-top: 1.1em; border-top: 1px solid rgba(var(--gray), 0.2); }
+			.prose :global(p.fit-title) { margin: 1.4em 0 0; padding: 0.7em 1em 0.2em; border-radius: 12px 12px 0 0; font-size: 1.08rem; }
+			.prose :global(p.fit-title strong) { background: none; }
+			.prose :global(ul.fit-list) { margin: 0 0 1.2em; padding: 0.3em 1em 0.8em 2.1em; border-radius: 0 0 12px 12px; }
+			.prose :global(.fit-yes) { background: rgba(3, 199, 90, 0.08); }
+			.prose :global(p.fit-yes) { color: #03873d; }
+			.prose :global(.fit-no) { background: rgba(232, 121, 12, 0.08); }
+			.prose :global(p.fit-no) { color: #b85c00; }
+			.prose :global(ul.fit-list li) { margin: 0.35em 0; }
+			.prose :global(strong) { background: linear-gradient(transparent 62%, rgba(255, 214, 0, 0.45) 62%); }
 			.hero-image { margin: 0 0 1.4em; }
 			.hero-image img {
 				display: block;
