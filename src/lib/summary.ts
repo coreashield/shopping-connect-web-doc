@@ -18,7 +18,8 @@ const yearMonth = (d: Date) => `${d.getFullYear()}년 ${d.getMonth() + 1}월`;
 
 export function priceSentence(f: PriceFacts): string {
 	const price = f.productPrice && f.productPrice > 0 ? f.productPrice : 0;
-	const rating = f.rating && f.rating > 0 ? f.rating : 0;
+	// 정수 평점(5·4)은 수집 기본값으로 보여 신뢰를 깎는다 — 소수점 실측값만 문장에 쓴다(10/3, BlogPost 구매 카드와 같은 기준)
+	const rating = f.rating && f.rating > 0 && !Number.isInteger(f.rating) ? f.rating : 0;
 	// 기준 시점 우선순위: 가격 확인일 > 수정일 > 발행일
 	const checked = f.priceCheckedAt && /^\d{4}-\d{2}-\d{2}/.test(f.priceCheckedAt) ? new Date(f.priceCheckedAt) : null;
 	const ym = yearMonth(checked ?? f.updatedDate ?? f.pubDate);

@@ -49,4 +49,11 @@ const showTravel = !SITE_CATEGORY;
 		text-decoration: none;
 		border-bottom-color: var(--accent);
 	}
+	/* 모바일: 로고가 두 줄로 깨지고 메뉴가 줄바꿈돼 헤더가 첫 화면 1/6을 먹었다(10/3) */
+	h2 { white-space: nowrap; }
+	@media (max-width: 600px) {
+		header { padding: 0 0.6em; }
+		.internal-links { display: flex; overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
+		nav a { padding: 0.9em 0.45em; font-size: 0.92em; }
+	}
 </style>
