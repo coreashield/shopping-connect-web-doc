@@ -15,6 +15,7 @@ export interface CompareRow {
 	rating?: number;
 	checkedAt?: string;
 	current: boolean;
+	buyHref?: string;     // 다른 상품 행의 구매 링크(/go/ 추적) — "이 상품이 안 맞으면" 다른 선택지로 바로 (10/3)
 }
 
 export interface Comparison {
@@ -104,6 +105,9 @@ export function compareForPost(post: Post, posts: Post[]): Comparison | null {
 			id: p.id, name: shortName(p), store: p.data.productStore, price: p.data.productPrice!,
 			// 가격 확인일이 없으면 가격을 가져온 시점인 수정일·발행일 (요약 문장의 기준 연월과 같은 규칙)
 			rating: p.data.rating, checkedAt: p.data.priceCheckedAt ?? isoDay(p.data.updatedDate ?? p.data.pubDate), current,
+			buyHref: !current && p.data.affiliateUrl
+				? `/go/${encodeURIComponent(pidOf(p))}?u=${encodeURIComponent(p.data.affiliateUrl)}`
+				: undefined,
 		});
 		const rows = [toRow(post, true), ...near.map((p) => toRow(p, false))].sort((a, b) => a.price - b.price);
 

@@ -275,6 +275,8 @@ const imageUrl = rawImg ? new URL(rawImg, Astro.site).href : undefined;
 			.compare td.num { text-align: right; white-space: nowrap; }
 			.compare tr.current td { background: rgba(3, 199, 90, 0.08); font-weight: 600; }
 			.compare td a { color: rgb(var(--gray-dark)); }
+			.compare td a.alt-buy { display: inline-block; padding: 0.3em 0.6em; border-radius: 6px; background: rgba(3, 199, 90, 0.12); color: #03873d; font-weight: 700; text-decoration: none; white-space: nowrap; font-size: 0.82rem; }
+			.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 			.sold-out { margin: 0 0 1.4em; padding: 0.8em 1em; border: 1px dashed rgb(var(--gray)); border-radius: 10px; font-size: 0.95rem; }
 			.toc {
 				margin: 1.5em 0;
@@ -377,12 +379,12 @@ const imageUrl = rawImg ? new URL(rawImg, Astro.site).href : undefined;
 							<p class="compare-note">
 								쇼핑로그가 정리한 {comparison.label} 상품 {comparison.groupSize}개 중 이 상품과 가격대가 가까운 상품입니다.
 								분류 중간값 {fmtWon(comparison.median)} · 최저 {fmtWon(comparison.min)} · 최고 {fmtWon(comparison.max)}.
-								가격은 기준일의 판매가이며 현재 가격은 판매처에서 확인하세요.
+								가격은 기준일의 판매가이며 현재 가격은 판매처에서 확인하세요. 이 상품이 조건에 안 맞으면 다른 상품의 "가격 보기"로 바로 이동할 수 있습니다.
 							</p>
 							<div class="compare-wrap">
 								<table>
 									<thead>
-										<tr><th scope="col">상품</th><th scope="col">판매처</th><th scope="col">판매가</th><th scope="col">평점</th><th scope="col">가격 기준일</th></tr>
+										<tr><th scope="col">상품</th><th scope="col">판매처</th><th scope="col">판매가</th><th scope="col">평점</th><th scope="col">가격 기준일</th><th scope="col"><span class="sr-only">구매</span></th></tr>
 									</thead>
 									<tbody>
 										{comparison.rows.map((r) => (
@@ -392,6 +394,7 @@ const imageUrl = rawImg ? new URL(rawImg, Astro.site).href : undefined;
 												<td class="num">{fmtWon(r.price)}</td>
 												<td class="num">{r.rating ? r.rating.toFixed(1) : '-'}</td>
 												<td class="num">{r.checkedAt ?? '-'}</td>
+												<td class="num">{r.buyHref ? <a class="alt-buy" href={r.buyHref} target="_blank" rel="nofollow sponsored noopener">가격 보기</a> : null}</td>
 											</tr>
 										))}
 									</tbody>
