@@ -111,7 +111,9 @@ const imageUrl = rawImg ? new URL(rawImg, Astro.site).href : undefined;
 			.prose :global(.fit-no) { background: rgba(232, 121, 12, 0.08); }
 			.prose :global(p.fit-no) { color: #b85c00; }
 			.prose :global(ul.fit-list li) { margin: 0.35em 0; }
-			.prose :global(strong) { background: linear-gradient(transparent 62%, rgba(255, 214, 0, 0.45) 62%); }
+			/* 형광펜은 본문 문단 안 굵게만 — 목록 라벨·고지(인용)까지 칠하면 한 화면에 10곳이 넘어 강조가 사라진다(10/4 실측 12곳) */
+			.prose :global(p > strong) { background: linear-gradient(transparent 62%, rgba(255, 214, 0, 0.45) 62%); }
+			.prose :global(blockquote p > strong), .prose :global(p.fit-title > strong) { background: none; }
 			.hero-image { margin: 0 0 1.4em; }
 			.hero-image img {
 				display: block;
