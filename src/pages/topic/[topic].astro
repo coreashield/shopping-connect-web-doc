@@ -1,4 +1,5 @@
 ---
+import { primaryIds, pidOf } from '../../lib/canonical';
 import { getPosts } from '../../lib/site';
 import BaseHead from '../../components/BaseHead.astro';
 import Footer from '../../components/Footer.astro';
@@ -16,16 +17,11 @@ export async function getStaticPaths() {
 
 const { sub, posts: rawPosts } = Astro.props;
 // 10/5 진단: 같은 상품이 날짜만 다른 글로 여러 번 들어가 목록·ItemList 에 중복 행이 생겼다.
-//   상품 번호가 같으면 가장 최근 글 하나만 남긴다(번호 없는 옛 글은 그대로).
-const newestFirst = [...rawPosts].sort((a: any, b: any) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
-const seenPid = new Set();
-const posts = newestFirst.filter((p: any) => {
-	const pid = p.data.productId;
-	if (!pid) return true;
-	if (seenPid.has(pid)) return false;
-	seenPid.add(pid);
-	return true;
-});
+//   상품 번호가 같으면 **가장 먼저 쓴 글** 하나만 남긴다(10/5 대표 결정 — 글 페이지 canonical 과 같은 규칙).
+//   번호는 프론트매터 productId, 없으면 파일명(cat-pid-YYYYMMDD)에서.
+//   규칙: 네이버 노출 많은 글 → 먼저 쓴 글 (src/lib/canonical.ts)
+const firstOf = primaryIds(rawPosts as any[]);
+const posts = (rawPosts as any[]).filter((p: any) => { const pid = pidOf(p); return !pid || firstOf.get(pid) === p.id; });
 const count = posts.length;
 const fmtPrice = (n?: number) => (n && n > 0 ? n.toLocaleString('ko-KR') + '원' : '');
 

@@ -1,4 +1,5 @@
 ---
+import { primaryIds, pidOf } from '../../lib/canonical';
 import { getPosts, getGuides } from '../../lib/site';
 import BaseHead from '../../components/BaseHead.astro';
 import Footer from '../../components/Footer.astro';
@@ -17,14 +18,10 @@ export async function getStaticPaths() {
 
 const { name, posts: rawPosts } = Astro.props;
 // 10/5: 같은 상품이 날짜만 다른 글로 여러 번 있으면 최신 하나만(글 페이지 canonical·사이트맵과 같은 규칙)
-const seenPid = new Set();
-const posts = (rawPosts as any[]).filter((p) => {
-	const pid = p.data.productId ?? p.id.match(/-(\d{6,})-\d{8}$/)?.[1];
-	if (!pid) return true;
-	if (seenPid.has(pid)) return false;
-	seenPid.add(pid);
-	return true;
-});
+//   10/5 대표 결정: 남기는 글 = 같은 상품 중 **가장 먼저 쓴 글**(글 페이지 canonical 과 같은 규칙). 표시 순서는 그대로(최신순).
+//   규칙: 네이버 노출 많은 글 → 먼저 쓴 글 (src/lib/canonical.ts)
+const firstOf = primaryIds(rawPosts as any[]);
+const posts = (rawPosts as any[]).filter((p) => { const pid = pidOf(p); return !pid || firstOf.get(pid) === p.id; });
 // 10/5: 이 대분류의 비교 가이드를 맨 위에 — 목록 페이지가 노출 72%·CTR 0.03~0.14% 라, 누를 이유가 있는 입구를 먼저 보인다
 const guides = (await getGuides()).filter((g) => g.data.category.split('>')[0].trim() === name);
 

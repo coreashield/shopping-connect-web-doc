@@ -6,6 +6,7 @@ import { topCategory, subPath, hubForPost } from '../../lib/categories';
 import { compareForPost } from '../../lib/compare';
 import { extractFaq } from '../../lib/faq';
 import { isGoogleIndexable } from '../../lib/google-index';
+import { comparePrimary } from '../../lib/canonical';
 
 export async function getStaticPaths() {
 	const posts = await getPosts();
@@ -57,10 +58,11 @@ let canonicalPath: string | undefined;
 if (pid) {
 	const siblings = [post, ...all].filter((p) => pidOf(p) === pid);
 	if (siblings.length > 1) {
-		const primary = siblings.sort((a, b) => {
-			const d = byDate(a, b);
-			return d !== 0 ? d : a.id.localeCompare(b.id); // 날짜 동률이면 id로 결정적 선택
-		})[0];
+		// 🔁 2026-10-05 대표 결정: 대표 글 = **가장 먼저 쓴 글**(네이버가 이미 노출해 주는 주소).
+		//   전엔 최신 글이었는데, 8/17~ 재발행 글은 노출 0~5% 이고 노출은 첫 글이 받고 있었다(재발행 557글 중 첫 글 노출 70).
+		//   astro.config buildNonCanonicalSet·분류/토픽 목록 중복 제거와 같은 규칙으로 맞춘다.
+		//   규칙: 네이버 노출 많은 글 → 먼저 쓴 글 → id (src/lib/canonical.ts)
+		const primary = siblings.sort(comparePrimary)[0];
 		if (primary.id !== post.id) canonicalPath = `/blog/${primary.id}/`;
 	}
 }

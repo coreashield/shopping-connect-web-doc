@@ -87,12 +87,15 @@ function buildLastmodMap() {
 // 같은 상품 중복 글 사이트맵 제외 (2026-10-05 기술 진단: 표본 60개 중 22%가 최신 형제 글을 canonical 로
 //   가리키는데 사이트맵엔 그대로 남아 "색인해라/하지 마라" 신호가 엇갈렸다. 약 600+ URL).
 //   src/pages/blog/[...slug].astro 의 대표 글 선택과 **같은 규칙**: productId(없으면 파일명 cat-pid-YYYYMMDD) 묶음에서
-//   pubDate 최신 → 동률이면 id 사전순 첫 번째. 대표가 아닌 글만 뺀다(페이지·canonical 은 그대로).
+//   pubDate 가장 이른 글(10/5 대표 결정 — 네이버가 노출 주는 첫 글) → 동률이면 id 사전순. 대표가 아닌 글만 뺀다.
 //   301 은 _redirects 가 Pages 한도(2,000줄) 직전(1,872)이라 하지 않는다.
 function buildNonCanonicalSet() {
 	const B = SITE_BASE;
 	const dir = path.join(path.dirname(fileURLToPath(import.meta.url)), 'src/content/blog');
 	const groups = new Map();
+	// src/lib/canonical.ts 와 같은 규칙: 네이버 노출 많은 글 → 먼저 쓴 글 → id
+	let IMP = {};
+	try { IMP = JSON.parse(fs.readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)), 'src/data/naver_impressions.json'), 'utf8')).impressions || {}; } catch { /* 없으면 먼저 쓴 글 기준 */ }
 	let files = [];
 	try { files = fs.readdirSync(dir).filter((f) => f.endsWith('.md') || f.endsWith('.mdx')); } catch { return new Set(); }
 	for (const file of files) {
@@ -110,7 +113,7 @@ function buildNonCanonicalSet() {
 	const out = new Set();
 	for (const list of groups.values()) {
 		if (list.length < 2) continue;
-		list.sort((a, b) => (b.pub - a.pub) || a.id.localeCompare(b.id));
+		list.sort((a, b) => ((IMP[b.id] || 0) - (IMP[a.id] || 0)) || (a.pub - b.pub) || a.id.localeCompare(b.id));   // 10/5: 노출 많은 글 → 먼저 쓴 글
 		for (const x of list.slice(1)) out.add(`${B}/blog/${x.id}/`);
 	}
 	return out;
