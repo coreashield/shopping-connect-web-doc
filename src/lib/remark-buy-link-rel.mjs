@@ -7,6 +7,8 @@ export default function remarkBuyLinkRel() {
 	return (tree) => {
 		visit(tree, 'link', (node) => {
 			if (typeof node.url !== 'string' || !node.url.startsWith('/go/')) return;
+			// 10/5: 버튼 위치 측정 — 본문 링크는 pos=body (functions/go 가 slug#body 로 기록)
+			if (!/[?&]pos=/.test(node.url)) node.url += (node.url.includes('?') ? '&' : '?') + 'pos=body';
 			node.data = node.data || {};
 			node.data.hProperties = { ...(node.data.hProperties || {}), rel: 'nofollow sponsored noopener', target: '_blank' };
 		});

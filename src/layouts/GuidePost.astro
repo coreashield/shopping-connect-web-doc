@@ -8,16 +8,31 @@ import { SITE_URL } from '../lib/site';
 import { AUTHOR_NODE, ORGANIZATION } from '../consts';
 
 type Props = CollectionEntry<'guides'>['data'] & { slug: string };
-const { title, description, pubDate, updatedDate, category, query, related = [], heroImage, products, faq = [], slug } = Astro.props;
+const { title, description, pubDate, updatedDate, category, query, related = [], heroImage, products, faq = [], slug, verdict, picks = [], priceCheckedAt } = Astro.props;
 const url = `${SITE_URL}/guide/${slug}/`;
-const buyHref = (p: any) => `/go/${encodeURIComponent(p.productId)}?u=${encodeURIComponent(p.affiliateUrl)}`;
+// pos: 어느 버튼에서 눌렀는지(pick/table/card) — functions/go 가 slug#pos 로 기록. 제휴 URL(u=)은 그대로.
+const buyHref = (p: any, pos = 'card') => `/go/${encodeURIComponent(p.productId)}?u=${encodeURIComponent(p.affiliateUrl)}&pos=${pos}`;
+// ── 10/5 새 형식(소비자 심리 템플릿, claudedocs/CONSUMER_PSYCH_GUIDE_PAGES_20261005.md) ──
+//   첫 화면 = 고지 → 결론(BLUF) → 상황별 추천 ≤3(이유엔 숫자) → 비교표(단위가격 오름차순). verdict 가 있는 가이드만.
+//   버튼은 모든 행·카드가 같은 크기·색(공정위 다크패턴 '잘못된 계층구조' 회피). 가짜 긴급성·최저가 단정 없음.
+const isNew = !!verdict;
+const byId = new Map(products.map((p: any) => [p.productId, p]));
+const pickRows = (picks as any[]).map((pick) => ({ pick, p: byId.get(pick.productId) })).filter((x) => x.p);
+const hasUnit = products.filter((p: any) => p.unitPrice).length >= 2;
+const unitLabelAll = (products.find((p: any) => p.unitLabel) as any)?.unitLabel || '1개';
+const hasSpec = products.some((p: any) => p.spec);
+const unitText = (p: any) => (p.unitPrice ? `${p.unitLabel || '1개'}당 ${p.unitPrice.toLocaleString('ko-KR')}원` : '');
+const tableRows = [...products].sort((a: any, b: any) => (hasUnit ? (a.unitPrice || Infinity) - (b.unitPrice || Infinity) : a.price - b.price));
+const checked = priceCheckedAt || pubDate.toISOString().slice(0, 10);
+const checkedLabel = `${Number(checked.slice(5, 7))}월 ${Number(checked.slice(8, 10))}일`;
 const won = (n: number) => `${Math.round(n / 10000)}만원대`;
 const ld = [
 	{ '@context': 'https://schema.org', '@type': 'BlogPosting', headline: title, description, datePublished: pubDate.toISOString(), dateModified: (updatedDate ?? pubDate).toISOString(), mainEntityOfPage: url, image: heroImage, author: AUTHOR_NODE, publisher: ORGANIZATION },
-	{ '@context': 'https://schema.org', '@type': 'ItemList', name: title, itemListElement: products.map((p, i) => ({ '@type': 'ListItem', position: i + 1, item: { '@type': 'Product', name: p.name, image: p.image, brand: p.store ? { '@type': 'Brand', name: p.store } : undefined, offers: { '@type': 'Offer', price: p.price, priceCurrency: 'KRW', url: p.affiliateUrl }, ...(p.rating && p.reviewCount ? { aggregateRating: { '@type': 'AggregateRating', ratingValue: p.rating, reviewCount: p.reviewCount } } : {}) } })) },
+	// 10/5: 판매처 평점으로 만든 AggregateRating·제휴 URL 을 넣은 Product 는 구글 리뷰 스니펫 정책 위반 소지 → 이름+이 페이지 안 위치만 가리키는 목록으로.
+	{ '@context': 'https://schema.org', '@type': 'ItemList', name: title, numberOfItems: products.length, itemListElement: products.map((p, i) => ({ '@type': 'ListItem', position: i + 1, name: p.name, url: `${url}#p${i + 1}` })) },
 	...(faq.length ? [{ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) }] : []),
 ];
-const disclosure = '이 글에는 제휴 링크가 포함되어 있으며, 구매 시 일정 수수료를 받을 수 있습니다. 추천은 제휴 여부와 무관하게 작성합니다.';
+const disclosure = '이 글에는 네이버 쇼핑 커넥트 제휴 링크가 포함되어 있으며, 구매 시 일정 수수료를 받습니다. 추천은 제휴 여부와 무관하게 작성합니다.';
 ---
 
 <!doctype html>
@@ -40,6 +55,27 @@ const disclosure = '이 글에는 제휴 링크가 포함되어 있으며, 구�
 			.card a.buy { margin-top: auto; text-align: center; background: #03c75a; color: #fff; text-decoration: none; padding: .55em; border-radius: 6px; font-weight: 600; }
 			.body table { display: block; overflow-x: auto; border-collapse: collapse; font-size: .92em; }
 			.body th, .body td { border: 1px solid rgb(var(--gray-light)); padding: .45em .6em; vertical-align: top; }
+			.verdict { background: #f3faf6; border: 1px solid #cdebd9; border-radius: 10px; padding: .9em 1.1em; margin: 0 0 1.2em; font-size: 1.05em; line-height: 1.6; }
+			.verdict p { margin: 0; }
+			.picks { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: .8rem; margin: 0 0 1.6em; }
+			.pick { border: 1px solid rgb(var(--gray-light)); border-radius: 10px; padding: .8rem; display: flex; flex-direction: column; gap: .3em; }
+			.pick-label { font-size: .8em; font-weight: 700; color: #03a64a; }
+			.pick-name { font-weight: 600; line-height: 1.35; }
+			.pick-reason { font-size: .9em; color: rgb(var(--gray-dark)); }
+			.pick-price { font-size: .9em; color: rgb(var(--gray)); margin-bottom: .4em; }
+			.pick a.buy { margin-top: auto; text-align: center; background: #03c75a; color: #fff; text-decoration: none; padding: .55em; border-radius: 6px; font-weight: 600; }
+			.table-note { font-size: .85em; color: rgb(var(--gray)); margin: -.4em 0 .6em; }
+			.ctable-wrap { overflow-x: auto; margin: 0 0 2em; }
+			.ctable { border-collapse: collapse; font-size: .9em; min-width: 560px; width: 100%; }
+			.ctable th, .ctable td { border: 1px solid rgb(var(--gray-light)); padding: .45em .55em; vertical-align: middle; }
+			.ctable .num { text-align: right; white-space: nowrap; }
+			.ctable .tname { position: sticky; left: 0; background: #fff; min-width: 9em; }
+			.ctable a.tbuy { display: inline-block; white-space: nowrap; background: #03c75a; color: #fff; text-decoration: none; padding: .35em .7em; border-radius: 6px; font-weight: 600; font-size: .9em; }
+			.basis { font-size: .88em; color: rgb(var(--gray)); margin-top: 2em; }
+			.sticky-cta { display: none; }
+			@media (max-width: 720px) {
+				.sticky-cta { display: block; position: fixed; left: 12px; right: 12px; bottom: 12px; z-index: 20; text-align: center; background: #03c75a; color: #fff; padding: .8em; border-radius: 10px; font-weight: 700; text-decoration: none; box-shadow: 0 4px 14px rgba(0,0,0,.18); }
+			}
 			.faq details { border-bottom: 1px solid rgb(var(--gray-light)); padding: .6em 0; }
 			.faq summary { cursor: pointer; font-weight: 600; }
 		</style>
@@ -51,17 +87,54 @@ const disclosure = '이 글에는 제휴 링크가 포함되어 있으며, 구�
 				<h1>{title}</h1>
 				<p class="meta">{query} 비교 가이드 · {pubDate.toISOString().slice(0, 10)} 기준 · 상품 {products.length}개</p>
 				<p class="disclosure">{disclosure}</p>
-				{related.length > 0 && <div class="related">{related.map((r) => <span>{r}</span>)}</div>}
-				<section class="cards" aria-label="비교 상품">
-					{products.map((p) => (
-						<div class="card">
-							<img src={p.image} alt={p.name} loading="lazy" />
+				{/* 10/5: 검색어 칩("…내돈내산" 등) 화면 노출 제거 — 키워드 나열은 스팸 신호. 데이터(related)는 프론트매터에 그대로 둔다 */}
+				{isNew && (
+					<>
+						<section class="verdict" aria-label="결론"><p>{verdict}</p></section>
+						{pickRows.length > 0 && (
+							<section class="picks" aria-label="상황별 추천">
+								{pickRows.map(({ pick, p }) => (
+									<div class="pick">
+										<div class="pick-label">{pick.label}</div>
+										<div class="pick-name">{p.name}</div>
+										<div class="pick-reason">{pick.reason}</div>
+										<div class="pick-price">{p.price.toLocaleString('ko-KR')}원{unitText(p) ? ` · ${unitText(p)}` : ''}</div>
+										<a class="buy" href={buyHref(p, 'pick')} rel="nofollow sponsored noopener" target="_blank">네이버에서 현재 가격 보기</a>
+									</div>
+								))}
+							</section>
+						)}
+						<h2 id="compare-table">{query} {products.length}종 비교표</h2>
+						<p class="table-note">{hasUnit ? `${unitLabelAll}당 가격이 낮은 순` : '가격이 낮은 순'} · 가격은 {checkedLabel} 판매처 표시 기준(배송비 별도일 수 있음)</p>
+						<div class="ctable-wrap">
+							<table class="ctable">
+								<thead><tr><th>상품</th><th>가격</th>{hasUnit && <th>{unitLabelAll}당</th>}{hasSpec && <th>규격</th>}<th>판매처 평점</th><th></th></tr></thead>
+								<tbody>
+									{tableRows.map((p) => (
+										<tr id={`p${products.indexOf(p) + 1}`}>
+											<td class="tname">{p.name}</td>
+											<td class="num">{p.price.toLocaleString('ko-KR')}원</td>
+											{hasUnit && <td class="num">{p.unitPrice ? `${p.unitPrice.toLocaleString('ko-KR')}원` : '-'}</td>}
+											{hasSpec && <td>{p.spec || '-'}</td>}
+											<td class="num">{p.rating && !Number.isInteger(p.rating) ? `${p.rating.toFixed(1)}${p.reviewCount ? ` (${p.reviewCount.toLocaleString('ko-KR')})` : ''}` : '-'}</td>
+											<td><a class="tbuy" href={buyHref(p, 'table')} rel="nofollow sponsored noopener" target="_blank">가격 보기</a></td>
+										</tr>
+									))}
+								</tbody>
+							</table>
+						</div>
+					</>
+				)}
+				{!isNew && <section class="cards" aria-label="비교 상품">
+					{products.map((p, i) => (
+						<div class="card" id={`p${i + 1}`}>
+							<img src={p.image} alt={p.name} loading="lazy" decoding="async" width="300" height="300" />
 							<div class="name">{p.name}</div>
 							<div class="sub">{won(p.price)}{p.rating ? ` · 평점 ${p.rating}` : ''}{p.reviewCount ? ` · 리뷰 ${p.reviewCount.toLocaleString()}` : ''}</div>
-							<a class="buy" href={buyHref(p)} rel="nofollow sponsored noopener" target="_blank">가격·옵션 보기</a>
+							<a class="buy" href={buyHref(p, 'card')} rel="nofollow sponsored noopener" target="_blank">가격·옵션 보기</a>
 						</div>
 					))}
-				</section>
+				</section>}
 				<div class="body"><slot /></div>
 				{faq.length > 0 && (
 					<section class="faq">
@@ -69,7 +142,16 @@ const disclosure = '이 글에는 제휴 링크가 포함되어 있으며, 구�
 						{faq.map((f) => <details><summary>{f.q}</summary><p>{f.a}</p></details>)}
 					</section>
 				)}
+				{isNew && (
+					<section class="basis" aria-label="가격 기준과 출처">
+						<h2>가격 기준과 출처</h2>
+						<p>가격·평점·리뷰 수는 {checkedLabel} 네이버 쇼핑 판매처 표시를 옮긴 것이며, 이후 바뀔 수 있습니다. 배송비·할인·옵션가는 판매처 페이지에서 확인하세요.</p>
+						{hasUnit && <p>{unitLabelAll}당 가격 = 판매가 ÷ 상품명에 적힌 총 수량(묶음 수 × 1개당 수량). 수량 표기가 없는 상품은 '-'로 둡니다.</p>}
+						<p>평점은 판매처 평점이며, 소수점 없이 표시된 값(5.0·4.0 등)은 기본값일 수 있어 표시하지 않습니다. 이 사이트는 상품을 직접 사용해 평가하지 않습니다.</p>
+					</section>
+				)}
 			</article>
+			{isNew && <a class="sticky-cta" href="#compare-table">{products.length}종 비교표 보기</a>}
 		</main>
 		<Footer />
 	</body>

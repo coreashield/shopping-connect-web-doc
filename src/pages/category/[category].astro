@@ -1,5 +1,5 @@
 ---
-import { getPosts } from '../../lib/site';
+import { getPosts, getGuides } from '../../lib/site';
 import BaseHead from '../../components/BaseHead.astro';
 import Footer from '../../components/Footer.astro';
 import FormattedDate from '../../components/FormattedDate.astro';
@@ -15,7 +15,18 @@ export async function getStaticPaths() {
 	}));
 }
 
-const { name, posts } = Astro.props;
+const { name, posts: rawPosts } = Astro.props;
+// 10/5: 같은 상품이 날짜만 다른 글로 여러 번 있으면 최신 하나만(글 페이지 canonical·사이트맵과 같은 규칙)
+const seenPid = new Set();
+const posts = (rawPosts as any[]).filter((p) => {
+	const pid = p.data.productId ?? p.id.match(/-(\d{6,})-\d{8}$/)?.[1];
+	if (!pid) return true;
+	if (seenPid.has(pid)) return false;
+	seenPid.add(pid);
+	return true;
+});
+// 10/5: 이 대분류의 비교 가이드를 맨 위에 — 목록 페이지가 노출 72%·CTR 0.03~0.14% 라, 누를 이유가 있는 입구를 먼저 보인다
+const guides = (await getGuides()).filter((g) => g.data.category.split('>')[0].trim() === name);
 
 // 2026-09-10 네이버 실측: 카테고리 페이지 CTR 0.03~0.3%. 같은 목록형인데 가격 범위를 제목·설명에
 //   넣은 토픽 허브는 0.18%로 더 나았다. 카테고리도 같은 방식으로 "무엇을 얻는 페이지인지"를 적는다.
@@ -56,7 +67,13 @@ const description = prices.length
 				margin: 1.5rem 0 0 0;
 				padding: 0;
 			}
+			.cat-guides { background: #f3faf6; border: 1px solid #cdebd9; border-radius: 10px; padding: .6rem 1rem; margin: 1rem 0 1.5rem; }
+			.cat-guides h2, .all-head { font-size: 1.15rem; margin: .4rem 0; }
+			.cat-guides ul { margin: .3rem 0; padding-left: 1.1rem; }
+			.cat-guides li { padding: .25rem 0; }
 			ul.posts li {
+				content-visibility: auto;
+				contain-intrinsic-size: auto 2.6rem;
 				padding: 0.6rem 0;
 				border-bottom: 1px solid rgb(var(--gray-light));
 			}
@@ -85,6 +102,15 @@ const description = prices.length
 				<h1>{name} <span class="count">{posts.length}개</span></h1>
 				<a class="back" href="/category/">← 전체 카테고리 보기</a>
 			</div>
+			{guides.length > 0 && (
+				<section class="cat-guides" aria-label="비교 가이드">
+					<h2>{name} 비교 가이드</h2>
+					<ul>
+						{guides.map((g) => <li><a href={`/guide/${g.id}/`}>{g.data.title}</a></li>)}
+					</ul>
+				</section>
+			)}
+			<h2 class="all-head">{name} 상품 글 전체</h2>
 			<ul class="posts">
 				{
 					posts.map((post) => (

@@ -48,8 +48,15 @@ const guides = defineCollection({
 			productId: z.string(), name: z.string(), price: z.number(), image: z.string().url(),
 			affiliateUrl: z.string().url(), naverUrl: z.string().url().optional(),
 			rating: z.number().optional(), reviewCount: z.number().optional(), store: z.string().optional(),
+			// 10/5 소비자 심리 템플릿: 단위가격은 생성기가 상품명에서 코드로 계산(AI 가 숫자를 만들지 않게)
+			unitPrice: z.number().optional(), unitLabel: z.string().optional(),   // 예: 34, "1매"
+			spec: z.string().optional(),                                            // 핵심 규격 한 줄(상품명·판매처 표시에서)
 		})),
 		faq: z.array(z.object({ q: z.string(), a: z.string() })).optional(),
+		// 10/5 새 형식 가이드(있으면 첫 화면 = 고지 → 결론 → 상황별 추천 ≤3 → 비교표). 없으면 옛 배치 그대로.
+		verdict: z.string().optional(),
+		picks: z.array(z.object({ productId: z.string(), label: z.string(), reason: z.string() })).max(3).optional(),
+		priceCheckedAt: z.string().optional(),
 	}),
 });
 

@@ -1,0 +1,12 @@
+# Cloudflare Pages 응답 헤더 (2026-10-05, SEO 기술 진단 반영)
+# - 보안: HSTS·MIME 스니핑 차단·프레임 삽입 차단·권한 최소화. CSP 는 인라인 JSON-LD·스크립트가 많아 깨질 위험이 커서 넣지 않는다.
+# - Referrer-Policy 는 브라우저 기본값 유지(/go/ 클릭 출처 기록에 영향 없게).
+# - /_astro/* 는 파일명에 해시가 붙는 빌드 산출물이라 1년 immutable 캐시(기존 4시간).
+/*
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
+
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable

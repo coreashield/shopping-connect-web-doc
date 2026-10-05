@@ -47,10 +47,13 @@ const productLd = {
 	name: productName || title,
 	description,
 	...(heroSrc ? { image: heroSrc } : {}),
-	...(productStore ? { brand: { '@type': 'Brand', name: productStore } } : {}),
-	...(affiliateUrl ? { offers: {
+	// 10/5 스키마 진단: productStore 는 브랜드가 아니라 판매처(스토어명) → brand 대신 Offer.seller.
+	//   Offer 는 price 가 필수라 가격이 있을 때만 낸다. url 은 제휴 링크가 아니라 이 글 주소.
+	...(affiliateUrl && productPrice ? { offers: {
 		'@type': 'Offer',
-		...(productPrice ? { price: productPrice, priceCurrency: 'KRW' } : {}),
+		price: productPrice, priceCurrency: 'KRW',
+		url: new URL(Astro.url.pathname, Astro.site).href,
+		...(productStore ? { seller: { '@type': 'Organization', name: productStore } } : {}),
 		// 가격 갱신 스크립트가 판매처 페이지 삭제를 확인하면 Discontinued (2026-09-08)
 		availability: discontinued ? 'https://schema.org/Discontinued' : 'https://schema.org/InStock',
 	} } : {}),
@@ -61,6 +64,8 @@ const catSlug = categorySlug(category);
 const buyHref = (affiliateUrl && productId)
 	? `/go/${encodeURIComponent(productId)}?u=${encodeURIComponent(affiliateUrl)}`
 	: affiliateUrl;
+// 10/5: 버튼 위치 측정 — /go/ 링크에만 pos 를 붙인다(제휴 URL u= 는 그대로). functions/go 가 slug#pos 로 기록.
+const posHref = (h: string | undefined, pos: string) => (h && h.startsWith('/go/') ? `${h}&pos=${pos}` : h);
 const rawImg = typeof heroImage === 'string' ? heroImage : heroImage?.src;
 // 구매 카드(2026-10-03): 첫 화면에 가격·평점·버튼을 한 묶음으로 (네이버 방문→구매버튼 15%, 첫 버튼이 1.8화면 아래였음).
 //   평점은 정수(5·4)가 대부분이라 기본값으로 보인다 — 소수점이 있는 실측값만 보여준다(가짜 신뢰 신호 금지).
@@ -358,7 +363,7 @@ const imageUrl = rawImg ? new URL(rawImg, Astro.site).href : undefined;
 									{cheapRank && <p class="buy-rank">{cheapRank.label} {cheapRank.groupSize}개 중 {cheapRank.rank === 1 ? '가장 저렴' : `${cheapRank.rank}번째로 저렴`}</p>}
 								</div>
 							</div>
-							<a class="buy-btn" id="buy-main" href={buyHref} target="_blank" rel="nofollow sponsored noopener">
+							<a class="buy-btn" id="buy-main" href={posHref(buyHref, "card")} target="_blank" rel="nofollow sponsored noopener">
 								네이버에서 현재 가격 보기
 							</a>
 							{/* 고가 상품: 구매 직전 최대 걱정은 "잘못 사면"(지각된 위험, Roselius 1971) — 확인할 곳을 버튼 바로 아래에 (10/3) */}
@@ -407,7 +412,7 @@ const imageUrl = rawImg ? new URL(rawImg, Astro.site).href : undefined;
 												<td class="num">{fmtWon(r.price)}</td>
 												<td class="num">{r.rating ? r.rating.toFixed(1) : '-'}</td>
 												<td class="num">{r.checkedAt ?? '-'}</td>
-												<td class="num">{r.buyHref ? <a class="alt-buy" href={r.buyHref} target="_blank" rel="nofollow sponsored noopener">가격 보기</a> : null}</td>
+												<td class="num">{r.buyHref ? <a class="alt-buy" href={posHref(r.buyHref, "table")} target="_blank" rel="nofollow sponsored noopener">가격 보기</a> : null}</td>
 											</tr>
 										))}
 									</tbody>
@@ -428,7 +433,7 @@ const imageUrl = rawImg ? new URL(rawImg, Astro.site).href : undefined;
 					<slot />
 					{affiliateUrl && !discontinued && (
 						<div class="buy-cta buy-cta-bottom" id="buy-bottom">
-							<a class="buy-btn" href={buyHref} target="_blank" rel="nofollow sponsored noopener">
+							<a class="buy-btn" href={posHref(buyHref, "bottom")} target="_blank" rel="nofollow sponsored noopener">
 								네이버에서 현재 가격 보기
 							</a>
 							<p class="buy-note">이 링크로 구매하면 쇼핑로그가 네이버 쇼핑 커넥트 수수료를 받습니다.</p>
@@ -438,7 +443,7 @@ const imageUrl = rawImg ? new URL(rawImg, Astro.site).href : undefined;
 					{affiliateUrl && !discontinued && (
 						<div class="buy-sticky" id="buy-sticky">
 							<span class="buy-sticky-price">{productPrice ? fmtWon(productPrice) : (productName || title)}{priceDateLabel && productPrice && <small>{priceDateLabel} 기준 · 판매처 가격 우선</small>}</span>
-							<a href={buyHref} target="_blank" rel="nofollow sponsored noopener">현재 가격 보기</a>
+							<a href={posHref(buyHref, "sticky")} target="_blank" rel="nofollow sponsored noopener">현재 가격 보기</a>
 						</div>
 					)}
 					{relatedPosts.length > 0 && (

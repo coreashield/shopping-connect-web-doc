@@ -11,6 +11,8 @@ import remarkFaq from './src/lib/remark-faq.mjs';
 import remarkBuyLinkRel from './src/lib/remark-buy-link-rel.mjs';
 import remarkAltLink from './src/lib/remark-alt-link.mjs';
 import remarkFitBox from './src/lib/remark-fit-box.mjs';
+import remarkDisclosure from './src/lib/remark-disclosure.mjs';
+import remarkImagePerf from './src/lib/remark-image-perf.mjs';
 
 // 사이트맵 <lastmod>용 URL→최종수정일 맵.
 // 글이 재발행·수정되는 사이트라 lastmod가 없으면 구글이 재크롤 우선순위를 못 정한다.
@@ -82,21 +84,54 @@ function buildLastmodMap() {
 	for (const [url, iso] of newest) map.set(url, iso);
 	return map;
 }
+// 같은 상품 중복 글 사이트맵 제외 (2026-10-05 기술 진단: 표본 60개 중 22%가 최신 형제 글을 canonical 로
+//   가리키는데 사이트맵엔 그대로 남아 "색인해라/하지 마라" 신호가 엇갈렸다. 약 600+ URL).
+//   src/pages/blog/[...slug].astro 의 대표 글 선택과 **같은 규칙**: productId(없으면 파일명 cat-pid-YYYYMMDD) 묶음에서
+//   pubDate 최신 → 동률이면 id 사전순 첫 번째. 대표가 아닌 글만 뺀다(페이지·canonical 은 그대로).
+//   301 은 _redirects 가 Pages 한도(2,000줄) 직전(1,872)이라 하지 않는다.
+function buildNonCanonicalSet() {
+	const B = SITE_BASE;
+	const dir = path.join(path.dirname(fileURLToPath(import.meta.url)), 'src/content/blog');
+	const groups = new Map();
+	let files = [];
+	try { files = fs.readdirSync(dir).filter((f) => f.endsWith('.md') || f.endsWith('.mdx')); } catch { return new Set(); }
+	for (const file of files) {
+		const head = fs.readFileSync(path.join(dir, file), 'utf8').slice(0, 2000);
+		const id = file.replace(/\.mdx?$/, '');
+		const category = head.match(/^category:\s*"?([^"\n]+)"?/m)?.[1]?.trim();
+		const top = topCategoryOf(category);
+		if (SITE_CATEGORY_ENV ? top !== SITE_CATEGORY_ENV : SUB_CATEGORIES.includes(top)) continue;
+		const pid = head.match(/^productId:\s*"?([^"\n]+)"?/m)?.[1]?.trim() || id.match(/-(\d{6,})-\d{8}$/)?.[1];
+		const pub = Date.parse(head.match(/^pubDate:\s*"?([^"\n]+)"?/m)?.[1]?.trim() || '');
+		if (!pid || !Number.isFinite(pub)) continue;
+		if (!groups.has(pid)) groups.set(pid, []);
+		groups.get(pid).push({ id, pub });
+	}
+	const out = new Set();
+	for (const list of groups.values()) {
+		if (list.length < 2) continue;
+		list.sort((a, b) => (b.pub - a.pub) || a.id.localeCompare(b.id));
+		for (const x of list.slice(1)) out.add(`${B}/blog/${x.id}/`);
+	}
+	return out;
+}
 const SITE_URL_ENV = (process.env.SITE_URL || '').trim();
 const SITE_CATEGORY_ENV = (process.env.SITE_CATEGORY || '').trim();
 const SUB_CATEGORIES = ['디지털/가전', '식품'];   // src/lib/site.ts SUB_SITES 와 동일하게 유지
 const SUB_HOSTS = { '디지털/가전': 'https://digital.shopping-log.com', '식품': 'https://food.shopping-log.com' };
 const SITE_BASE = SITE_URL_ENV || (SITE_CATEGORY_ENV ? SUB_HOSTS[SITE_CATEGORY_ENV] : 'https://shopping-log.com');
 const LASTMOD = buildLastmodMap();
+const NON_CANONICAL = buildNonCanonicalSet();
 
 // https://astro.build/config
 export default defineConfig({
 	site: SITE_BASE,
 	markdown: {
+		// 대가성 고지에서 쓰지 않는 쿠팡파트너스 언급 정정 (src/lib/remark-disclosure.mjs, 10/5)
 		// 판매 종료 글의 본문 구매 링크 제거 (src/lib/remark-discontinued.mjs)
 		// FAQ 섹션을 H2 + 질문별 H3 로 (src/lib/remark-faq.mjs)
 		// 본문 구매 링크에 rel=nofollow sponsored (src/lib/remark-buy-link-rel.mjs)
-		remarkPlugins: [remarkDiscontinued, remarkFaq, remarkBuyLinkRel, remarkAltLink, remarkFitBox],
+		remarkPlugins: [remarkDisclosure, remarkImagePerf, remarkDiscontinued, remarkFaq, remarkBuyLinkRel, remarkAltLink, remarkFitBox],
 	},
 	integrations: [
 		mdx(),
@@ -104,7 +139,7 @@ export default defineConfig({
 			// /blog/2/ 이후 페이지네이션은 2026-09-10부터 noindex 다. 색인하지 말라고
 			//   해놓고 사이트맵으로 제출하면 서로 어긋난 신호라 여기서도 뺀다.
 			//   /blog/ 1페이지는 슬러그에 숫자가 없어 그대로 남는다.
-			filter: (page) => !/\/blog\/\d+\/?$/.test(page),
+			filter: (page) => !/\/blog\/\d+\/?$/.test(page) && !NON_CANONICAL.has(page),
 			serialize(item) {
 				// 토픽 허브 슬러그는 한글이라 사이트맵에 퍼센트 인코딩되어 들어온다.
 				//   맵 키는 디코딩된 한글이므로 양쪽 다 시도해야 매칭된다.

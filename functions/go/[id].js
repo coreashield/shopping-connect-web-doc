@@ -111,6 +111,10 @@ export async function onRequestGet(context) {
     const referer = request.headers.get('referer') || null;
     let slug = null;
     try { if (referer) slug = new URL(referer).pathname; } catch (e) { /* ignore */ }
+    // 10/5: 어느 버튼이었는지(card/sticky/table/pick/body…) — 우리 링크에만 붙인 pos 를 slug 뒤에 '#pos' 로.
+    //   표 구조를 안 바꾸려고 slug 에 붙인다. 집계는 split('#'). 제휴 URL(u=)은 손대지 않는다.
+    const pos = (url.searchParams.get('pos') || '').replace(/[^a-z0-9_-]/gi, '').slice(0, 20);
+    if (slug && pos) slug = `${slug}#${pos}`;
     const row = {
       product_id: productId,
       slug,
