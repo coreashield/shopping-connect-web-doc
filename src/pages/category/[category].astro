@@ -37,10 +37,18 @@ const prices = posts
 	.sort((a: number, b: number) => a - b);
 const stores = new Set(posts.map((p: any) => p.data.productStore).filter(Boolean));
 const range = prices.length ? `${fmtPrice(prices[0])}~${fmtPrice(prices[prices.length - 1])}` : '';
-const title = prices.length
-	? `${name} 추천 ${posts.length}개 가격 비교 (${range}) | ${SITE_TITLE}`
-	: `${name} 추천 ${posts.length}개 모음 | ${SITE_TITLE}`;
-const description = prices.length
+// 10/5: 서치어드바이저 30일 — 분류 8개 노출 6,150·클릭 2(0.03%). "추천 705개 가격 비교 (100원~770,000원)"은
+//   누를 이유가 없다. 비교 가이드가 있으면 그 주제(검색어)를 제목 앞에, 설명엔 "1개당 가격·규격으로 비교"를 적는다.
+const gq = guides.map((g: any) => g.data.query).filter(Boolean);
+const ym = (() => { const d = new Date(Date.now() + 9 * 3600e3); return `${d.getUTCFullYear()}.${d.getUTCMonth() + 1}`; })();
+const title = gq.length
+	? `${gq.slice(0, 3).join('·')} 비교 가이드 — ${name} 고르는 법 (${ym}) | ${SITE_TITLE}`
+	: prices.length
+		? `${name} 추천 ${posts.length}개 가격 비교 (${range}) | ${SITE_TITLE}`
+		: `${name} 추천 ${posts.length}개 모음 | ${SITE_TITLE}`;
+const description = gq.length
+	? `${gq.slice(0, 5).join(', ')} 등 ${name} ${gq.length}개 분류를 1개당 가격·규격·용도로 비교한 가이드와 상품 ${posts.length}개. 가격은 판매처 표시 기준이며 확인 날짜를 함께 적었습니다.`
+	: prices.length
 	? `${name} 상품 ${posts.length}개를 가격과 후기, 스펙 기준으로 비교해 정리했습니다. 가격대는 ${range}이고 판매처는 ${stores.size}곳입니다. 각 글에 확인 시점과 추천 대상을 함께 적었습니다.`
 	: `${name} 상품 ${posts.length}개를 가격과 후기, 스펙 기준으로 비교해 정리했습니다. 각 글에 판매처와 확인 시점, 추천 대상을 함께 적었습니다.`;
 ---

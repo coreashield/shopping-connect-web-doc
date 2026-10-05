@@ -1,6 +1,6 @@
 ---
 import { type CollectionEntry, render } from 'astro:content';
-import { getPosts } from '../../lib/site';
+import { getPosts, getGuides } from '../../lib/site';
 import BlogPost from '../../layouts/BlogPost.astro';
 import { topCategory, subPath, hubForPost } from '../../lib/categories';
 import { compareForPost } from '../../lib/compare';
@@ -33,6 +33,10 @@ const rest = all.filter((p) => !sameSub.includes(p) && !sameTop.includes(p)).sor
 const relatedPosts = [...sameSub, ...sameTop, ...rest].slice(0, 6);
 // 이 글이 속한 토픽 허브(필러) — 글에서 허브로 링크(양방향 클러스터).
 const hub = hubForPost(post);
+// 10/5: 같은 세부 분류 비교 가이드가 있으면 첫 화면에 링크(상품 글이 네이버 노출의 대부분 — 비교 의도 방문자를 가이드로)
+const postCat = String(post.data.category || '');
+const guide = (await getGuides()).find((g) => postCat === g.data.category || postCat.startsWith(g.data.category + '>'));
+const guideLink = guide ? { href: `/guide/${guide.id}/`, query: guide.data.query, n: guide.data.products.length } : null;
 // 같은 분류 가격 비교 — 글마다 고유한 실데이터(가격 순위·중간값·비교표). 요약 문단과 본문 아래 표에 쓴다
 const comparison = compareForPost(post, posts);
 // FAQ 질문-답 → FAQPage 구조화 데이터 (화면 구조는 remark-faq 가 같은 규칙으로 바꾼다)
@@ -62,6 +66,6 @@ if (pid) {
 }
 ---
 
-<BlogPost {...post.data} relatedPosts={relatedPosts} hub={hub} comparison={comparison} faq={faq} googleNoindex={googleNoindex} headings={headings} canonicalPath={canonicalPath}>
+<BlogPost {...post.data} guideLink={guideLink} relatedPosts={relatedPosts} hub={hub} comparison={comparison} faq={faq} googleNoindex={googleNoindex} headings={headings} canonicalPath={canonicalPath}>
 	<Content />
 </BlogPost>
