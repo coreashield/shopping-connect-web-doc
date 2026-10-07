@@ -377,8 +377,8 @@ const imageUrl = rawImg ? new URL(rawImg, Astro.site).href : undefined;
 							<p class="buy-note">가격·배송비·재고는 판매처 표시가 기준입니다. 이 링크로 구매하면 쇼핑로그가 네이버 쇼핑 커넥트 수수료를 받습니다.</p>
 						</section>
 					)}
-					{guideLink && !discontinued && (
-						<p class="guide-link"><a href={guideLink.href}>{guideLink.query} {guideLink.n}종 비교 보기 →</a></p>
+					{guideLink && (
+						<p class="guide-link"><a href={guideLink.href}>{discontinued ? `판매 중인 ${guideLink.query} ${guideLink.n}종 비교 보기 →` : `${guideLink.query} ${guideLink.n}종 비교 보기 →`}</a></p>
 					)}
 					{answer && (
 						<section class="key-answer" aria-label="핵심 요약">
@@ -391,7 +391,7 @@ const imageUrl = rawImg ? new URL(rawImg, Astro.site).href : undefined;
 							: <Image width={1020} height={510} src={heroImage} alt={title} />)}
 					</div>
 					{discontinued && (
-						<p class="buy-note sold-out">이 상품은 판매처 페이지가 삭제되어 현재 구매할 수 없습니다. 아래 "함께 보면 좋은 글"에서 같은 주제의 다른 상품을 확인하세요.</p>
+						<p class="buy-note sold-out">이 상품은 판매처 페이지가 삭제되어 현재 구매할 수 없습니다. {guideLink ? "위 비교 가이드나" : "아래"} "함께 보면 좋은 글"에서 같은 주제의 다른 상품을 확인하세요.</p>
 					)}
 					{/* 상품 글에만 Product 노드. 소개 페이지 등 일반 글에 붙으면 스키마 오류(가짜 상품)가 된다 */}
 					{(productName || affiliateUrl) && <script type="application/ld+json" set:html={JSON.stringify(productLd)} />}
