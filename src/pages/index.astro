@@ -124,7 +124,7 @@ const homeDesc = `${SITE_TITLE}는 네이버 스마트스토어 상품을 가격
 		<main>
 			{guides.length > 0 && (
 				<section class="categories">
-					<h2>구매 가이드</h2>
+					<h2>구매 가이드 <a href="/guide/" style="font-size:0.9rem;font-weight:400">전체 보기 →</a></h2>
 					<ul class="cat-chips">{guides.map((g) => <li><a href={`/guide/${g.id}/`}>{g.data.title}</a></li>)}</ul>
 				</section>
 			)}
