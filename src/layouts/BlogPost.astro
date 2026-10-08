@@ -12,6 +12,7 @@ import { keyAnswer } from '../lib/summary';
 import type { Comparison } from '../lib/compare';
 import type { FaqItem } from '../lib/faq';
 import { seoTitle, isLogoImage } from '../lib/snippet';
+import PricePosition from '../components/PricePosition.astro';
 
 type Props = CollectionEntry<'blog'>['data'] & {
 	bodyImage?: string;   // 본문 첫 상품 사진(로고 제외) — 대표 이미지가 판매처 로고일 때 대신 쓴다
@@ -72,7 +73,7 @@ const buyHref = (affiliateUrl && productId)
 	: affiliateUrl;
 // 10/5: 버튼 위치 측정 — /go/ 링크에만 pos 를 붙인다(제휴 URL u= 는 그대로). functions/go 가 slug#pos 로 기록.
 const posHref = (h: string | undefined, pos: string) => (h && h.startsWith('/go/') ? `${h}&pos=${pos}` : h);
-const rawImg = typeof heroImage === 'string' ? heroImage : heroImage?.src;
+const rawImg = bodyImage ?? (typeof heroImage === 'string' ? heroImage : heroImage?.src);   // og:image·구매 카드 썸네일은 본문 첫 상품 사진 우선
 // 구매 카드(2026-10-03): 첫 화면에 가격·평점·버튼을 한 묶음으로 (네이버 방문→구매버튼 15%, 첫 버튼이 1.8화면 아래였음).
 //   평점은 정수(5·4)가 대부분이라 기본값으로 보인다 — 소수점이 있는 실측값만 보여준다(가짜 신뢰 신호 금지).
 const shownRating = rating && !Number.isInteger(rating) ? rating : null;
@@ -104,9 +105,11 @@ const searchTitle = seoTitle({ title, productName });
 		/>
 		<style>
 			main {
-				width: calc(100% - 2em);
+				width: 1120px;
 				max-width: 100%;
-				margin: 0;
+				margin: 0 auto;
+				padding: 1.2rem 1.2rem 3rem;
+				box-sizing: border-box;
 			}
 			.hero-image {
 				width: 100%;
@@ -128,7 +131,7 @@ const searchTitle = seoTitle({ title, productName });
 			.prose :global(p > strong) { background: linear-gradient(transparent 62%, rgba(255, 214, 0, 0.45) 62%); }
 			.prose :global(blockquote p > strong), .prose :global(p.fit-title > strong) { background: none; }
 			.guide-link { margin: -.4em 0 1.2em; font-size: .95em; }
-			.guide-link a { display: inline-block; background: #f3faf6; border: 1px solid #cdebd9; border-radius: 8px; padding: .45em .8em; text-decoration: none; color: #027a3d; font-weight: 600; }
+			.guide-link a { display: inline-block; background: var(--accent-soft); border: 1px solid #cdebd9; border-radius: 8px; padding: .45em .8em; text-decoration: none; color: var(--accent-dark); font-weight: 600; }
 			.hero-image { margin: 0 0 1.4em; }
 			.hero-image img {
 				display: block;
@@ -156,23 +159,37 @@ const searchTitle = seoTitle({ title, productName });
 			.byline a:hover {
 				text-decoration: underline;
 			}
+			/* 2026-10-08 리디자인: 데스크톱은 본문 720px + 오른쪽 고정 구매 카드, 모바일은 DOM 순서 그대로(제목 바로 아래 구매 카드) */
 			.prose {
-				width: 720px;
-				max-width: calc(100% - 2em);
-				margin: auto;
-				padding: 1em;
 				color: rgb(var(--gray-dark));
+				padding: 0;
+			}
+			@media (min-width: 900px) {
+				.prose {
+					display: grid;
+					grid-template-columns: minmax(0, 720px) minmax(280px, 340px);
+					column-gap: 2.2rem;
+					justify-content: center;
+					align-items: start;
+				}
+				.prose > :global(*) { grid-column: 1; min-width: 0; }
+				.prose > .buy-card { grid-column: 2; grid-row: 1 / span 400; position: sticky; top: 1rem; margin: 0 0 1.4em; align-self: start; }
+			}
+			@media (max-width: 899px) {
+				.prose { max-width: 720px; margin: 0 auto; }
 			}
 			.title {
 				margin-bottom: 1em;
-				padding: 1em 0;
-				text-align: center;
-				line-height: 1;
+				padding: 0.4em 0 0.6em;
+				text-align: left;
+				line-height: 1.2;
 			}
 			.title h1 {
 				margin: 0 0 0.5em 0;
 				/* 모바일에서 55px 제목이 첫 화면을 다 먹었다 */
-				font-size: clamp(1.55rem, 6vw, 2.5rem);
+				font-size: clamp(1.6rem, 5.6vw, 2.5rem);
+				font-weight: 900;
+				letter-spacing: -0.03em;
 				line-height: 1.3;
 				word-break: keep-all;
 			}
@@ -181,7 +198,10 @@ const searchTitle = seoTitle({ title, productName });
 				color: rgb(var(--gray));
 			}
 			.cat-link {
-				color: rgb(var(--accent));
+				color: var(--accent);
+				font-family: var(--font-mono);
+				font-size: 0.82rem;
+				letter-spacing: 0.05em;
 				text-decoration: none;
 				font-weight: 600;
 			}
@@ -205,7 +225,7 @@ const searchTitle = seoTitle({ title, productName });
 				text-decoration: none;
 			}
 			.breadcrumb a:hover {
-				color: rgb(var(--accent));
+				color: var(--accent-dark);
 			}
 			.buy-cta {
 				text-align: center;
@@ -213,21 +233,21 @@ const searchTitle = seoTitle({ title, productName });
 			}
 			.buy-card {
 				margin: 0 0 1.4em;
-				padding: 1em;
-				border: 1px solid rgba(var(--gray), 0.25);
-				border-radius: 14px;
+				padding: 1.2em;
+				border: 1px solid rgb(var(--gray-light));
+				border-radius: 16px;
 				background: #fff;
-				box-shadow: 0 2px 10px rgba(var(--black), 6%);
+				box-shadow: var(--box-shadow);
 			}
 			.buy-card-row { display: flex; gap: 0.9em; align-items: center; margin-bottom: 0.85em; }
 			.buy-thumb { width: 84px; height: 84px; flex: 0 0 84px; object-fit: contain; border-radius: 10px; background: #f6f7f9; }
 			.buy-info { min-width: 0; }
 			.buy-info p { margin: 0; line-height: 1.4; }
 			.buy-name { font-size: 0.92rem; color: rgb(var(--gray-dark)); overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
-			.buy-price { font-size: 1.35rem; font-weight: 800; color: #111; }
+			.buy-price { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: 1.6rem; font-weight: 600; letter-spacing: -0.03em; color: rgb(var(--black)); }
 			.buy-price small { font-size: 0.72rem; font-weight: 400; color: rgb(var(--gray)); margin-left: 0.3em; }
 			.buy-sub { font-size: 0.82rem; color: rgb(var(--gray)); }
-			.buy-rank { font-size: 0.82rem; color: #03a64a; font-weight: 600; }
+			.buy-rank { font-size: 0.82rem; color: var(--accent); font-weight: 600; }
 			.buy-card .buy-note { text-align: center; }
 			.buy-risk { color: rgb(var(--gray-dark)); font-weight: 600; }
 			.buy-sticky {
@@ -240,7 +260,7 @@ const searchTitle = seoTitle({ title, productName });
 			.buy-sticky.show { transform: translateY(0); }
 			.buy-sticky-price { flex: 1; min-width: 0; font-weight: 800; font-size: 1.05rem; color: #111; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 			.buy-sticky-price small { display: block; font-weight: 400; font-size: 0.7rem; color: rgb(var(--gray)); }
-			.buy-sticky a { flex: 0 0 auto; background: #03c75a; color: #fff; font-weight: 700; text-decoration: none; padding: 0.75em 1.1em; border-radius: 10px; }
+			.buy-sticky a { flex: 0 0 auto; background: var(--accent); color: #fff; font-weight: 700; text-decoration: none; padding: 0.75em 1.1em; border-radius: 10px; }
 			@media (min-width: 900px) { .buy-sticky { display: none; } }
 			.buy-cta-bottom {
 				margin: 2.5em auto 1em;
@@ -249,19 +269,19 @@ const searchTitle = seoTitle({ title, productName });
 				display: block;
 				width: 100%;
 				box-sizing: border-box;
-				background: #03c75a;
+				background: var(--accent);
 				color: #fff;
 				font-size: 1.15rem;
 				font-weight: 700;
 				text-decoration: none;
 				padding: 0.95em 1.2em;
 				border-radius: 12px;
-				box-shadow: 0 4px 14px rgba(3, 199, 90, 0.35);
+				box-shadow: 0 4px 14px rgba(4, 122, 62, 0.28);
 				transition: transform 0.1s ease, box-shadow 0.1s ease;
 			}
 			.buy-btn:hover {
 				transform: translateY(-2px);
-				box-shadow: 0 6px 18px rgba(3, 199, 90, 0.45);
+				box-shadow: 0 6px 18px rgba(4, 122, 62, 0.36);
 				text-decoration: none;
 				color: #fff;
 			}
@@ -284,14 +304,15 @@ const searchTitle = seoTitle({ title, productName });
 			}
 			/* GEO: 정의문+숫자 요약 문단. 페이지 첫 30% 안에 인용 가능한 자기완결 답을 둔다 */
 			.key-answer {
-				margin: 0 0 1.4em;
-				padding: 1em 1.2em;
-				border-left: 4px solid #03c75a;
-				background: rgba(var(--gray-light), 0.35);
-				border-radius: 0 10px 10px 0;
+				margin: 0 0 1.6em;
+				padding: 1.2em 1.4em;
+				background: #fff;
+				border: 1px solid rgb(var(--gray-light));
+				border-radius: 14px;
 				font-size: 1.02rem;
-				line-height: 1.75;
+				line-height: 1.8;
 			}
+			.ka-label { margin: 0 0 0.4em !important; font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; color: rgb(var(--gray)); }
 			.key-answer p { margin: 0; }
 			.compare { margin: 2.2em 0 1em; }
 			.compare h2 { margin-bottom: 0.3em; }
@@ -301,9 +322,9 @@ const searchTitle = seoTitle({ title, productName });
 			.compare th, .compare td { padding: 0.55em 0.5em; border-bottom: 1px solid rgb(var(--gray-light)); text-align: left; vertical-align: top; }
 			.compare th { font-size: 0.8rem; color: rgb(var(--gray)); font-weight: 600; white-space: nowrap; }
 			.compare td.num { text-align: right; white-space: nowrap; }
-			.compare tr.current td { background: rgba(3, 199, 90, 0.08); font-weight: 600; }
+			.compare tr.current td { background: var(--accent-soft); font-weight: 600; }
 			.compare td a { color: rgb(var(--gray-dark)); }
-			.compare td a.alt-buy { display: inline-block; padding: 0.3em 0.6em; border-radius: 6px; background: rgba(3, 199, 90, 0.12); color: #03873d; font-weight: 700; text-decoration: none; white-space: nowrap; font-size: 0.82rem; }
+			.compare td a.alt-buy { display: inline-block; padding: 0.3em 0.6em; border-radius: 6px; background: var(--accent-soft); color: var(--accent-dark); font-weight: 700; text-decoration: none; white-space: nowrap; font-size: 0.82rem; }
 			.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 			.sold-out { margin: 0 0 1.4em; padding: 0.8em 1em; border: 1px dashed rgb(var(--gray)); border-radius: 10px; font-size: 0.95rem; }
 			.toc {
@@ -356,7 +377,6 @@ const searchTitle = seoTitle({ title, productName });
 							<span class="dot">·</span>
 							<a class="method" href="/about/">작성 기준 안내</a>
 						</div>
-						<hr />
 					</div>
 					{affiliateUrl && !discontinued && (
 						<section class="buy-card" aria-label="가격 요약">
@@ -388,9 +408,11 @@ const searchTitle = seoTitle({ title, productName });
 					)}
 					{answer && (
 						<section class="key-answer" aria-label="핵심 요약">
+							<p class="ka-label">핵심 요약</p>
 							<p>{answer}</p>
 						</section>
 					)}
+					{comparison && productPrice && <PricePosition comparison={comparison} price={productPrice} dateLabel={priceDateLabel} />}
 					<div class="hero-image">
 						{heroImage && (typeof heroImage === 'string'
 							? <img src={heroImage} alt={title} loading="lazy" decoding="async" />
@@ -409,7 +431,6 @@ const searchTitle = seoTitle({ title, productName });
 							<h2 id="compare-title">{comparison.label} 가격 비교</h2>
 							<p class="compare-note">
 								쇼핑로그가 정리한 {comparison.label} 상품 {comparison.groupSize}개 중 이 상품과 가격대가 가까운 상품입니다.
-								분류 중간값 {fmtWon(comparison.median)} · 최저 {fmtWon(comparison.min)} · 최고 {fmtWon(comparison.max)}.
 								가격은 기준일의 판매가이며 현재 가격은 판매처에서 확인하세요. 이 상품이 조건에 안 맞으면 다른 상품의 "가격 보기"로 바로 이동할 수 있습니다.
 							</p>
 							<div class="compare-wrap">

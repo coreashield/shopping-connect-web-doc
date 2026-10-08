@@ -52,3 +52,9 @@ export function firstBodyImage(body?: string): string | undefined {
 	}
 	return undefined;
 }
+
+/** 목록 카드 썸네일: 본문 첫 상품 사진 우선(대표 이미지가 판매처 로고인 글이 많고 파일명으로는 다 못 거른다), 본문에 사진이 없으면 대표 이미지 */
+export function postThumb(heroImage: unknown, body?: string): string | undefined {
+	const raw = typeof heroImage === 'string' ? heroImage : (heroImage as { src?: string } | undefined)?.src;
+	return firstBodyImage(body) ?? raw;
+}

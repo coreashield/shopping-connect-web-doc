@@ -1,0 +1,98 @@
+---
+// 같은 분류 가격 안에서 이 상품이 어디쯤인지 한눈에 (2026-10-08 리디자인).
+//   값은 compare.ts 의 Comparison 실데이터(최저·중간값·최고·순위)만 쓴다. 추정·보정 없음.
+//   막대는 최저~최고를 선형으로 편 것이라, 비싼 상품이 섞인 분류에서는 값이 왼쪽에 몰린다(왜곡 아님).
+import type { Comparison } from '../lib/compare';
+
+interface Props {
+	comparison: Comparison;
+	price: number;
+	dateLabel?: string | null;   // "7월 30일" 같은 가격 기준일 표기
+	heading?: 'h2' | 'h3' | 'p';
+	compact?: boolean;
+}
+const { comparison, price, dateLabel = null, heading = 'h2', compact = false } = Astro.props;
+const { min, max, median, rank, groupSize, label } = comparison;
+const span = Math.max(max - min, 1);
+const clamp = (n: number) => Math.min(100, Math.max(0, n));
+const pct = clamp(((price - min) / span) * 100);
+const medPct = clamp(((median - min) / span) * 100);
+// 라벨이 박스 밖으로 나가지 않게: 오른쪽 끝 근처는 라벨을 왼쪽으로, 왼쪽 끝 근처는 오른쪽으로
+const shift = pct > 65 ? -100 : pct < 12 ? 0 : -30;
+const won = (n: number) => `${n.toLocaleString('ko-KR')}원`;
+const diff = median ? Math.round(((price - median) / median) * 100) : 0;
+const vs = diff === 0 ? '중간값과 같습니다' : `중간값보다 ${Math.abs(diff)}% ${diff < 0 ? '낮습니다' : '높습니다'}`;
+const Tag = heading;
+---
+
+<section class:list={['pp', { compact }]} aria-label={`${label} 가격 위치`}>
+	<Tag class="pp-title">{label} 가격 위치</Tag>
+	{!compact && (
+		<p class="pp-note">쇼핑로그가 정리한 {label} 상품 {groupSize}개 중 이 상품의 판매가가 놓인 자리입니다.{dateLabel ? ` 가격은 ${dateLabel} 기준입니다.` : ''}</p>
+	)}
+	<div class="pp-track" role="img" aria-label={`최저 ${won(min)}, 중간값 ${won(median)}, 최고 ${won(max)} 중 이 상품 ${won(price)}`}>
+		<div class="pp-fill" style={`width:${pct}%`}></div>
+		<div class="pp-median" style={`left:${medPct}%`}></div>
+		<div class="pp-marker" style={`left:${pct}%`}></div>
+		<div class="pp-tag" style={`left:${pct}%;transform:translateX(${shift}%)`}>이 상품 {won(price)}</div>
+	</div>
+	<dl class="pp-stats">
+		<div><dt>최저</dt><dd class="num">{won(min)}</dd></div>
+		<div><dt>중간값</dt><dd class="num">{won(median)}</dd></div>
+		<div><dt>최고</dt><dd class="num">{won(max)}</dd></div>
+	</dl>
+	<p class="pp-sum"><strong>{rank}번째로 낮고, {vs}.</strong></p>
+</section>
+
+<style>
+	.pp {
+		margin: 0 0 2.2rem;
+		padding: 1.5rem 1.5rem 1.3rem;
+		background: #fff;
+		border: 1px solid rgb(var(--gray-light));
+		border-radius: 14px;
+	}
+	.pp.compact { margin: 0; padding: 0.9rem 0 0; background: transparent; border: 0; border-top: 1px solid rgb(var(--gray-light)); border-radius: 0; }
+	/* 본문(.prose) 의 h2 규칙(위쪽 선·큰 여백)이 이 제목에 번지지 않게 한 단계 더 구체적으로 */
+	.pp .pp-title { margin: 0 0 0.2rem; padding: 0; border: 0; font-size: 1.25rem; font-weight: 900; line-height: 1.35; }
+	.pp-note { margin: 0 0 0.4rem; font-size: 0.9rem; color: rgb(var(--gray)); word-break: keep-all; }
+	.pp-track {
+		position: relative;
+		height: 14px;
+		margin: 2.8rem 0 1.4rem;
+		border-radius: 7px;
+		background: rgb(var(--gray-light));
+	}
+	.pp.compact .pp-track { margin-top: 2.4rem; }
+	.pp-fill { position: absolute; left: 0; top: 0; height: 100%; border-radius: 7px; background: var(--accent); }
+	.pp-median { position: absolute; top: -4px; width: 2px; height: 22px; margin-left: -1px; background: rgb(var(--black)); }
+	.pp-marker { position: absolute; top: -7px; width: 4px; height: 28px; margin-left: -2px; border-radius: 2px; background: rgb(var(--black)); }
+		.pp-tag {
+		position: absolute;
+		top: -2.4rem;
+		white-space: nowrap;
+		padding: 0.1rem 0.6rem;
+		border-radius: 6px;
+		background: rgb(var(--black));
+		color: #fff;
+		font-family: var(--font-mono);
+		font-size: 0.8rem;
+		font-weight: 600;
+	}
+	.pp-stats {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 0.6rem;
+		margin: 0;
+		padding-top: 0.9rem;
+		border-top: 1px solid rgb(var(--gray-light));
+	}
+	.pp-stats dt { font-size: 0.8rem; color: rgb(var(--gray)); }
+	.pp-stats dd { margin: 0; font-size: 1.05rem; font-weight: 600; }
+	.pp.compact .pp-stats dd { font-size: 0.95rem; }
+	.pp-sum { margin: 1rem 0 0; font-size: 1rem; word-break: keep-all; }
+	@media (max-width: 720px) {
+		.pp { padding: 1.1rem; }
+		.pp-stats dd { font-size: 0.92rem; }
+	}
+</style>
