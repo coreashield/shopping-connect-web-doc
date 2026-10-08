@@ -11,8 +11,10 @@ import { AUTHOR_DISPLAY_NAME, SITE_TITLE } from '../consts';
 import { keyAnswer } from '../lib/summary';
 import type { Comparison } from '../lib/compare';
 import type { FaqItem } from '../lib/faq';
+import { seoTitle, isLogoImage } from '../lib/snippet';
 
 type Props = CollectionEntry<'blog'>['data'] & {
+	bodyImage?: string;   // 본문 첫 상품 사진(로고 제외) — 대표 이미지가 판매처 로고일 때 대신 쓴다
 	relatedPosts?: CollectionEntry<'blog'>[];
 	hub?: { sub: string; slug: string } | null;
 	comparison?: Comparison | null;
@@ -23,9 +25,11 @@ type Props = CollectionEntry<'blog'>['data'] & {
 	guideLink?: { href: string; query: string; n: number } | null;   // 10/5 같은 세부 분류 비교 가이드
 };
 
-const { title, description, summary, pubDate, updatedDate, heroImage, category, relatedPosts = [], hub = null, comparison = null, faq = [], googleNoindex = false, noindex = false,
+const { title, description, summary, pubDate, updatedDate, heroImage: heroImageRaw, category, relatedPosts = [], hub = null, comparison = null, faq = [], googleNoindex = false, noindex = false, bodyImage,
 	canonicalPath, guideLink = null, affiliateUrl, productStore, rating, reviewCount, priceCheckedAt, saleStatus, productId, productName, productPrice, headings = [] } = Astro.props;
 const catName = topCategory(category);
+// 대표 이미지가 판매처 로고·배너면 본문 첫 상품 사진으로 교체 (og:image·구매 카드 썸네일·상단 이미지 공통)
+const heroImage = (typeof heroImageRaw === 'string' && isLogoImage(heroImageRaw) && bodyImage) ? bodyImage : heroImageRaw;
 // GEO: 요약 문단 = 저장된 summary(정의·핵심·장점·대상) + 렌더 시점 가격·평점 문장(productPrice·rating·updatedDate 기준)
 //   + 같은 분류 가격 순위 문장(2026-09-28): 판매 페이지에 없는, 이 사이트만 가진 비교 사실
 const answer = [keyAnswer(summary, { productPrice, rating, reviewCount, priceCheckedAt, saleStatus, productStore, pubDate, updatedDate }), comparison?.sentence]
@@ -81,11 +85,13 @@ const metaDescription = productPrice && !discontinued
 	? `${fmtWon(productPrice)}${priceDateLabel ? `(${priceDateLabel} 기준)` : ''}${shownRating ? ` · 평점 ${shownRating.toFixed(1)}` : ''}. ${description}`
 	: description;
 const imageUrl = rawImg ? new URL(rawImg, Astro.site).href : undefined;
+// 검색 결과 제목: 상품명이 뒤쪽에 있는 긴 제목은 상품명 시작 지점부터로 앞당긴다 (본문 H1·JSON-LD headline 은 원래 제목 유지)
+const searchTitle = seoTitle({ title, productName });
 ---
 
 <html lang="ko">
 	<head>
-		<BaseHead title={title} description={metaDescription} type="article" imageUrl={imageUrl} canonicalPath={canonicalPath} publishedTime={pubDate} modifiedTime={updatedDate} googleNoindex={googleNoindex} noindex={noindex} />
+		<BaseHead title={searchTitle} description={metaDescription} type="article" imageUrl={imageUrl} canonicalPath={canonicalPath} publishedTime={pubDate} modifiedTime={updatedDate} googleNoindex={googleNoindex} noindex={noindex} />
 		<SeoSchema
 			title={title}
 			description={description}
