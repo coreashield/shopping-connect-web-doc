@@ -4,47 +4,75 @@ const today = new Date();
 ---
 
 <footer>
-	<nav class="foot-links" aria-label="footer">
-		<a href="/">홈</a>
-		<a href="/blog">전체 글</a>
-		<a href="/category">카테고리</a>
-		<a href="/about">소개</a>
-	</nav>
-	<p class="disclosure">
-		본 사이트는 네이버 쇼핑 커넥트 활동의 일환으로, 글의 링크를 통해 구매가 이루어지면
-		일정액의 수수료를 제공받습니다.
-	</p>
+	<div class="foot-inner">
+		<div class="foot-main">
+			<p class="foot-brand">{SITE_TITLE}</p>
+			<p class="disclosure">
+				본 사이트는 네이버 쇼핑 커넥트 활동의 일환으로, 글의 링크를 통해 구매가 이루어지면
+				일정액의 수수료를 제공받습니다.
+			</p>
+		</div>
+		<nav class="foot-links" aria-label="footer">
+			<a href="/">홈</a>
+			<a href="/blog">전체 글</a>
+			<a href="/category">카테고리</a>
+			<a href="/about">소개</a>
+		</nav>
+	</div>
 	<p class="copy">&copy; {today.getFullYear()} {SITE_TITLE}. All rights reserved.</p>
 </footer>
 <style>
 	footer {
-		padding: 2em 1em 6em 1em;
-		background: linear-gradient(var(--gray-gradient)) no-repeat;
-		color: rgb(var(--gray));
-		text-align: center;
+		margin-top: 2em;
+		padding: 2.4em 1.2em 6em 1.2em;
+		background: rgb(var(--black));
+		color: #c9cfc4;
+	}
+	.foot-inner {
+		max-width: 1120px;
+		margin: 0 auto;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1.2em 3em;
+		justify-content: space-between;
+	}
+	.foot-main {
+		flex: 1 1 340px;
+		min-width: 0;
+	}
+	.foot-brand {
+		margin: 0 0 0.4em 0;
+		font-weight: 900;
+		font-size: 1.1rem;
+		color: #fff;
 	}
 	.foot-links {
 		display: flex;
-		justify-content: center;
-		gap: 1.2em;
-		margin-bottom: 1em;
+		flex-wrap: wrap;
+		gap: 0.3em 1.2em;
+		align-content: flex-start;
 	}
 	.foot-links a {
-		color: rgb(var(--gray-dark));
+		color: #e6eadf;
 		text-decoration: none;
 		font-size: 0.9rem;
+		padding: 0.4em 0;
 	}
 	.foot-links a:hover {
-		color: rgb(var(--accent));
+		color: #fff;
+		text-decoration: underline;
 	}
 	.disclosure {
-		font-size: 0.8rem;
-		max-width: 640px;
-		margin: 0 auto 0.8em auto;
-		line-height: 1.5;
+		font-size: 0.85rem;
+		max-width: 560px;
+		margin: 0;
+		line-height: 1.6;
+		word-break: keep-all;
 	}
 	.copy {
-		font-size: 0.85rem;
-		margin: 0;
+		max-width: 1120px;
+		margin: 1.6em auto 0 auto;
+		font-size: 0.8rem;
+		color: #9aa294;
 	}
 </style>

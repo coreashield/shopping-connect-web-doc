@@ -1,8 +1,10 @@
 ---
-import { getPosts, getGuides } from '../lib/site';
+import { getPosts, getGuides, CURRENT_SUB } from '../lib/site';
+import { compareForPost } from '../lib/compare';
+import { postThumb } from '../lib/snippet';
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
-import FormattedDate from '../components/FormattedDate.astro';
+import PricePosition from '../components/PricePosition.astro';
 import Header from '../components/Header.astro';
 import { categoryList, topicHubs } from '../lib/categories';
 import { ORGANIZATION, SITE_DESCRIPTION, SITE_TITLE, SITE_URL } from '../consts';
@@ -29,6 +31,30 @@ const cats = categoryList(posts);
 // 토픽 클러스터 허브 — 홈에서 필러(허브)로 직링크해 크롤러가 허브→클러스터 순으로 효율 색인하게 한다.
 const hubs = topicHubs(posts, 15).slice(0, 12);
 
+// 2026-10-08 리디자인: 상단 카드는 최신 글 중 같은 분류 가격 비교가 있는 첫 글에서 자동으로 뽑는다(실데이터).
+const won = (n: number) => `${n.toLocaleString('ko-KR')}원`;
+const ymd = (v: unknown) => (typeof v === 'string' ? v : (v as Date).toISOString()).slice(0, 10);
+const mdLabel = (iso: string) => `${Number(iso.slice(5, 7))}월 ${Number(iso.slice(8, 10))}일`;
+const dateOf = (p: (typeof posts)[number]) => mdLabel(ymd(p.data.priceCheckedAt ?? p.data.updatedDate ?? p.data.pubDate));
+let feature: { post: (typeof posts)[number]; comparison: NonNullable<ReturnType<typeof compareForPost>>; price: string; dateLabel: string } | null = null;
+for (const p of posts.slice(0, 80)) {
+	if (!p.data.productPrice || p.data.saleStatus === 'discontinued') continue;
+	const comparison = compareForPost(p, posts);
+	if (comparison) { feature = { post: p, comparison, price: won(p.data.productPrice), dateLabel: dateOf(p) }; break; }
+}
+const cards = recent.map((p) => ({
+	id: p.id,
+	title: p.data.title,
+	cat: (p.data.category || '').split('>').slice(0, 2).map((s) => s.trim()).filter(Boolean).join(' > '),
+	thumb: postThumb(p.data.heroImage, p.body),
+	price: p.data.productPrice && p.data.saleStatus !== 'discontinued' ? won(p.data.productPrice) : undefined,
+	dateLabel: dateOf(p),
+}));
+// 서브도메인은 설명문을 "헤드라인 — 부연"으로 나눠 쓴다. 본체는 고정 문구.
+const descParts = SITE_DESCRIPTION.split(' — ');
+const lead = CURRENT_SUB ? descParts[0] : '살까 말까 고민될 때, 가격표부터 펼쳐보세요';
+
+
 // 2026-09-10: 홈 제목이 사이트명 한 단어(4자)뿐이라 검색결과에서 무엇을 주는 곳인지 안 보였다.
 //   브랜드어("쇼핑로그")는 CTR 4.8%로 잘 눌리므로 브랜드는 앞에 두고, 뒤에 실제 제공 가치를 붙인다.
 const homeTitle = `${SITE_TITLE} — 상품 추천 ${posts.length.toLocaleString('ko-KR')}개 가격·후기 비교`;
@@ -42,30 +68,146 @@ const homeDesc = `${SITE_TITLE}는 네이버 스마트스토어 상품을 가격
 		<script type="application/ld+json" set:html={JSON.stringify(orgLd)} />
 		<script type="application/ld+json" set:html={JSON.stringify(websiteLd)} />
 		<style>
-			.intro {
-				margin-bottom: 2rem;
+			main.home {
+				width: 1120px;
+				max-width: 100%;
+				padding: 0 1.2rem 4rem;
+				box-sizing: border-box;
 			}
-			.intro h1 {
-				margin: 0 0 0.5rem 0;
-			}
-			.intro p {
-				color: rgb(var(--gray));
-				margin: 0;
-			}
-			.recent-head {
+			.hero {
 				display: flex;
+				flex-wrap: wrap;
+				align-items: center;
+				gap: 2rem 3rem;
+				padding: 3rem 0 2.2rem;
+			}
+			.hero-text {
+				flex: 1 1 440px;
+				min-width: 0;
+			}
+			.eyebrow {
+				margin: 0 0 0.9rem;
+				font-family: var(--font-mono);
+				font-size: 0.8rem;
+				font-weight: 700;
+				letter-spacing: 0.08em;
+				color: var(--accent);
+			}
+			.eyebrow h1 {
+				display: inline;
+				margin: 0;
+				font-size: inherit;
+				letter-spacing: inherit;
+				color: inherit;
+			}
+			.lead {
+				margin: 0 0 1rem;
+				font-size: clamp(2rem, 5.2vw, 3.1rem);
+				font-weight: 900;
+				line-height: 1.22;
+				letter-spacing: -0.03em;
+				color: rgb(var(--black));
+				word-break: keep-all;
+			}
+			.sub {
+				margin: 0 0 1.6rem;
+				max-width: 30em;
+				color: rgb(var(--gray));
+				word-break: keep-all;
+			}
+			.hero-cta {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 0.7rem;
+			}
+			.btn {
+				display: inline-flex;
+				align-items: center;
+				min-height: 48px;
+				padding: 0 1.4rem;
+				border-radius: 10px;
+				font-weight: 700;
+				text-decoration: none;
+			}
+			.btn.primary {
+				background: var(--accent);
+				color: #fff;
+			}
+			.btn.primary:hover {
+				background: var(--accent-dark);
+				color: #fff;
+			}
+			.btn.ghost {
+				border: 1.5px solid rgb(var(--black));
+				color: rgb(var(--black));
+			}
+			.btn.ghost:hover {
+				background: rgb(var(--black));
+				color: #fff;
+			}
+			.feature {
+				flex: 1 1 380px;
+				min-width: 0;
+				padding: 1.5rem;
+				background: #fff;
+				border: 1px solid rgb(var(--gray-light));
+				border-radius: 16px;
+			}
+			.feature-label {
+				display: flex;
+				justify-content: space-between;
+				gap: 0.6rem;
+				margin: 0 0 0.9rem;
+				font-family: var(--font-mono);
+				font-size: 0.72rem;
+				font-weight: 600;
+				letter-spacing: 0.06em;
+				color: rgb(var(--gray));
+			}
+			.feature-name {
+				display: block;
+				margin: 0;
+				font-size: 0.95rem;
+				line-height: 1.5;
+				color: rgb(var(--gray));
+				text-decoration: none;
+				word-break: keep-all;
+			}
+			.feature-name:hover {
+				color: var(--accent-dark);
+			}
+			.feature-price {
+				margin: 0.1rem 0 0;
+				font-size: 2.3rem;
+				font-weight: 600;
+				line-height: 1.3;
+				color: rgb(var(--black));
+			}
+			.feature-meta {
+				margin: 0 0 0.4rem;
+				font-size: 0.8rem;
+				color: rgb(var(--gray));
+			}
+			.block {
+				margin-bottom: 2.4rem;
+			}
+			.block-head {
+				display: flex;
+				flex-wrap: wrap;
 				align-items: baseline;
 				justify-content: space-between;
-				margin-bottom: 1rem;
+				gap: 0.3rem 1rem;
+				margin-bottom: 0.9rem;
 			}
-			.recent-head a {
+			.block-head h2 {
+				margin: 0;
+				font-size: 1.35rem;
+				font-weight: 900;
+			}
+			.block-head a {
 				font-size: 0.9rem;
-			}
-			.categories {
-				margin-bottom: 2.5rem;
-			}
-			.categories h2 {
-				margin-bottom: 1rem;
+				font-weight: 700;
+				color: var(--accent);
 			}
 			ul.cat-chips {
 				list-style: none;
@@ -73,67 +215,165 @@ const homeDesc = `${SITE_TITLE}는 네이버 스마트스토어 상품을 가격
 				padding: 0;
 				display: flex;
 				flex-wrap: wrap;
-				gap: 0.6rem;
+				gap: 0.55rem;
 			}
 			ul.cat-chips li a {
-				display: inline-block;
-				padding: 0.5rem 0.9rem;
+				display: inline-flex;
+				align-items: center;
+				gap: 0.4em;
+				min-height: 44px;
+				box-sizing: border-box;
+				padding: 0 1rem;
+				background: #fff;
 				border: 1px solid rgb(var(--gray-light));
 				border-radius: 999px;
+				font-size: 0.95rem;
+				font-weight: 500;
 				text-decoration: none;
 				color: rgb(var(--black));
-				transition: 0.2s ease;
+				transition: border-color 0.15s ease, background 0.15s ease;
 			}
 			ul.cat-chips li a:hover {
-				border-color: rgb(var(--accent));
-				color: rgb(var(--accent));
+				border-color: var(--accent);
+				background: var(--accent-soft);
+				color: var(--accent-dark);
 			}
 			ul.cat-chips .count {
+				font-family: var(--font-mono);
+				font-size: 0.78em;
 				color: rgb(var(--gray));
-				font-size: 0.85em;
 			}
-			ul.posts {
+			ul.cards {
 				list-style: none;
 				margin: 0;
 				padding: 0;
+				display: grid;
+				grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+				gap: 1.1rem;
 			}
-			ul.posts li {
-				padding: 0.6rem 0;
-				border-bottom: 1px solid rgb(var(--gray-light));
-			}
-			ul.posts li a {
+			ul.cards li {
 				display: flex;
-				justify-content: space-between;
-				gap: 1rem;
+			}
+			a.card {
+				display: flex;
+				flex-direction: column;
+				width: 100%;
+				background: #fff;
+				border: 1px solid rgb(var(--gray-light));
+				border-radius: 14px;
+				overflow: hidden;
 				text-decoration: none;
-			}
-			ul.posts .title {
 				color: rgb(var(--black));
+				transition: border-color 0.15s ease, box-shadow 0.15s ease;
 			}
-			ul.posts .date {
+			a.card:hover {
+				border-color: var(--accent);
+				box-shadow: var(--box-shadow);
+			}
+			.thumb {
+				aspect-ratio: 1 / 1;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				background: #e7e9e2;
 				color: rgb(var(--gray));
-				white-space: nowrap;
+				font-family: var(--font-mono);
+				font-size: 0.75rem;
 			}
-			ul.posts li a:hover .title {
-				color: rgb(var(--accent));
+			.thumb img {
+				width: 100%;
+				height: 100%;
+				object-fit: contain;
+				border-radius: 0;
+			}
+			.card-body {
+				display: flex;
+				flex-direction: column;
+				gap: 0.4rem;
+				flex: 1;
+				padding: 0.9rem 1rem 1rem;
+			}
+			.card-cat {
+				font-family: var(--font-mono);
+				font-size: 0.7rem;
+				font-weight: 600;
+				letter-spacing: 0.05em;
+				color: var(--accent);
+			}
+			.card-title {
+				font-size: 0.98rem;
+				font-weight: 700;
+				line-height: 1.45;
+				word-break: keep-all;
+				overflow: hidden;
+				display: -webkit-box;
+				-webkit-line-clamp: 2;
+				-webkit-box-orient: vertical;
+			}
+			.card-foot {
+				margin-top: auto;
+				padding-top: 0.5rem;
+				border-top: 1px dashed rgb(var(--gray-light));
+				display: flex;
+				flex-wrap: wrap;
+				align-items: baseline;
+				justify-content: space-between;
+				gap: 0.2rem 0.5rem;
+			}
+			.card-price {
+				font-size: 1.08rem;
+				font-weight: 600;
+			}
+			.card-date {
+				font-size: 0.75rem;
+				color: rgb(var(--gray));
+			}
+			@media (max-width: 720px) {
+				main.home { padding: 0 0.9rem 3rem; }
+				.hero { padding: 1.6rem 0 1.4rem; }
+				.feature-price { font-size: 2rem; }
+				ul.cards { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.7rem; }
+				.card-body { padding: 0.7rem 0.75rem 0.8rem; }
+				.card-title { font-size: 0.9rem; }
 			}
 		</style>
 	</head>
 	<body>
 		<Header />
-		<main>
+		<main class="home">
+			<section class="hero">
+				<div class="hero-text">
+					<div class="eyebrow"><h1>{SITE_TITLE}</h1><span> · PRICE LOG</span></div>
+					<p class="lead">{lead}</p>
+					<p class="sub">{CURRENT_SUB ? descParts.slice(1).join(" — ") : SITE_DESCRIPTION}</p>
+					<div class="hero-cta">
+						<a class="btn primary" href="/blog/">전체 글 보기</a>
+						<a class="btn ghost" href="/category/">카테고리 둘러보기</a>
+					</div>
+				</div>
+				{feature && (
+					<div class="feature">
+						<p class="feature-label"><span>최근 글 · 가격 위치</span><span class="num">{feature.dateLabel} 기준</span></p>
+						<a class="feature-name" href={`/blog/${feature.post.id}/`}>{feature.post.data.productName || feature.post.data.title}</a>
+						<p class="feature-price num"><span class="hl">{feature.price}</span></p>
+						<p class="feature-meta">{feature.post.data.productStore}</p>
+						<PricePosition comparison={feature.comparison} price={feature.post.data.productPrice!} heading="p" compact />
+					</div>
+				)}
+			</section>
+
 			{guides.length > 0 && (
-				<section class="categories">
-					<h2>구매 가이드 <a href="/guide/" style="font-size:0.9rem;font-weight:400">전체 보기 →</a></h2>
+				<section class="block">
+					<div class="block-head">
+						<h2>구매 가이드</h2>
+						<a href="/guide/">전체 보기 →</a>
+					</div>
 					<ul class="cat-chips">{guides.map((g) => <li><a href={`/guide/${g.id}/`}>{g.data.title}</a></li>)}</ul>
 				</section>
 			)}
-			<section class="intro">
-				<h1>{SITE_TITLE}</h1>
-				<p>{SITE_DESCRIPTION}</p>
-			</section>
-			<section class="categories">
-				<div class="recent-head">
+
+			<section class="block">
+				<div class="block-head">
 					<h2>카테고리</h2>
 					<a href="/category/">전체 보기 →</a>
 				</div>
@@ -149,8 +389,9 @@ const homeDesc = `${SITE_TITLE}는 네이버 스마트스토어 상품을 가격
 					}
 				</ul>
 			</section>
-			<section class="categories">
-				<div class="recent-head">
+
+			<section class="block">
+				<div class="block-head">
 					<h2>주제별 추천 모음</h2>
 					<a href="/category/">전체 보기 →</a>
 				</div>
@@ -166,20 +407,28 @@ const homeDesc = `${SITE_TITLE}는 네이버 스마트스토어 상품을 가격
 					}
 				</ul>
 			</section>
-			<section>
-				<div class="recent-head">
+
+			<section class="block">
+				<div class="block-head">
 					<h2>최근 글</h2>
 					<a href="/blog/">전체 글 보기 →</a>
 				</div>
-				<ul class="posts">
+				<ul class="cards">
 					{
-						recent.map((post) => (
+						cards.map((c) => (
 							<li>
-								<a href={`/blog/${post.id}/`}>
-									<span class="title">{post.data.title}</span>
-									<span class="date">
-										<FormattedDate date={post.data.pubDate} />
-									</span>
+								<a class="card" href={`/blog/${c.id}/`}>
+									<div class="thumb">
+										{c.thumb ? <img src={c.thumb} alt="" loading="lazy" decoding="async" /> : <span>상품 사진</span>}
+									</div>
+									<div class="card-body">
+										{c.cat && <span class="card-cat">{c.cat}</span>}
+										<span class="card-title">{c.title}</span>
+										<span class="card-foot">
+											<span class="card-price num">{c.price ?? ''}</span>
+											<span class="card-date">{c.dateLabel}</span>
+										</span>
+									</div>
 								</a>
 							</li>
 						))
