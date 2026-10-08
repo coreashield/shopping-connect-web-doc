@@ -125,6 +125,38 @@ const SUB_HOSTS = { '디지털/가전': 'https://digital.shopping-log.com', '식
 const SITE_BASE = SITE_URL_ENV || (SITE_CATEGORY_ENV ? SUB_HOSTS[SITE_CATEGORY_ENV] : 'https://shopping-log.com');
 const LASTMOD = buildLastmodMap();
 const NON_CANONICAL = buildNonCanonicalSet();
+// 판매 종료 + 노출 0 글(소프트 404 후보)은 사이트맵에서도 뺀다 — src/lib/soft-dead.ts 와 같은 규칙(바꾸면 둘 다).
+function buildSoftDeadSet() {
+	const root = path.dirname(fileURLToPath(import.meta.url));
+	const dir = path.join(root, 'src/content/blog');
+	let IMP = {};
+	try { IMP = JSON.parse(fs.readFileSync(path.join(root, 'src/data/naver_impressions.json'), 'utf8')).impressions || {}; } catch { return new Set(); }
+	if (SITE_CATEGORY_ENV) return new Set();   // 서브사이트 빌드는 노출 데이터가 없다
+	let files = [];
+	try { files = fs.readdirSync(dir).filter((f) => f.endsWith('.md') || f.endsWith('.mdx')); } catch { return new Set(); }
+	const rows = [];
+	const pidCount = new Map();
+	for (const file of files) {
+		const head = fs.readFileSync(path.join(dir, file), 'utf8').slice(0, 2000);
+		const id = file.replace(/\.mdx?$/, '');
+		const category = head.match(/^category:\s*"?([^"\n]+)"?/m)?.[1]?.trim();
+		const top = category?.split('>')[0]?.trim();
+		const status = head.match(/^saleStatus:\s*"?([^"\n]+)"?/m)?.[1]?.trim();
+		const pid = head.match(/^productId:\s*"?([^"\n]+)"?/m)?.[1]?.trim() || id.match(/-(\d{6,})-\d{8}$/)?.[1];
+		if (pid) pidCount.set(pid, (pidCount.get(pid) || 0) + 1);
+		rows.push({ id, top, status, pid });
+	}
+	const out = new Set();
+	for (const r of rows) {
+		if (r.status !== 'discontinued' || SUB_CATEGORIES.includes(r.top)) continue;
+		if (r.pid && pidCount.get(r.pid) > 1) continue;
+		if (IMP[r.id] > 0) continue;
+		out.add(`${SITE_BASE}/blog/${r.id}/`);
+	}
+	return out;
+}
+const SOFT_DEAD = buildSoftDeadSet();
+
 
 // https://astro.build/config
 export default defineConfig({
@@ -142,7 +174,7 @@ export default defineConfig({
 			// /blog/2/ 이후 페이지네이션은 2026-09-10부터 noindex 다. 색인하지 말라고
 			//   해놓고 사이트맵으로 제출하면 서로 어긋난 신호라 여기서도 뺀다.
 			//   /blog/ 1페이지는 슬러그에 숫자가 없어 그대로 남는다.
-			filter: (page) => !/\/blog\/\d+\/?$/.test(page) && !NON_CANONICAL.has(page),
+			filter: (page) => !/\/blog\/\d+\/?$/.test(page) && !NON_CANONICAL.has(page) && !SOFT_DEAD.has(page),
 			serialize(item) {
 				// 토픽 허브 슬러그는 한글이라 사이트맵에 퍼센트 인코딩되어 들어온다.
 				//   맵 키는 디코딩된 한글이므로 양쪽 다 시도해야 매칭된다.

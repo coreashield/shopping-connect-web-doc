@@ -8,6 +8,7 @@ import { extractFaq } from '../../lib/faq';
 import { isGoogleIndexable } from '../../lib/google-index';
 import { comparePrimary } from '../../lib/canonical';
 import { firstBodyImage } from '../../lib/snippet';
+import { isSoftDead } from '../../lib/soft-dead';
 
 export async function getStaticPaths() {
 	const posts = await getPosts();
@@ -67,8 +68,10 @@ if (pid) {
 		if (primary.id !== post.id) canonicalPath = `/blog/${primary.id}/`;
 	}
 }
+// 판매 종료 + 노출 0 → noindex(소프트 404 후보, src/lib/soft-dead.ts)
+const softDead = isSoftDead(post.id, (post.data as any).saleStatus, post.data.category, !!pid && [post, ...all].filter((p) => pidOf(p) === pid).length > 1);
 ---
 
-<BlogPost {...post.data} bodyImage={firstBodyImage(post.body)} guideLink={guideLink} relatedPosts={relatedPosts} hub={hub} comparison={comparison} faq={faq} googleNoindex={googleNoindex} headings={headings} canonicalPath={canonicalPath}>
+<BlogPost {...post.data} bodyImage={firstBodyImage(post.body)} guideLink={guideLink} relatedPosts={relatedPosts} hub={hub} comparison={comparison} faq={faq} googleNoindex={googleNoindex} noindex={softDead} headings={headings} canonicalPath={canonicalPath}>
 	<Content />
 </BlogPost>

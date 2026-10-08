@@ -1,0 +1,62 @@
+---
+import { getGuides } from '../../lib/site';
+import BaseHead from '../../components/BaseHead.astro';
+import Footer from '../../components/Footer.astro';
+import Header from '../../components/Header.astro';
+import { SITE_TITLE } from '../../consts';
+
+// 2026-10-07: /guide/ 목록이 404 라 크롤러가 가이드에 닿는 길이 홈 8개 + 상품 글 상단 링크뿐이었다.
+//   전체 가이드를 대분류별로 모은 허브. 헤더에서 전 페이지가 링크한다.
+const guides = await getGuides();
+const groups = new Map<string, typeof guides>();
+for (const g of guides) {
+	const top = g.data.category.split('>')[0].trim();
+	if (!groups.has(top)) groups.set(top, []);
+	groups.get(top)!.push(g);
+}
+const title = `구매 가이드 ${guides.length}개 · 상품 고르는 법과 가격 비교 | ${SITE_TITLE}`;
+const description = `${SITE_TITLE}의 구매 가이드 ${guides.length}개를 분류별로 모았습니다. 상품 고르는 기준, 가격 비교표, 자주 묻는 질문을 한 페이지씩 정리했습니다.`;
+const ld = {
+	'@context': 'https://schema.org',
+	'@type': 'CollectionPage',
+	name: title,
+	description,
+	hasPart: guides.slice(0, 100).map((g) => ({ '@type': 'Article', headline: g.data.title, url: `https://shopping-log.com/guide/${g.id}/` })),
+};
+---
+
+<!doctype html>
+<html lang="ko">
+	<head>
+		<BaseHead title={title} description={description} />
+		<script type="application/ld+json" set:html={JSON.stringify(ld)} />
+		<style>
+			h1 { margin-bottom: 0.5rem; }
+			.lead { color: rgb(var(--gray)); margin: 0 0 1.5rem; }
+			h2.sec { margin: 2rem 0 0.8rem; font-size: 1.15rem; }
+			ul.guides { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.7rem; }
+			ul.guides li a { display: block; padding: 0.7rem 1rem; border: 1px solid rgb(var(--gray-light)); border-radius: 10px; text-decoration: none; color: rgb(var(--black)); }
+			ul.guides li a:hover { border-color: rgb(var(--accent)); }
+			ul.guides .t { font-weight: 600; }
+			ul.guides .d { display: block; color: rgb(var(--gray)); font-size: 0.88rem; margin-top: 0.2rem; }
+		</style>
+	</head>
+	<body>
+		<Header />
+		<main>
+			<h1>구매 가이드</h1>
+			<p class="lead">상품을 고르는 기준과 가격 비교를 분류별로 정리했습니다. 총 {guides.length}개.</p>
+			{[...groups.entries()].map(([top, list]) => (
+				<>
+					<h2 class="sec">{top} <small>({list.length})</small></h2>
+					<ul class="guides">
+						{list.map((g) => (
+							<li><a href={`/guide/${g.id}/`}><span class="t">{g.data.title}</span><span class="d">{g.data.description}</span></a></li>
+						))}
+					</ul>
+				</>
+			))}
+		</main>
+		<Footer />
+	</body>
+</html>
