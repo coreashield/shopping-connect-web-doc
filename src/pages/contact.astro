@@ -1,0 +1,34 @@
+---
+import Layout from '../layouts/InfoPage.astro';
+import { AUTHOR_PERSON, CONTACT_EMAIL, SITE_TITLE } from '../consts';
+
+// 문의 (2026-10-15, AdSense 심사 보강). 폼 없이 메일만 — 사이트에 서버 저장소를 늘리지 않는다.
+const operator = AUTHOR_PERSON ? `${AUTHOR_PERSON.name} (${AUTHOR_PERSON.jobTitle ?? '운영자'})` : `${SITE_TITLE} 운영자`;
+---
+
+<Layout
+	title="문의"
+	description={`${SITE_TITLE}에 상품 정보 정정, 권리 침해 신고, 제휴·제안을 문의하는 방법을 안내합니다.`}
+	updatedDate={new Date('2026-10-15')}
+>
+	<p>
+		아래 이메일로 연락해 주시면 영업일 기준 3일 안에 답변드리겠습니다.
+	</p>
+	<ul>
+		<li>이메일: <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a></li>
+		<li>운영자: {operator}</li>
+	</ul>
+
+	<h2>이런 내용을 받습니다</h2>
+	<ul>
+		<li><strong>정보 정정:</strong> 가격·스펙·판매 상태가 틀렸거나 판매가 끝난 상품. 글 주소를 함께 보내 주시면 빨리 확인할 수 있습니다.</li>
+		<li><strong>권리 침해 신고:</strong> 이미지·문구의 저작권 또는 상표 문제. 권리자임을 확인할 수 있는 내용을 함께 보내 주세요.</li>
+		<li><strong>개인정보 요청:</strong> 열람·삭제 등 (<a href="/privacy/">개인정보처리방침</a> 6항).</li>
+		<li><strong>제휴·제안:</strong> 상품 비교 요청, 협업 제안.</li>
+	</ul>
+
+	<h2>받지 않는 문의</h2>
+	<p>
+		사이트는 상품을 직접 팔지 않아 주문·배송·교환·환불은 처리할 수 없습니다. 이 문의는 구매한 판매처 고객센터로 해 주세요.
+	</p>
+</Layout>
