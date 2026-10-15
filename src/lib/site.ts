@@ -20,6 +20,10 @@ export const SITE_TITLE = env('SITE_TITLE') || CURRENT_SUB?.title || '쇼핑로�
 export const SITE_DESCRIPTION = env('SITE_DESCRIPTION') || CURRENT_SUB?.description || '꼼꼼히 비교한 쇼핑 추천 — 가격, 후기, 스펙을 한눈에';
 export const NAVER_SITE_VERIFICATION = env('NAVER_SITE_VERIFICATION') || CURRENT_SUB?.naverVerification || (CURRENT_SUB ? '' : '7bb6ac531df1fe950cba4b95228c33104dc73fce');
 export const GOOGLE_SITE_VERIFICATION = env('GOOGLE_SITE_VERIFICATION') || (CURRENT_SUB ? '' : 'L4XkgtlpgPwwbh27YhByAmN_-uIv8n8hhiEqwcBc8JU');
+// AdSense 게시자 ID (2026-10-15). 빌드 env PUBLIC_ADSENSE_CLIENT=ca-pub-숫자 (GitHub repo 변수 ADSENSE_CLIENT).
+//   비어 있거나 형식이 틀리면 광고 스크립트·ads.txt 를 내지 않는다 — 가입 전에도 안전하게 배포 가능.
+const adsenseRaw = env('PUBLIC_ADSENSE_CLIENT');
+export const ADSENSE_CLIENT = /^ca-pub-\d{10,20}$/.test(adsenseRaw) ? adsenseRaw : '';
 
 /** 이 호스트에 속하는 글인가 */
 export function belongsHere(category?: string): boolean {

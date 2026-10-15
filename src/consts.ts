@@ -48,6 +48,9 @@ export const AUTHOR_PERSON: AuthorPerson | null = {
 };
 export const AUTHOR_ID = `${SITE_URL}/about/#author`;
 
+// 문의·개인정보 보호책임자 연락처 (문의·개인정보처리방침·소개 페이지 공통, 2026-10-15)
+export const CONTACT_EMAIL = 'coreashield3@gmail.com';
+
 // BlogPosting.author 로 그대로 직렬화되는 노드
 export const AUTHOR_NODE = AUTHOR_PERSON
 	? {

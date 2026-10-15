@@ -1,7 +1,7 @@
 ---
 import AboutHeroImage from '../assets/blog-placeholder-about.jpg';
 import Layout from '../layouts/BlogPost.astro';
-import { AUTHOR_NODE, AUTHOR_PERSON, ORGANIZATION, ORGANIZATION_SAME_AS, SITE_TITLE } from '../consts';
+import { AUTHOR_NODE, AUTHOR_PERSON, CONTACT_EMAIL, ORGANIZATION, ORGANIZATION_SAME_AS, SITE_TITLE } from '../consts';
 
 // GEO: 소개 페이지는 조직·저자 엔티티의 "홈"이다. BlogPosting.author/publisher 가 가리키는
 //   @id 노드를 여기서 본문(JSON-LD)으로 한 번 더 선언해 엔티티를 고정한다.
@@ -76,5 +76,9 @@ const channelName = (u: string) => (u.includes('youtube.com') ? '유튜브' : u.
 	<h2>문의</h2>
 	<p>
 		제품 정보 정정, 제휴·제안 관련 문의를 환영합니다.
+		이메일 <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a> 또는 <a href="/contact/">문의 페이지</a>를 이용해 주세요.
+	</p>
+	<p>
+		<a href="/privacy/">개인정보처리방침</a> · <a href="/terms/">이용약관</a>
 	</p>
 </Layout>

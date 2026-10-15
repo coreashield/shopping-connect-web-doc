@@ -77,6 +77,8 @@ jobs:
         if: steps.sel.outputs.skip == 'false'
         env:
           SITE_CATEGORY: ${{ matrix.category }}
+          # AdSense 게시자 ID (repo 변수 ADSENSE_CLIENT=ca-pub-…). 비어 있으면 광고·ads.txt 없이 빌드
+          PUBLIC_ADSENSE_CLIENT: ${{ vars.ADSENSE_CLIENT }}
         run: npm run build
 
       - name: Verify build (빈 본문 방지 가드)
