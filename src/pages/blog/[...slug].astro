@@ -9,6 +9,7 @@ import { isGoogleIndexable } from '../../lib/google-index';
 import { comparePrimary } from '../../lib/canonical';
 import { firstBodyImage } from '../../lib/snippet';
 import { isSoftDead } from '../../lib/soft-dead';
+import { isPruned, listed } from '../../lib/pruned';
 
 export async function getStaticPaths() {
 	const posts = await getPosts();
@@ -33,7 +34,7 @@ const top = topCategory(post.data.category);
 const sameSub = sub ? all.filter((p) => subPath(p.data.category) === sub).sort(byDate) : [];
 const sameTop = all.filter((p) => topCategory(p.data.category) === top && !sameSub.includes(p)).sort(byDate);
 const rest = all.filter((p) => !sameSub.includes(p) && !sameTop.includes(p)).sort(byDate);
-const relatedPosts = [...sameSub, ...sameTop, ...rest].slice(0, 6);
+const relatedPosts = listed([...sameSub, ...sameTop, ...rest]).slice(0, 6);
 // 이 글이 속한 토픽 허브(필러) — 글에서 허브로 링크(양방향 클러스터).
 const hub = hubForPost(post);
 // 10/5: 같은 세부 분류 비교 가이드가 있으면 첫 화면에 링크(상품 글이 네이버 노출의 대부분 — 비교 의도 방문자를 가이드로)
@@ -72,6 +73,6 @@ if (pid) {
 const softDead = isSoftDead(post.id, (post.data as any).saleStatus, post.data.category, !!pid && [post, ...all].filter((p) => pidOf(p) === pid).length > 1);
 ---
 
-<BlogPost {...post.data} bodyImage={firstBodyImage(post.body)} guideLink={guideLink} relatedPosts={relatedPosts} hub={hub} comparison={comparison} faq={faq} googleNoindex={googleNoindex} noindex={softDead} headings={headings} canonicalPath={canonicalPath}>
+<BlogPost {...post.data} bodyImage={firstBodyImage(post.body)} guideLink={guideLink} relatedPosts={relatedPosts} hub={hub} comparison={comparison} faq={faq} googleNoindex={googleNoindex} noindex={softDead || isPruned(post.id)} ads={false} headings={headings} canonicalPath={canonicalPath}>
 	<Content />
 </BlogPost>

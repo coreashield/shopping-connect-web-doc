@@ -86,7 +86,7 @@ const disclosure = '이 글은 네이버 여행 커넥트 활동의 일환이며
 <!doctype html>
 <html lang="ko">
 	<head>
-		<BaseHead title={title} description={description} type="article" imageUrl={heroImage} publishedTime={pubDate} modifiedTime={updatedDate} />
+		<BaseHead title={title} description={description} type="article" imageUrl={heroImage} publishedTime={pubDate} modifiedTime={updatedDate} ads={false} />
 		{ld.map((o) => <script type="application/ld+json" set:html={JSON.stringify(o)} />)}
 		<style>
 			.trip { max-width: 860px; margin: 0 auto; }

@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { getGuides, getPosts, getTravel } from '../lib/site';
+import { isPruned } from '../lib/pruned';
 import { categoryList, topicHubs } from '../lib/categories';
 import { isGoogleIndexable } from '../lib/google-index';
 import { comparePrimary, pidOf } from '../lib/canonical';
@@ -41,7 +42,7 @@ export const GET: APIRoute = async () => {
 	}
 	for (const p of primary.values()) {
 		const url = new URL(`/blog/${p.id}/`, SITE_URL).href;
-		if (isGoogleIndexable(url, p.body)) entries.push({ loc: url, lastmod: day(p.data.updatedDate ?? p.data.pubDate) });
+		if (!isPruned(p.id) && isGoogleIndexable(url, p.body)) entries.push({ loc: url, lastmod: day(p.data.updatedDate ?? p.data.pubDate) });
 	}
 
 	const xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'

@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { getGuides, getPosts, getTravel } from '../lib/site';
+import { listed } from '../lib/pruned';
 import { categoryList, topicHubs } from '../lib/categories';
 import { ORGANIZATION_SAME_AS, SITE_DESCRIPTION, SITE_TITLE, SITE_URL } from '../consts';
 
@@ -28,7 +29,7 @@ export const GET: APIRoute = async () => {
 		return `- [${h.sub} 추천 ${h.count}선 가격 비교](${SITE_URL}/topic/${encodeURI(h.slug)}/):${range}판매처 ${stores}곳`;
 	});
 	const catLines = cats.map((c) => `- [${c.name} 추천 모음 (${c.count}개)](${SITE_URL}/category/${c.slug}/)`);
-	const recent = posts.slice(0, 20).map((p) => `- [${p.data.title}](${SITE_URL}/blog/${p.id}/): ${p.data.pubDate.toISOString().slice(0, 10)}`);
+	const recent = listed(posts).slice(0, 20).map((p) => `- [${p.data.title}](${SITE_URL}/blog/${p.id}/): ${p.data.pubDate.toISOString().slice(0, 10)}`);
 
 	const body = [
 		`# ${SITE_TITLE} (${SITE_URL.replace('https://', '')})`,
