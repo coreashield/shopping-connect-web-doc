@@ -6,7 +6,9 @@ type Props = HTMLAttributes<'a'>;
 const { href, class: className, ...props } = Astro.props;
 const pathname = Astro.url.pathname.replace(import.meta.env.BASE_URL, '');
 const subpath = pathname.match(/[^\/]+/g);
-const isActive = href === pathname || href === '/' + (subpath?.[0] || '');
+// 10/20: 메뉴 href 를 슬래시로 끝나게 바꿈(308 리디렉트 제거) — 비교는 끝 슬래시를 떼고 한다
+const norm = (s: unknown) => String(s ?? '').replace(/(.)\/$/, '$1');
+const isActive = norm(href) === norm(pathname) || norm(href) === '/' + (subpath?.[0] || '');
 ---
 
 <a href={href} class:list={[className, { active: isActive }]} {...props}>

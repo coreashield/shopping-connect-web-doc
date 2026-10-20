@@ -5,6 +5,7 @@
 //   노출 데이터 = src/data/naver_impressions.json (서치어드바이저 30일, naver_exposure_fetch → naver_url_stats 스냅샷).
 //   ⚠️ astro.config.mjs 의 buildNonCanonicalSet 이 같은 규칙을 복제한다(config 는 이 파일을 import 못 함) — 바꾸면 둘 다.
 import naver from '../data/naver_impressions.json';
+import { isPruned } from './pruned';
 
 const IMP: Record<string, number> = (naver as any).impressions || {};
 
@@ -12,6 +13,9 @@ export const pidOf = (p: { id: string; data: { productId?: string } }): string |
 	p.data.productId ?? p.id.match(/-(\d{6,})-\d{8}$/)?.[1];
 
 export function comparePrimary(a: { id: string; data: { pubDate: Date } }, b: { id: string; data: { pubDate: Date } }): number {
+	// 10/20: 정리(noindex) 글은 대표가 될 수 없다 — 대표가 정리되면 중복 글 canonical 이 noindex 페이지를 가리키게 된다(537글)
+	const pa = isPruned(a.id), pb = isPruned(b.id);
+	if (pa !== pb) return pa ? 1 : -1;
 	const ia = IMP[a.id] || 0, ib = IMP[b.id] || 0;
 	if (ia !== ib) return ib - ia;                                       // 노출 많은 글 먼저
 	const d = a.data.pubDate.valueOf() - b.data.pubDate.valueOf();       // 그다음 먼저 쓴 글

@@ -113,7 +113,8 @@ function buildNonCanonicalSet() {
 	const out = new Set();
 	for (const list of groups.values()) {
 		if (list.length < 2) continue;
-		list.sort((a, b) => ((IMP[b.id] || 0) - (IMP[a.id] || 0)) || (a.pub - b.pub) || a.id.localeCompare(b.id));   // 10/5: 노출 많은 글 → 먼저 쓴 글
+		// 10/20: 정리(pruned) 글은 맨 뒤 — src/lib/canonical.ts comparePrimary 와 같은 규칙
+		list.sort((a, b) => (Number(PRUNED_IDS.has(a.id)) - Number(PRUNED_IDS.has(b.id))) || ((IMP[b.id] || 0) - (IMP[a.id] || 0)) || (a.pub - b.pub) || a.id.localeCompare(b.id));   // 10/5: 노출 많은 글 → 먼저 쓴 글
 		for (const x of list.slice(1)) out.add(`${B}/blog/${x.id}/`);
 	}
 	return out;
@@ -124,6 +125,7 @@ const SUB_CATEGORIES = ['디지털/가전', '식품'];   // src/lib/site.ts SUB_
 const SUB_HOSTS = { '디지털/가전': 'https://digital.shopping-log.com', '식품': 'https://food.shopping-log.com' };
 const SITE_BASE = SITE_URL_ENV || (SITE_CATEGORY_ENV ? SUB_HOSTS[SITE_CATEGORY_ENV] : 'https://shopping-log.com');
 const LASTMOD = buildLastmodMap();
+const PRUNED_IDS = (() => { try { return new Set(JSON.parse(fs.readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)), 'src/data/pruned_posts.json'), 'utf8')).ids || []); } catch { return new Set(); } })();
 const NON_CANONICAL = buildNonCanonicalSet();
 // 판매 종료 + 노출 0 글(소프트 404 후보)은 사이트맵에서도 뺀다 — src/lib/soft-dead.ts 와 같은 규칙(바꾸면 둘 다).
 function buildSoftDeadSet() {
@@ -182,7 +184,9 @@ export default defineConfig({
 			// /blog/2/ 이후 페이지네이션은 2026-09-10부터 noindex 다. 색인하지 말라고
 			//   해놓고 사이트맵으로 제출하면 서로 어긋난 신호라 여기서도 뺀다.
 			//   /blog/ 1페이지는 슬러그에 숫자가 없어 그대로 남는다.
-			filter: (page) => !/\/blog\/\d+\/?$/.test(page) && !NON_CANONICAL.has(page) && !SOFT_DEAD.has(page) && !PRUNED.has(page),
+			filter: (page) => !/\/blog\/\d+\/?$/.test(page) && !NON_CANONICAL.has(page) && !SOFT_DEAD.has(page) && !PRUNED.has(page)
+				// 서브사이트의 /travel/ 은 홈으로 보내는 빈 리디렉트 페이지(여행은 본체만) — 사이트맵에서 뺀다(10/20 점검)
+				&& !(SITE_CATEGORY_ENV && /\/travel\/?$/.test(page)),
 			serialize(item) {
 				// 토픽 허브 슬러그는 한글이라 사이트맵에 퍼센트 인코딩되어 들어온다.
 				//   맵 키는 디코딩된 한글이므로 양쪽 다 시도해야 매칭된다.
