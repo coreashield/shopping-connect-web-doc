@@ -11,6 +11,7 @@ import remarkFaq from './src/lib/remark-faq.mjs';
 import remarkBuyLinkRel from './src/lib/remark-buy-link-rel.mjs';
 import remarkAltLink from './src/lib/remark-alt-link.mjs';
 import remarkFitBox from './src/lib/remark-fit-box.mjs';
+import remarkCjkBold from './src/lib/remark-cjk-bold.mjs';
 import remarkDisclosure from './src/lib/remark-disclosure.mjs';
 import remarkImagePerf from './src/lib/remark-image-perf.mjs';
 
@@ -176,7 +177,7 @@ export default defineConfig({
 		// 판매 종료 글의 본문 구매 링크 제거 (src/lib/remark-discontinued.mjs)
 		// FAQ 섹션을 H2 + 질문별 H3 로 (src/lib/remark-faq.mjs)
 		// 본문 구매 링크에 rel=nofollow sponsored (src/lib/remark-buy-link-rel.mjs)
-		remarkPlugins: [remarkDisclosure, remarkImagePerf, remarkDiscontinued, remarkFaq, remarkBuyLinkRel, remarkAltLink, remarkFitBox],
+		remarkPlugins: [remarkDisclosure, remarkImagePerf, remarkDiscontinued, remarkFaq, remarkBuyLinkRel, remarkAltLink, remarkFitBox, remarkCjkBold],
 	},
 	integrations: [
 		mdx(),
