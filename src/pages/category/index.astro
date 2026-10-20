@@ -1,5 +1,6 @@
 ---
 import { getPosts } from '../../lib/site';
+import { listed } from '../../lib/pruned';
 import BaseHead from '../../components/BaseHead.astro';
 import Footer from '../../components/Footer.astro';
 import Header from '../../components/Header.astro';
@@ -7,7 +8,7 @@ import { categoryList, topicHubs } from '../../lib/categories';
 import { SITE_TITLE } from '../../consts';
 
 const posts = await getPosts();
-const cats = categoryList(posts);
+const cats = categoryList(listed(posts));   // 10/20: 표시 개수는 목록에 보이는 글 기준
 const hubs = topicHubs(posts, 15);
 // 2026-09-10: 제목이 "카테고리" 한 단어라 검색결과에서 정보량이 없었다. 개수와 구성 카테고리를 적는다.
 const title = `카테고리 ${cats.length}개 · 가격 비교 허브 ${hubs.length}개 | ${SITE_TITLE}`;
