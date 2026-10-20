@@ -1,4 +1,5 @@
 import { getPosts } from '../lib/site';
+import { listed } from '../lib/pruned';
 import rss from '@astrojs/rss';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 
@@ -7,7 +8,7 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 const MAX_ITEMS = 150;
 
 export async function GET(context) {
-	const posts = await getPosts();
+	const posts = listed(await getPosts());
 	const stamp = (p) => (p.data.updatedDate ?? p.data.pubDate).valueOf();
 	const newest = posts.sort((a, b) => stamp(b) - stamp(a)).slice(0, MAX_ITEMS);
 	return rss({

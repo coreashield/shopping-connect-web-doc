@@ -156,6 +156,14 @@ function buildSoftDeadSet() {
 	return out;
 }
 const SOFT_DEAD = buildSoftDeadSet();
+// 정리 대상 상품 글(10/20 대표 승인, src/lib/pruned.ts 와 같은 목록) — noindex 라 사이트맵에서도 뺀다.
+function buildPrunedSet() {
+	const root = path.dirname(fileURLToPath(import.meta.url));
+	let ids = [];
+	try { ids = JSON.parse(fs.readFileSync(path.join(root, 'src/data/pruned_posts.json'), 'utf8')).ids || []; } catch { return new Set(); }
+	return new Set(ids.map((id) => `${SITE_BASE}/blog/${id}/`));
+}
+const PRUNED = buildPrunedSet();
 
 
 // https://astro.build/config
@@ -174,7 +182,7 @@ export default defineConfig({
 			// /blog/2/ 이후 페이지네이션은 2026-09-10부터 noindex 다. 색인하지 말라고
 			//   해놓고 사이트맵으로 제출하면 서로 어긋난 신호라 여기서도 뺀다.
 			//   /blog/ 1페이지는 슬러그에 숫자가 없어 그대로 남는다.
-			filter: (page) => !/\/blog\/\d+\/?$/.test(page) && !NON_CANONICAL.has(page) && !SOFT_DEAD.has(page),
+			filter: (page) => !/\/blog\/\d+\/?$/.test(page) && !NON_CANONICAL.has(page) && !SOFT_DEAD.has(page) && !PRUNED.has(page),
 			serialize(item) {
 				// 토픽 허브 슬러그는 한글이라 사이트맵에 퍼센트 인코딩되어 들어온다.
 				//   맵 키는 디코딩된 한글이므로 양쪽 다 시도해야 매칭된다.

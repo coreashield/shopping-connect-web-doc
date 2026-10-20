@@ -1,6 +1,7 @@
 ---
 import { getPosts, getGuides, CURRENT_SUB } from '../lib/site';
 import { compareForPost } from '../lib/compare';
+import { listed } from '../lib/pruned';
 import { postThumb } from '../lib/snippet';
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
@@ -25,7 +26,7 @@ const orgLd = { '@context': 'https://schema.org', ...ORGANIZATION };
 const posts = (await getPosts()).sort(
 	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
-const recent = posts.slice(0, 12);
+const recent = listed(posts).slice(0, 12);
 const guides = (await getGuides()).slice(0, 8);
 const cats = categoryList(posts);
 // 토픽 클러스터 허브 — 홈에서 필러(허브)로 직링크해 크롤러가 허브→클러스터 순으로 효율 색인하게 한다.
