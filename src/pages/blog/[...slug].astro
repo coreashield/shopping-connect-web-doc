@@ -2,7 +2,7 @@
 import { type CollectionEntry, render } from 'astro:content';
 import { getPosts, getGuides } from '../../lib/site';
 import BlogPost from '../../layouts/BlogPost.astro';
-import { topCategory, subPath, hubForPost } from '../../lib/categories';
+import { topCategory, subPath, hubForPost, topicHubs } from '../../lib/categories';
 import { compareForPost } from '../../lib/compare';
 import { extractFaq } from '../../lib/faq';
 import { isGoogleIndexable } from '../../lib/google-index';
@@ -36,7 +36,9 @@ const sameTop = all.filter((p) => topCategory(p.data.category) === top && !sameS
 const rest = all.filter((p) => !sameSub.includes(p) && !sameTop.includes(p)).sort(byDate);
 const relatedPosts = listed([...sameSub, ...sameTop, ...rest]).slice(0, 6);
 // 이 글이 속한 토픽 허브(필러) — 글에서 허브로 링크(양방향 클러스터).
-const hub = hubForPost(post);
+//   10/20 점검: 허브는 글 15개+ 분류만 생기는데 링크는 모든 글에 달려 /topic/ 404 가 91개였다 → 있는 허브만 링크
+const hubCandidate = hubForPost(post);
+const hub = hubCandidate && topicHubs(posts, 15).some((h) => h.slug === hubCandidate.slug) ? hubCandidate : null;
 // 10/5: 같은 세부 분류 비교 가이드가 있으면 첫 화면에 링크(상품 글이 네이버 노출의 대부분 — 비교 의도 방문자를 가이드로)
 const postCat = String(post.data.category || '');
 const guide = (await getGuides()).find((g) => postCat === g.data.category || postCat.startsWith(g.data.category + '>'));
