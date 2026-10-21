@@ -11,6 +11,7 @@ on:
     paths-ignore:
       - 'src/content/**'
       - '_workspace/**'
+      - 'review_site/**'   # review.shopping-log.com 은 별도 Pages 프로젝트(로컬 예약 작업이 배포)
   workflow_dispatch:
     inputs:
       sites:

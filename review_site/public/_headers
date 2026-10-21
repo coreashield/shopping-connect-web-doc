@@ -1,0 +1,5 @@
+/style.css
+  Cache-Control: public, max-age=86400
+/_data/*
+  Cache-Control: public, max-age=600
+  X-Robots-Tag: noindex
