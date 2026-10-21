@@ -6,3 +6,5 @@ public/_data/
 sa_submitted.json
 exposure_log.csv
 sa_crawl.log
+gsc_urls.json
+gsc.log
