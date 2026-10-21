@@ -247,7 +247,8 @@ async function main() {
   const pages = [];
   for (const p of products) {
     const id = String(p.product_id);
-    if (blog.has(id) || seen.has(id) || !p.name) continue;
+    // 분류가 내부 태그(예: 추천(MIN_PRICE_30D))인 상품은 분류·대안이 엉터리라 뺀다
+    if (blog.has(id) || seen.has(id) || !p.name || /^[^>]*\(/.test(p.category || '')) continue;
     seen.add(id);
     pages.push(buildPage(p, { leafPrices, wave1Min }));
   }
