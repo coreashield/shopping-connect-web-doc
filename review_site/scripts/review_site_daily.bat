@@ -12,3 +12,4 @@ cd /d D:\shopping_connect\web_doc\review_site
 for /f "usebackq tokens=1,* delims==" %%a in (`findstr /b "CLOUDFLARE_API_TOKEN= CLOUDFLARE_ACCOUNT_ID=" "%ENVFILE%"`) do set "%%a=%%b"
 call npx wrangler pages deploy --branch main --commit-dirty=true >> "%LOG%" 2>&1
 node --env-file=%ENVFILE% scripts\indexnow.mjs --since %DATE:~0,4%-%DATE:~5,2%-%DATE:~8,2% >> "%LOG%" 2>&1
+node --env-file=%ENVFILE% scriptsxposure_probe.mjs --n 20 >> "%LOG%" 2>&1
