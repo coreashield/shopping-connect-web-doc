@@ -27,6 +27,7 @@ export function layout({ title, description, canonical, body, jsonld = [], noind
 ${canonical ? `<link rel="canonical" href="${esc(canonical)}">` : ''}
 ${noindex ? '<meta name="robots" content="noindex,follow">' : '<meta name="robots" content="index,follow,max-image-preview:large">'}
 ${verify}
+<meta name="msvalidate.01" content="0B8330D49C48EBA9B38483BA506C108E">
 <meta property="og:type" content="website"><meta property="og:site_name" content="${SITE.name}">
 <meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(description)}">
 ${canonical ? `<meta property="og:url" content="${esc(canonical)}">` : ''}
