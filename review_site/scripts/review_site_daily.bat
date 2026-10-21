@@ -1,6 +1,6 @@
 @echo off
-rem review.shopping-log.com 매일 갱신: 판매중 상품 → product_pages 재생성(가격·판매종료 반영) → 분류 데이터 배포 → IndexNow
-rem 공개 범위(물결)는 PUBLISH_WAVE 로. 다음 물결은 판정 후 숫자만 올린다.
+rem review.shopping-log.com daily: rebuild product_pages (price, sale end) - deploy - IndexNow - exposure probe
+rem PUBLISH_WAVE = published range (1=top 5000 by reviews, 2=reviews 100+, 3=all)
 setlocal
 set PUBLISH_WAVE=3
 set ENVFILE=D:\shopping_connect\packages\.env
