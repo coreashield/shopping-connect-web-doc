@@ -1,5 +1,6 @@
 ---
 import { primaryIds, pidOf } from '../../lib/canonical';
+import { postThumb } from '../../lib/snippet';
 import { getPosts } from '../../lib/site';
 import BaseHead from '../../components/BaseHead.astro';
 import Footer from '../../components/Footer.astro';
@@ -111,7 +112,7 @@ const itemListLd = {
 						<li>
 							<a href={`/blog/${post.id}/`} aria-label={post.data.productName || post.data.title}>
 								<div class="thumb">
-									{post.data.heroImage && <img src={post.data.heroImage} alt={post.data.productName || post.data.title} loading="lazy" />}
+									{postThumb(post.data.heroImage, post.body, post.data.gallery) && <img src={postThumb(post.data.heroImage, post.body, post.data.gallery)} alt={post.data.productName || post.data.title} loading="lazy" />}
 								</div>
 							</a>
 							<div class="body">

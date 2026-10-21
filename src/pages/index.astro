@@ -49,7 +49,7 @@ const cards = recent.map((p) => ({
 	id: p.id,
 	title: p.data.title,
 	cat: (p.data.category || '').split('>').slice(0, 2).map((s) => s.trim()).filter(Boolean).join(' > '),
-	thumb: postThumb(p.data.heroImage, p.body),
+	thumb: postThumb(p.data.heroImage, p.body, p.data.gallery),
 	price: p.data.productPrice && p.data.saleStatus !== 'discontinued' ? won(p.data.productPrice) : undefined,
 	dateLabel: dateOf(p),
 }));

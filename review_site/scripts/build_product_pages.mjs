@@ -10,6 +10,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { isProductPhoto } from '../../scripts/lib/product_photo.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const SITE_DIR = path.resolve(HERE, '..');
@@ -93,6 +94,9 @@ export function cleanImages(list) {
   });
   const base = (u) => (/\/dthumb\/|\?src=/.test(u) ? u : u.replace(/\?.*$/, ''));
   const uniq = [...new Map(ok.map((u) => [base(u), base(u)])).values()];
+  // 10/21: 상품 사진 파일명({숫자8+}_{숫자}.jpg)이 있으면 그것만 — 앞쪽 12.jpg·M1.jpg 같은 판매처 배너가 대표 사진이 되던 문제(판매중 58%)
+  const photos = uniq.filter(isProductPhoto);
+  if (photos.length) return photos.slice(0, 6);
   return [...uniq.filter((u) => /\.jpe?g$/i.test(u)), ...uniq.filter((u) => !/\.jpe?g$/i.test(u))].slice(0, 6);
 }
 

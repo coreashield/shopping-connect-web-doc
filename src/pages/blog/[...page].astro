@@ -1,5 +1,5 @@
 ---
-import { Image } from 'astro:assets';
+import { postThumb } from '../../lib/snippet';
 import { getPosts } from '../../lib/site';
 import { listed } from '../../lib/pruned';
 import BaseHead from '../../components/BaseHead.astro';
@@ -79,6 +79,12 @@ const pageDesc = isFirst
 				font-size: 2.369rem;
 			}
 			ul li img {
+				display: block;
+				width: 100%;
+				height: auto;
+				aspect-ratio: 1 / 1;
+				object-fit: contain;
+				background: #f6f7f9;
 				margin-bottom: 0.5rem;
 				border-radius: 12px;
 			}
@@ -154,8 +160,8 @@ const pageDesc = isFirst
 						page.data.map((post: any) => (
 							<li>
 								<a href={`/blog/${post.id}/`}>
-									{post.data.heroImage && (
-										<Image width={720} height={360} src={post.data.heroImage} alt="" />
+									{postThumb(post.data.heroImage, post.body, post.data.gallery) && (
+										<img src={`${postThumb(post.data.heroImage, post.body, post.data.gallery)}?type=f300_300`} alt="" width="300" height="300" loading="lazy" decoding="async" />
 									)}
 									<h4 class="title">{post.data.title}</h4>
 									<p class="date">

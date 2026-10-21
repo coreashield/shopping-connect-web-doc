@@ -53,8 +53,15 @@ export function firstBodyImage(body?: string): string | undefined {
 	return undefined;
 }
 
-/** 목록 카드 썸네일: 본문 첫 상품 사진 우선(대표 이미지가 판매처 로고인 글이 많고 파일명으로는 다 못 거른다), 본문에 사진이 없으면 대표 이미지 */
-export function postThumb(heroImage: unknown, body?: string): string | undefined {
+// 스마트스토어 "상품 사진" 판별 (10/21): 판매자 상품 이미지는 {숫자8+}_{숫자}.jpg 파일명, 배너·로고는 올린 이름 그대로(12.jpg, M1.jpg, uuid.png).
+//   판매중 상품 97% 가 이 사진을 하나 이상 가진다. scripts/lib/product_photo.mjs 와 같은 규칙.
+const PRODUCT_PHOTO_RE = /^https:\/\/shop-phinf\.pstatic\.net\/.+\/\d{8,}_\d+\.(jpe?g|png)$/i;
+export const isProductPhoto = (url?: string): boolean => !!url && PRODUCT_PHOTO_RE.test(url.replace(/\?.*$/, ''));
+
+/** 목록 카드 썸네일: 상품 사진 갤러리 첫 장 → 상품 사진인 대표 이미지 → 본문 첫 상품 사진(로고 아님) → 대표 이미지 */
+export function postThumb(heroImage: unknown, body?: string, gallery?: string[]): string | undefined {
 	const raw = typeof heroImage === 'string' ? heroImage : (heroImage as { src?: string } | undefined)?.src;
+	if (gallery?.[0]) return gallery[0];
+	if (isProductPhoto(raw)) return raw;
 	return firstBodyImage(body) ?? raw;
 }

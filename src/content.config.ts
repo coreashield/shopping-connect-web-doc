@@ -15,6 +15,8 @@ const blog = defineCollection({
 			pubDate: z.coerce.date(),
 			updatedDate: z.coerce.date().optional(),
 			heroImage: z.union([image(), z.string().url()]).optional(),
+			// 10/21: DB 상품 사진(배너·로고 제외) 최대 5장 — 상단 갤러리·목록 썸네일 (scripts/backfill_product_photos.mjs)
+			gallery: z.array(z.string().url()).optional(),
 			// 쇼핑 리뷰 전용 필드 (모두 optional)
 			productName: z.string().optional(),
 			productPrice: z.number().optional(),
