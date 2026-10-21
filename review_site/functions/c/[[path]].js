@@ -26,17 +26,18 @@ export async function onRequestGet(context) {
     const nav = pages > 1 ? `<nav class="pager">${page > 1 ? `<a href="?page=${page - 1}" rel="prev">이전</a>` : ''}<span>${page} / ${pages}</span>${page < pages ? `<a href="?page=${page + 1}" rel="next">다음</a>` : ''}</nav>` : '';
     const body = `
 ${breadcrumb(segs.slice(0, -1), last)}
-<section class="sec cat-head">
+<section class="page-head">
+  <p class="eyebrow">카테고리별 추천</p>
   <h1>${esc(last)} 추천·후기 비교 <small>${fmtN(total)}개</small></h1>
-  <p class="muted">평점·리뷰 수·같은 분류 가격·리뷰 항목 응답으로 계산한 구매 판단 점수 순입니다.</p>
-  ${subs.length ? `<div class="chips">${subs.map(([c, v]) => `<a href="${catHref([...segs, c])}">${esc(c)} <small>${fmtN(v.n)}</small></a>`).join('')}</div>` : ''}
+  <p class="muted">평점·리뷰 수·같은 분류 가격·리뷰 항목 응답으로 계산한 구매 점수 순입니다.</p>
+  ${subs.length ? `<div class="cchips sm">${subs.map(([c, v]) => `<a href="${catHref([...segs, c])}">${esc(c)} <small>${fmtN(v.n)}</small></a>`).join('')}</div>` : ''}
 </section>
-<div class="grid">${rows.map((p) => card(p, 'cat')).join('')}</div>
+<div class="pgrid" role="list">${rows.map((p, i) => card(p, 'cat', page === 1 ? i + 1 : (page - 1) * PER + i + 1)).join('')}</div>
 ${nav}`;
     return html(layout({
       title: `${last} 추천 순위·후기 비교 ${fmtN(total)}개${page > 1 ? ` (${page}쪽)` : ''} | ${SITE.name}`,
       description: `${last} ${fmtN(total)}개를 평점·리뷰 수·가격 위치로 계산한 점수 순으로 비교했어요. 상품마다 장단점과 사기 전 확인할 것을 정리합니다.`,
-      canonical, body, env, noindex: total < 5,
+      canonical, body, env, noindex: total < 5, nav: 'category',
       jsonld: [breadcrumbLd(segs.slice(0, -1), last, `${SITE.origin}${catHref(segs)}`)],
     }));
   });

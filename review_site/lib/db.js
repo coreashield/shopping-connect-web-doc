@@ -17,7 +17,8 @@ export async function getPage(env, id) {
   return rows[0] || null;
 }
 
-export const CARD_COLS = 'product_id,name,score,review_count,price:data->price,rating:data->rating,img:data->imgs->0,label:data->label';
+export const CARD_COLS = 'product_id,name,score,review_count,price:data->price,rating:data->rating,img:data->imgs->0,label:data->label,discount:data->discount,pro:data->fit->0,con:data->checks->0';
+export const ROW_COLS = 'product_id,name,score,review_count,discount:data->discount';
 
 // 분류 트리·개수 (빌드 때 정적 파일로 생성)
 let catsMemo = null;
@@ -30,7 +31,7 @@ export async function getCats(context) {
 
 // GET HTML 응답을 엣지 캐시에 하루 둔다 (데이터는 하루 1회 재생성). ?nocache=1 은 우회.
 // 화면 코드를 바꾸면 CACHE_VER 를 올린다 — 엣지 캐시는 배포로 비워지지 않는다(키가 바뀌어야 새로 그림).
-const CACHE_VER = '2026102106';
+const CACHE_VER = '2026102107';
 
 export async function cached(context, render) {
   const url = new URL(context.request.url);
