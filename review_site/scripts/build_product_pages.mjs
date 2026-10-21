@@ -24,7 +24,7 @@ if (!SB || !KEY) { console.error('SUPABASE_URL / SUPABASE_SERVICE_KEY 필요'); 
 const H = { apikey: KEY, Authorization: `Bearer ${KEY}`, 'Content-Type': 'application/json' };
 
 async function fetchAllProducts() {
-  const cols = 'product_id,name,store,brand,price_numeric,original_price,category,rating,review_count,images,detail_spec,affiliate_link,updated_at';
+  const cols = 'product_id,name,store,brand,features,price_numeric,original_price,category,rating,review_count,images,detail_spec,affiliate_link,updated_at';
   const out = [];
   for (let from = 0; ; from += 1000) {
     const r = await fetch(`${SB}/rest/v1/products?select=${cols}&status=eq.ON&affiliate_link=not.is.null&order=product_id`, {
@@ -190,6 +190,10 @@ function buildPage(p, ctx) {
   faq.push({ q: `사기 전에 무엇을 확인해야 하나요?`, a: checks.join(' / ') + '.' });
 
   const imgs = cleanImages(p.images);
+  // 관련 검색어: 판매처 키워드(features) — 중복·영문 소문자 중복·브랜드 단독 제외, 12개
+  const seenKw = new Set([brand.toLowerCase()]);
+  const keywords = (Array.isArray(p.features) ? p.features : []).map((k) => String(k).trim())
+    .filter((k) => k.length >= 2 && k.length <= 20 && !/협력사|공식|정품/.test(k) && !seenKw.has(k.toLowerCase()) && seenKw.add(k.toLowerCase())).slice(0, 12);
   return {
     product_id: String(p.product_id),
     cat1: cats[0] || '기타',
@@ -204,7 +208,7 @@ function buildPage(p, ctx) {
       price, orig: discount ? orig : null, discount, rating, reviews,
       pricePct: pricePct == null ? null : Math.round(pricePct * 100), leafN: leafPrices.length, leafMedian,
       score, parts, label: verdictLabel(score),
-      summary, fit: fit.slice(0, 4), unfit: unfit.slice(0, 4), checks, spec, attrs, faq, imgs,
+      keywords, summary, fit: fit.slice(0, 4), unfit: unfit.slice(0, 4), checks, spec, attrs, faq, imgs,
       checkedAt: (p.updated_at || '').slice(0, 10),
     },
   };

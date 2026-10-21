@@ -110,6 +110,7 @@ ${breadcrumb(d.cats)}
   </section>
 
   ${spec}
+  ${d.keywords?.length ? `<section class="box"><h2>관련 검색어</h2><p class="kw">${d.keywords.map((k) => `<span>#${esc(k)}</span>`).join('')}</p></section>` : ''}
   ${alts}
   ${faq}
 </article>
