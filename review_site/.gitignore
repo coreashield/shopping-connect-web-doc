@@ -3,3 +3,6 @@
 .wrangler/
 daily.log
 public/_data/
+sa_submitted.json
+exposure_log.csv
+sa_crawl.log
