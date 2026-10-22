@@ -83,3 +83,26 @@ const ogImage = imageUrl ?? new URL(image.src, Astro.url).href;
 <meta property="twitter:title" content={title} />
 <meta property="twitter:description" content={description} />
 <meta property="twitter:image" content={ogImage} />
+
+<!-- 10/22 구매 버튼 직접 연결: 사람이 누르는 순간 /go/ 대신 네이버 제휴링크(naver.me)로 바로 보낸다.
+     Cloudflare 함수 하루 한도(무료 10만)를 /go/ 가 같이 써서, 한도가 차면 구매 이동이 막히던 문제 대응.
+     HTML 에는 /go/ 그대로 둔다 — 크롤러는 robots Disallow /go/ 로 제휴링크를 따라가지 않는다(인위 클릭 방지).
+     클릭 기록(web_doc_clicks)은 이 경로로는 남지 않는다. JS 꺼진 방문자는 기존 /go/ 로 간다. 되돌리려면 이 블록 삭제. -->
+<script is:inline>
+(function () {
+	function direct(e) {
+		var a = e.target && e.target.closest && e.target.closest('a[href*="/go/"]');
+		if (!a) return;
+		try {
+			var url = new URL(a.href, location.href);
+			if (url.origin !== location.origin || url.pathname.indexOf('/go/') !== 0) return;
+			var u = url.searchParams.get('u');
+			if (u && /^https:\/\/naver\.me\/[A-Za-z0-9]+$/.test(u)) a.href = u;
+		} catch (err) {}
+	}
+	document.addEventListener('mousedown', direct, true);
+	document.addEventListener('touchstart', direct, { capture: true, passive: true });
+	document.addEventListener('keydown', function (e) { if (e.key === 'Enter') direct(e); }, true);
+	document.addEventListener('click', direct, true);
+})();
+</script>
