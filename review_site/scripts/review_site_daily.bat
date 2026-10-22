@@ -8,6 +8,10 @@ set LOG=D:\shopping_connect\web_doc\review_site\daily.log
 cd /d D:\shopping_connect\web_doc
 echo ==== %DATE% %TIME% >> "%LOG%"
 node --env-file=%ENVFILE% review_site\scripts\build_product_pages.mjs --publish-wave %PUBLISH_WAVE% >> "%LOG%" 2>&1 || goto :eof
+rem main site product cards read src/data/product_facts.json - push it ([skip ci]: next publish build picks it up)
+git pull --ff-only -q >> "%LOG%" 2>&1
+git add src/data/product_facts.json
+git diff --cached --quiet || (git commit -q -m "data: product_facts %DATE% [skip ci]" && git push -q origin main) >> "%LOG%" 2>&1
 cd /d D:\shopping_connect\web_doc\review_site
 for /f "usebackq tokens=1,* delims==" %%a in (`findstr /b "CLOUDFLARE_API_TOKEN= CLOUDFLARE_ACCOUNT_ID=" "%ENVFILE%"`) do set "%%a=%%b"
 call npx wrangler pages deploy --branch main --commit-dirty=true >> "%LOG%" 2>&1
