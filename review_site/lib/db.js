@@ -31,7 +31,7 @@ export async function getCats(context) {
 
 // GET HTML 응답을 엣지 캐시에 하루 둔다 (데이터는 하루 1회 재생성). ?nocache=1 은 우회.
 // 화면 코드를 바꾸면 CACHE_VER 를 올린다 — 엣지 캐시는 배포로 비워지지 않는다(키가 바뀌어야 새로 그림).
-const CACHE_VER = '2026102107';
+const CACHE_VER = '2026102201';
 
 export async function cached(context, render) {
   const url = new URL(context.request.url);
