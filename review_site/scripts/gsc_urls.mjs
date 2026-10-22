@@ -22,6 +22,6 @@ const ri = process.argv.indexOf('--run');
 if (ri > 0) {
   const { spawnSync } = await import('node:child_process');
   const LIVE = 'F:/기타/새 폴더/shopping_connect';
-  const r = spawnSync(process.execPath, [`${LIVE}/tools/gsc_aside.mjs`, '--skip-fetch', '--limit', String(Number(process.argv[ri + 1]) || 5), '--urls-file', path.join(HERE, '../gsc_urls.json')], { cwd: LIVE, stdio: 'inherit' });
+  const r = spawnSync(process.execPath, [`${LIVE}/tools/gsc_aside.mjs`, '--skip-fetch', '--limit', String(Number(process.argv[ri + 1]) || 5), '--urls-file', path.join(HERE, '../gsc_urls.json'), '--prop', 'https://review.shopping-log.com/'], { cwd: LIVE, stdio: 'inherit' });
   process.exit(r.status ?? 1);
 }
