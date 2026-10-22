@@ -1,6 +1,6 @@
 // Cloudflare 함수(Workers·Pages Functions) 오늘 사용량 확인 — 무료 한도 하루 10만(계정 전체 공유, UTC 0시=한국 9시 초기화).
 //   사용량이 경고선(기본 9만)을 넘으면 텔레그램 보고 봇으로 알린다. 하루 한 번만 알린다(같은 날 중복 방지 파일).
-//   필요 권한: API 토큰에 "Account Analytics: Read". 없으면 권한 없음으로 끝난다.
+//   필요 권한: "Account Analytics: Read" — packages/.env CLOUDFLARE_ANALYTICS_TOKEN(usage-monitor-analytics-read, 읽기 전용).
 //   실행: node review_site/scripts/cf_usage_check.mjs [--warn 90000] [--print]
 //   env: CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID (packages/.env), TELEGRAM_TOKEN_REPORT|TELEGRAM_TOKEN, TELEGRAM_CHAT_ID (라이브 클론 .env)
 import fs from 'node:fs';
@@ -15,14 +15,16 @@ const PRINT = process.argv.includes('--print');
 for (const f of ['D:/shopping_connect/packages/.env', 'F:/기타/새 폴더/shopping_connect/.env']) {
 	if (!fs.existsSync(f)) continue;
 	for (const line of fs.readFileSync(f, 'utf8').split(/\r?\n/)) {
-		const m = line.match(/^(CLOUDFLARE_API_TOKEN|CLOUDFLARE_ACCOUNT_ID|TELEGRAM_TOKEN_REPORT|TELEGRAM_TOKEN|TELEGRAM_CHAT_ID)=(.*)$/);
+		const m = line.match(/^(CLOUDFLARE_ANALYTICS_TOKEN|CLOUDFLARE_API_TOKEN|CLOUDFLARE_ACCOUNT_ID|TELEGRAM_TOKEN_REPORT|TELEGRAM_TOKEN|TELEGRAM_CHAT_ID)=(.*)$/);
 		if (m && !process.env[m[1]]) process.env[m[1]] = m[2].trim().replace(/^["']|["']$/g, '');
 	}
 }
-const { CLOUDFLARE_API_TOKEN: TOKEN, CLOUDFLARE_ACCOUNT_ID: ACCOUNT } = process.env;
+const TOKEN = process.env.CLOUDFLARE_ANALYTICS_TOKEN || process.env.CLOUDFLARE_API_TOKEN;   // 읽기 전용 분석 토큰 우선(10/22 생성)
+const ACCOUNT = process.env.CLOUDFLARE_ACCOUNT_ID;
 
 const day = new Date().toISOString().slice(0, 10);   // UTC 날짜 = 한도 기준일
-const query = `{viewer{accounts(filter:{accountTag:"${ACCOUNT}"}){workersInvocationsAdaptive(limit:100,filter:{date:"${day}"}){sum{requests} dimensions{scriptName}}}}}`;
+// Pages Functions(리뷰 사이트·/go/)는 workersInvocationsAdaptive 에 안 잡혀 따로 합친다 (10/22 확인: 10/21 리뷰 사이트 121,003건)
+const query = `{viewer{accounts(filter:{accountTag:"${ACCOUNT}"}){w:workersInvocationsAdaptive(limit:100,filter:{date:"${day}"}){sum{requests} dimensions{scriptName}} p:pagesFunctionsInvocationsAdaptiveGroups(limit:100,filter:{date:"${day}"}){sum{requests} dimensions{scriptName}}}}}`;
 const res = await fetch('https://api.cloudflare.com/client/v4/graphql', {
 	method: 'POST',
 	headers: { Authorization: `Bearer ${TOKEN}`, 'Content-Type': 'application/json' },
@@ -33,11 +35,14 @@ if (j.errors?.length) {
 	console.error(`[cf_usage] 조회 실패: ${j.errors[0].message}`);
 	process.exit(1);
 }
-const rows = j.data.viewer.accounts[0]?.workersInvocationsAdaptive ?? [];
+const acc = j.data.viewer.accounts[0] ?? {};
+const rows = [...(acc.w ?? []), ...(acc.p ?? [])];
 const by = {};
 for (const r of rows) by[r.dimensions.scriptName] = (by[r.dimensions.scriptName] ?? 0) + r.sum.requests;
 const total = Object.values(by).reduce((a, b) => a + b, 0);
-const detail = Object.entries(by).sort((a, b) => b[1] - a[1]).map(([k, v]) => `${k} ${v.toLocaleString()}`).join(', ');
+// 스크립트 이름 → 사이트 (10/22 기준. 21979978 은 10/21 리뷰 사이트 개설과 함께 생긴 것, 14321877 은 /go/ 쓰는 본체)
+const NAMES = { 'pages-worker--21979978-production': '리뷰 사이트', 'pages-worker--14321877-production': '본체' };
+const detail = Object.entries(by).sort((a, b) => b[1] - a[1]).map(([k, v]) => `${NAMES[k] ?? k} ${v.toLocaleString()}`).join(', ');
 const line = `[cf_usage] ${day}(UTC) ${total.toLocaleString()} / ${LIMIT.toLocaleString()} (${Math.round((total / LIMIT) * 100)}%) — ${detail || '사용 없음'}`;
 console.log(line);
 if (PRINT || total < WARN) process.exit(0);
