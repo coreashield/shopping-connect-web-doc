@@ -13,6 +13,7 @@ import type { Comparison } from '../lib/compare';
 import type { FaqItem } from '../lib/faq';
 import { seoTitle, isLogoImage, isProductPhoto } from '../lib/snippet';
 import PricePosition from '../components/PricePosition.astro';
+import { type Facts, trustOf, riskOf, reasonsOf, verdictLine, splitWho } from '../lib/facts';
 
 type Props = CollectionEntry<'blog'>['data'] & {
 	bodyImage?: string;   // 본문 첫 상품 사진(로고 제외) — 대표 이미지가 판매처 로고일 때 대신 쓴다
@@ -25,10 +26,13 @@ type Props = CollectionEntry<'blog'>['data'] & {
 	ads?: boolean;   // AdSense 광고 스크립트 — 상품 글은 false, 소개(about) 페이지는 기본 true
 	canonicalPath?: string;
 	guideLink?: { href: string; query: string; n: number } | null;   // 10/5 같은 세부 분류 비교 가이드
+	facts?: Facts | null;   // 10/21 review101 형식 카드용 상품 사실값(src/data/product_facts.json)
+	sections?: { slug: string; title: string; preview: string }[];
+	relatedCards?: { href: string; name: string; thumb?: string; score: number | null; price: number | null }[];
 };
 
 const { title, description, summary, pubDate, updatedDate, heroImage: heroImageRaw, gallery = [], category, relatedPosts = [], hub = null, comparison = null, faq = [], googleNoindex = false, noindex = false, ads = true, bodyImage,
-	canonicalPath, guideLink = null, affiliateUrl, productStore, rating, reviewCount, priceCheckedAt, saleStatus, productId, productName, productPrice, headings = [] } = Astro.props;
+	canonicalPath, guideLink = null, facts = null, sections = [], relatedCards = [], affiliateUrl, productStore, rating, reviewCount, priceCheckedAt, saleStatus, productId, productName, productPrice, headings = [] } = Astro.props;
 const catName = topCategory(category);
 // 대표 이미지가 판매처 로고·배너면 본문 첫 상품 사진으로 교체 (og:image·구매 카드 썸네일·상단 이미지 공통)
 const heroImage = gallery[0] ?? ((typeof heroImageRaw === 'string' && isLogoImage(heroImageRaw) && bodyImage) ? bodyImage : heroImageRaw);
@@ -81,6 +85,11 @@ const rawImg = gallery[0] ?? (isProductPhoto(heroStr) ? heroStr : (bodyImage ?? 
 const isProduct = !!(productName || affiliateUrl);
 const photos = gallery.length ? gallery : (rawImg ? [rawImg] : []);
 const sized = (u: string, w: number) => (/^https:\/\/shop-phinf\.pstatic\.net\//.test(u) ? `${u.replace(/\?.*$/, '')}?type=f${w}_${w}` : u);
+// review101 카드 보조값: 사도 되는 이유·해시태그·리뷰 키워드(긍정/주의) — 모두 DB 숫자·판매처 키워드에서
+const reasons = facts ? reasonsOf(facts) : [];
+const hashtags = facts ? [facts.brand, ...facts.keywords].filter(Boolean).slice(0, 14) : [];
+const posKw = facts ? [...facts.attrs.filter((a) => a.pct >= 70).map((a) => a.top), facts.brand, ...facts.keywords].filter(Boolean).slice(0, 6) : [];
+const cautionKw = facts ? facts.attrs.filter((a) => a.pct < 70).map((a) => a.label).concat(facts.checks.map((x) => x.split(/[와과(·,]/)[0].trim())).filter((x) => x && x.length <= 14).slice(0, 4) : [];
 const leafCat = String(category || '').split('>').map((x) => x.trim()).filter(Boolean).pop();
 // 구매 카드(2026-10-03): 첫 화면에 가격·평점·버튼을 한 묶음으로 (네이버 방문→구매버튼 15%, 첫 버튼이 1.8화면 아래였음).
 //   평점은 정수(5·4)가 대부분이라 기본값으로 보인다 — 소수점이 있는 실측값만 보여준다(가짜 신뢰 신호 금지).
@@ -101,6 +110,7 @@ const searchTitle = seoTitle({ title, productName });
 <html lang="ko">
 	<head>
 		<BaseHead title={searchTitle} description={metaDescription} type="article" imageUrl={imageUrl} canonicalPath={canonicalPath} publishedTime={pubDate} modifiedTime={updatedDate} googleNoindex={googleNoindex} noindex={noindex} ads={ads} />
+		<link rel="stylesheet" href="/r101.css?v=2" />
 		<SeoSchema
 			title={title}
 			description={description}
@@ -172,73 +182,8 @@ const searchTitle = seoTitle({ title, productName });
 				color: rgb(var(--gray-dark));
 				padding: 0;
 			}
-			/* 2026-10-21 리디자인(review101 형식): 상단 상품 카드 → 요약·판매 정보 카드 → 가격 위치 → 본문(+데스크톱 오른쪽 목차) */
+			/* 2026-10-21 review101 형식: 상단 카드들은 /r101.css, 여기서는 본문 카드만 */
 			.prose { min-width: 0; }
-			.layout { display: block; }
-			@media (min-width: 900px) {
-				.layout.has-side { display: grid; grid-template-columns: minmax(0, 1fr) 260px; column-gap: 2rem; align-items: start; }
-				.layout.has-side .toc-inline { display: none; }
-				.side { position: sticky; top: 1rem; display: flex; flex-direction: column; gap: 0.8rem; }
-			}
-			@media (max-width: 899px) { .side { display: none; } }
-			.card {
-				background: #fff;
-				border: 1px solid #e6e8e3;
-				border-radius: 16px;
-				padding: 1.1em 1.3em;
-				margin: 0 0 1rem;
-			}
-			.card-h { margin: 0 0 0.55em; padding: 0; border: 0; font-size: 1.02rem !important; font-weight: 800; color: #111; }
-			.pd {
-				display: grid;
-				grid-template-columns: minmax(0, 420px) minmax(0, 1fr);
-				gap: 1.6rem;
-				background: #fff;
-				border: 1px solid #e6e8e3;
-				border-radius: 18px;
-				padding: 1.2rem;
-				margin: 0.6rem 0 1rem;
-			}
-			@media (max-width: 760px) { .pd { grid-template-columns: 1fr; gap: 1rem; padding: 0.9rem; } }
-			.pd-main { display: block; width: 100%; height: auto; aspect-ratio: 1 / 1; object-fit: contain; background: #f6f7f9; border-radius: 12px; }
-			.pd-empty { display: grid; place-items: center; color: rgb(var(--gray)); }
-			.pd-thumbs { display: flex; gap: 0.45rem; margin-top: 0.6rem; overflow-x: auto; }
-			.pd-thumb { flex: 0 0 auto; padding: 0; border: 2px solid transparent; border-radius: 10px; background: #f6f7f9; cursor: pointer; }
-			.pd-thumb.on { border-color: var(--accent); }
-			.pd-thumb img { display: block; width: 60px; height: 60px; object-fit: contain; border-radius: 8px; }
-			.pd-info { min-width: 0; display: flex; flex-direction: column; }
-			.pd-chips { display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 0 0 0.6rem; }
-			.chip { display: inline-block; padding: 0.22em 0.65em; border-radius: 999px; background: #f1f3ef; color: rgb(var(--gray-dark)); font-size: 0.78rem; font-weight: 600; text-decoration: none; }
-			.chip-cat { background: var(--accent-soft); color: var(--accent-dark); }
-			.chip-on { background: #e8f0fe; color: #1a56c4; }
-			.chip-off { background: #fdecea; color: #b3261e; }
-			.pd h1 { margin: 0 0 0.35em; font-size: clamp(1.3rem, 4.6vw, 1.75rem); font-weight: 800; letter-spacing: -0.02em; line-height: 1.35; word-break: keep-all; color: #111; }
-			.pd-name { margin: 0 0 0.5em; font-size: 0.88rem; color: rgb(var(--gray)); }
-			.pd-rate { display: flex; align-items: center; gap: 0.4em; margin: 0 0 0.5em; font-size: 0.88rem; color: rgb(var(--gray)); }
-			.pd-rate b { color: #111; }
-			.stars { position: relative; display: inline-block; width: 5.2em; height: 1em; background: linear-gradient(90deg, #ddd 0 100%); -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 24'%3E%3Cg%3E%3Cpath id='s' d='M12 1.5l3.1 6.6 7.2.9-5.3 5 1.4 7.1L12 17.6 5.6 21.1 7 14l-5.3-5 7.2-.9z'/%3E%3Cuse href='%23s' x='24'/%3E%3Cuse href='%23s' x='48'/%3E%3Cuse href='%23s' x='72'/%3E%3Cuse href='%23s' x='96'/%3E%3C/g%3E%3C/svg%3E") 0 0 / 100% 100%; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 24'%3E%3Cg%3E%3Cpath id='s' d='M12 1.5l3.1 6.6 7.2.9-5.3 5 1.4 7.1L12 17.6 5.6 21.1 7 14l-5.3-5 7.2-.9z'/%3E%3Cuse href='%23s' x='24'/%3E%3Cuse href='%23s' x='48'/%3E%3Cuse href='%23s' x='72'/%3E%3Cuse href='%23s' x='96'/%3E%3C/g%3E%3C/svg%3E") 0 0 / 100% 100%; }
-			.stars span { position: absolute; inset: 0 auto 0 0; background: #f5a623; }
-			.pd-price { margin: 0.1em 0 0.2em; font-size: 1.85rem; font-weight: 800; letter-spacing: -0.03em; color: #111; font-variant-numeric: tabular-nums; }
-			.pd-price small { margin-left: 0.4em; font-size: 0.78rem; font-weight: 500; color: rgb(var(--gray)); }
-			.pd-rank { margin: 0 0 0.8em; font-size: 0.86rem; font-weight: 700; color: var(--accent); }
-			.pd .buy-btn { margin-top: 0.6em; text-align: center; }
-			.pd .byline { margin-top: auto; padding-top: 0.9em; font-size: 0.8rem; }
-			.facts { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 1rem; }
-			@media (max-width: 760px) { .facts { grid-template-columns: 1fr; gap: 0; } }
-			.key-answer p { margin: 0; line-height: 1.75; font-size: 0.97rem; }
-			.key-answer .guide-link { margin: 0.9em 0 0; }
-			.info dl { margin: 0; }
-			.info dl div { display: flex; justify-content: space-between; gap: 1em; padding: 0.42em 0; border-bottom: 1px solid #f0f1ee; font-size: 0.9rem; }
-			.info dl div:last-child { border-bottom: 0; }
-			.info dt { color: rgb(var(--gray)); }
-			.info dd { margin: 0; font-weight: 700; color: #111; text-align: right; }
-			.side .toc { margin: 0; background: #fff; border: 1px solid #e6e8e3; border-radius: 14px; }
-			.side .toc ul { padding-left: 1em; }
-			.side .toc li { font-size: 0.86rem; line-height: 1.45; }
-			.side-buy { display: flex; gap: 0.7em; align-items: center; background: #fff; border: 1px solid #e6e8e3; border-radius: 14px; padding: 0.8em; }
-			.side-buy img { width: 56px; height: 56px; object-fit: contain; border-radius: 8px; background: #f6f7f9; }
-			.side-price { margin: 0; font-weight: 800; color: #111; }
-			.side-buy a { font-size: 0.85rem; font-weight: 700; color: var(--accent-dark); text-decoration: none; }
 			.prose { background: #fff; border: 1px solid #e6e8e3; border-radius: 18px; padding: 0.4rem 1.6rem 1.6rem; }
 			@media (max-width: 760px) { .prose { padding: 0.2rem 1rem 1.2rem; border-radius: 14px; } }
 			.prose :global(img) { border-radius: 12px; }
@@ -370,7 +315,7 @@ const searchTitle = seoTitle({ title, productName });
 			.compare { margin: 2.2em 0 1em; }
 			.compare h2 { margin-bottom: 0.3em; }
 			.compare-note { margin: 0 0 0.8em; font-size: 0.85rem; color: rgb(var(--gray)); }
-			.compare-wrap { overflow-x: auto; }
+			.compare-wrap { overflow-x: auto; position: relative; }   /* sr-only 칸 제목이 표 밖으로 새어 모바일 가로 스크롤 생기던 것 */
 			.compare table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
 			.compare th, .compare td { padding: 0.55em 0.5em; border-bottom: 1px solid rgb(var(--gray-light)); text-align: left; vertical-align: top; }
 			.compare th { font-size: 0.8rem; color: rgb(var(--gray)); font-weight: 600; white-space: nowrap; }
@@ -407,190 +352,228 @@ const searchTitle = seoTitle({ title, productName });
 				{isProduct && leafCat && leafCat !== catName && <><span class="dot">›</span><span>{leafCat}</span></>}
 			</nav>
 			{isProduct && (
-				<section class="pd" aria-label="상품 요약">
-					<div class="pd-gal">
-						{photos[0] ? (
-							<img class="pd-main" id="pd-main" src={sized(photos[0], 640)} alt={productName || title} width="640" height="640" fetchpriority="high" decoding="async" />
-						) : <div class="pd-main pd-empty">상품 사진</div>}
-						{photos.length > 1 && (
-							<div class="pd-thumbs">
-								{photos.map((u, i) => (
-									<button type="button" class:list={['pd-thumb', { on: i === 0 }]} data-src={sized(u, 640)} aria-label={`사진 ${i + 1}`}>
-										<img src={sized(u, 300)} alt="" width="64" height="64" loading="lazy" decoding="async" />
-									</button>
-								))}
-							</div>
-						)}
-					</div>
-					<div class="pd-info">
-						<p class="pd-chips">
-							<a class="chip chip-cat" href={`/category/${catSlug}/`}>{leafCat || catName}</a>
-							{productStore && <span class="chip">{productStore}</span>}
-							{discontinued ? <span class="chip chip-off">판매 종료</span> : affiliateUrl && <span class="chip chip-on">판매중</span>}
-						</p>
-						<h1>{title}</h1>
-						{productName && productName !== title && <p class="pd-name">{productName}</p>}
-						{(shownRating || reviewCount) && (
-							<p class="pd-rate">
-								{shownRating && <><span class="stars" aria-hidden="true"><span style={`width:${(shownRating / 5) * 100}%`}></span></span><b>{shownRating.toFixed(1)}</b></>}
-								{reviewCount ? <span>리뷰 {reviewCount.toLocaleString('ko-KR')}개 · 판매처 기준</span> : null}
-							</p>
-						)}
-						{productPrice && !discontinued ? (
-							<p class="pd-price">{fmtWon(productPrice)}{priceDateLabel && <small>{priceDateLabel} 기준</small>}</p>
-						) : null}
-						{cheapRank && !discontinued && <p class="pd-rank">{cheapRank.label} {cheapRank.groupSize}개 중 {cheapRank.rank === 1 ? '가장 저렴' : `${cheapRank.rank}번째로 저렴`}</p>}
-						{affiliateUrl && !discontinued ? (
-							<>
-								<a class="buy-btn" id="buy-main" href={posHref(buyHref, "card")} target="_blank" rel="nofollow sponsored noopener">네이버에서 현재 가격 보기</a>
-								{productPrice && productPrice >= 100000 && (
-									<p class="buy-note buy-risk">🛡️ 교환·반품 배송비, 설치비, A/S·보증 조건은 판매 페이지 하단 안내에서 주문 전에 확인할 수 있습니다.</p>
-								)}
-								<p class="buy-note">가격·배송비·재고는 판매처 표시가 기준입니다. 이 링크로 구매하면 쇼핑로그가 네이버 쇼핑 커넥트 수수료를 받습니다.</p>
-							</>
-						) : discontinued ? (
-							<p class="buy-note sold-out">이 상품은 판매처 페이지가 삭제되어 현재 구매할 수 없습니다. {guideLink ? "아래 비교 가이드나" : "아래"} "함께 보면 좋은 글"에서 같은 주제의 다른 상품을 확인하세요.</p>
-						) : null}
-						<p class="byline">
-							<span class="by">글 ·</span> <a rel="author" href="/about/">{AUTHOR_DISPLAY_NAME}</a>
-							<span class="dot">·</span><FormattedDate date={pubDate} />
-							{updatedDate && <><span class="dot">·</span>수정 <FormattedDate date={updatedDate} /></>}
-							<span class="dot">·</span><a class="method" href="/about/">작성 기준</a>
-						</p>
-					</div>
-				</section>
-			)}
-			{isProduct && (
-				<div class="facts">
-					{answer && (
-						<section class="card key-answer" aria-label="핵심 요약">
-							<h2 class="card-h">한눈에 보기</h2>
-							<p>{answer}</p>
-							{guideLink && (
-								<p class="guide-link"><a href={guideLink.href}>{discontinued ? `판매 중인 ${guideLink.query} ${guideLink.n}종 비교 보기 →` : `${guideLink.query} ${guideLink.n}종 비교 보기 →`}</a></p>
-							)}
-						</section>
-					)}
-					<section class="card info" aria-label="판매 정보">
-						<h2 class="card-h">판매 정보</h2>
-						<dl>
-							{productPrice && <div><dt>판매가</dt><dd>{fmtWon(productPrice)}</dd></div>}
-							{productStore && <div><dt>판매처</dt><dd>{productStore}</dd></div>}
-							{shownRating && <div><dt>평점</dt><dd>★ {shownRating.toFixed(1)}</dd></div>}
-							{reviewCount ? <div><dt>리뷰 수</dt><dd>{reviewCount.toLocaleString('ko-KR')}개</dd></div> : null}
-							{leafCat && <div><dt>분류</dt><dd>{leafCat}</dd></div>}
-							{priceDate && <div><dt>가격 기준일</dt><dd>{priceDate}</dd></div>}
-							<div><dt>판매 상태</dt><dd>{discontinued ? '판매 종료' : '판매중'}</dd></div>
-						</dl>
-					</section>
-				</div>
-			)}
-			{isProduct && comparison && productPrice && <PricePosition comparison={comparison} price={productPrice} dateLabel={priceDateLabel} />}
-			<div class:list={['layout', { 'has-side': isProduct && toc.length >= 3 }]}>
-				<article class="prose">
-					{!isProduct && (
-						<>
-							<div class="title">
-								<h1>{title}</h1>
-								<div class="byline">
-									<span class="by">글 ·</span>
-									<a rel="author" href="/about/">{AUTHOR_DISPLAY_NAME}</a>
+				<div class="r1">
+					<div class="r1-detail-bar"><p>상품 및 리뷰 분석 상세</p><a class="r1-btn r1-btn-light r1-btn-sm" href={`/category/${catSlug}/`}>← 목록으로</a></div>
+					<p class="r1-disc-line">* 이 포스팅은 네이버 쇼핑 커넥트 활동의 일환으로, 판매 발생 시 일정액의 수수료를 제공받습니다.</p>
+					<section class="r1-kcard r1-pd-hero" aria-label="상품 요약">
+						<div class="r1-gal">
+							{photos[0] ? (
+								<div class="r1-gal-main-wrap"><img class="r1-gal-main" id="pd-main" src={sized(photos[0], 640)} alt={productName || title} width="640" height="640" fetchpriority="high" decoding="async" /><span class="r1-gal-count" id="pd-count">1 / {photos.length}</span></div>
+							) : <div class="r1-gal-main-wrap r1-gal-empty">상품 사진</div>}
+							{photos.length > 1 && (
+								<div class="r1-gal-row">
+									{photos.map((u, i) => (
+										<button type="button" class:list={['r1-gal-th', 'pd-thumb', { on: i === 0 }]} data-src={sized(u, 640)} data-i={i + 1} aria-label={`사진 ${i + 1}`}>
+											<img src={sized(u, 300)} alt="" width="60" height="60" loading="lazy" decoding="async" />
+										</button>
+									))}
 								</div>
-							</div>
-							<div class="hero-image">
-								{heroImage && (typeof heroImage === 'string'
-									? <img src={heroImage} alt={title} loading="lazy" decoding="async" />
-									: <Image width={1020} height={510} src={heroImage} alt={title} />)}
-							</div>
-						</>
-					)}
-					{/* 상품 글에만 Product 노드. 소개 페이지 등 일반 글에 붙으면 스키마 오류(가짜 상품)가 된다 */}
-					{isProduct && <script type="application/ld+json" set:html={JSON.stringify(productLd)} />}
-					{faqLd && <script type="application/ld+json" set:html={JSON.stringify(faqLd)} />}
-					{/* 가격 비교표를 본문 앞으로 (10/3): 판단에 필요한 숫자를 스크롤 전에 준다 */}
-					{comparison && (
-						<section class="compare" aria-labelledby="compare-title">
-							<h2 id="compare-title">{comparison.label} 가격 비교</h2>
-							<p class="compare-note">
-								쇼핑로그가 정리한 {comparison.label} 상품 {comparison.groupSize}개 중 이 상품과 가격대가 가까운 상품입니다.
-								가격은 기준일의 판매가이며 현재 가격은 판매처에서 확인하세요.
-							</p>
-							<div class="compare-wrap">
-								<table>
-									<thead>
-										<tr><th scope="col">상품</th><th scope="col">판매처</th><th scope="col">판매가</th><th scope="col">평점</th><th scope="col">가격 기준일</th><th scope="col"><span class="sr-only">구매</span></th></tr>
-									</thead>
-									<tbody>
-										{comparison.rows.map((r) => (
-											<tr class={r.current ? 'current' : ''}>
-												<td>{r.current ? <>{r.name} <small>(이 글)</small></> : <a href={`/blog/${r.id}/`}>{r.name}</a>}</td>
-												<td>{r.store ?? '-'}</td>
-												<td class="num">{fmtWon(r.price)}</td>
-												<td class="num">{r.rating ? r.rating.toFixed(1) : '-'}</td>
-												<td class="num">{r.checkedAt ?? '-'}</td>
-												<td class="num">{r.buyHref ? <a class="alt-buy" href={posHref(r.buyHref, "table")} target="_blank" rel="nofollow sponsored noopener">가격 보기</a> : null}</td>
-											</tr>
-										))}
-									</tbody>
-								</table>
-							</div>
-						</section>
-					)}
-					{toc.length >= 3 && (
-						<nav class="toc toc-inline" aria-label="목차">
-							<p class="toc-title">📑 목차</p>
-							<ul>
-								{toc.map((h: any) => (
-									<li class={h.depth === 3 ? 'toc-sub' : ''}><a href={`#${h.slug}`}>{h.text}</a></li>
-								))}
-							</ul>
-						</nav>
-					)}
-					<slot />
-					{affiliateUrl && !discontinued && (
-						<div class="buy-cta buy-cta-bottom" id="buy-bottom">
-							<a class="buy-btn" href={posHref(buyHref, "bottom")} target="_blank" rel="nofollow sponsored noopener">
-								네이버에서 현재 가격 보기
-							</a>
-							<p class="buy-note">이 링크로 구매하면 쇼핑로그가 네이버 쇼핑 커넥트 수수료를 받습니다.</p>
+							)}
 						</div>
-					)}
-					{relatedPosts.length > 0 && (
-						<aside class="related">
-							<h2>함께 보면 좋은 글</h2>
-							<ul>
-								{relatedPosts.map((p) => (
-									<li>
-										<a href={`/blog/${p.id}/`}>{p.data.title}</a>
-									</li>
-								))}
-							</ul>
-							{hub && (
-								<p class="hub-link">
-									<a href={`/topic/${hub.slug}/`}><strong>{hub.sub}</strong> 추천 모음 전체 보기 →</a>
+						<div class="r1-pd-info">
+							<div class="r1-badges">
+								<a class="r1-badge r1-badge-primary" href={`/category/${catSlug}/`}>{catName}</a>
+								{leafCat && <span class="r1-badge r1-badge-light">{leafCat}</span>}
+								{productStore && <span class="r1-badge r1-badge-violet">{productStore}</span>}
+								{discontinued ? <span class="r1-badge r1-badge-red">판매 종료</span> : affiliateUrl && <span class="r1-badge r1-badge-green">판매중</span>}
+							</div>
+							<h1>{title}</h1>
+							{productName && productName !== title && <p class="r1-pd-brand">{productName}</p>}
+							{leafCat && <p class="r1-pd-kind">{leafCat} 리뷰</p>}
+							{facts && <p class="r1-pd-line">{verdictLine(facts.score)}</p>}
+							{productPrice && !discontinued ? (
+								<p class="r1-pd-price"><strong>{fmtWon(productPrice)}</strong>{facts?.orig && <s>{fmtWon(facts.orig)}</s>}{facts?.discount && <span class="r1-off">{facts.discount}% 할인</span>}{priceDateLabel && <small>{priceDateLabel} 기준</small>}</p>
+							) : null}
+							{(shownRating || reviewCount || facts?.reviews) && (
+								<p class="r1-pd-rate">
+									{shownRating && <><span class="r1-stars" aria-hidden="true">★★★★★<span style={`width:${(shownRating / 5) * 100}%`}>★★★★★</span></span><b>{shownRating.toFixed(1)}</b></>}
+									<span>({(facts?.reviews ?? reviewCount ?? 0).toLocaleString('ko-KR')}개 리뷰 · 스토어 기준)</span>
 								</p>
 							)}
-						</aside>
-					)}
-				</article>
-				{isProduct && toc.length >= 3 && (
-					<aside class="side" aria-label="목차와 구매">
-						<nav class="toc" aria-label="목차">
-							<p class="toc-title">목차</p>
-							<ul>
-								{toc.filter((h: any) => h.depth === 2).map((h: any) => (
-									<li><a href={`#${h.slug}`}>{h.text}</a></li>
-								))}
-							</ul>
-						</nav>
-						{affiliateUrl && !discontinued && (
-							<div class="side-buy">
-								{rawImg && <img src={sized(rawImg, 300)} alt="" width="56" height="56" loading="lazy" decoding="async" />}
-								<div>
-									{productPrice ? <p class="side-price">{fmtWon(productPrice)}</p> : null}
-									<a href={posHref(buyHref, "side")} target="_blank" rel="nofollow sponsored noopener">현재 가격 보기 →</a>
+							{facts && (
+								<div class="r1-conf">
+									<div class="r1-conf-score"><small>구매 확신도</small><b>{facts.score}<em>점</em></b></div>
+									<div><span class="r1-badge r1-badge-primary">{facts.label}</span><p>리뷰 신뢰도 {trustOf(facts.reviews)} · 리스크 {riskOf(facts.score)}</p></div>
 								</div>
+							)}
+							{cheapRank && !discontinued && <p class="r1-rank">{cheapRank.label} {cheapRank.groupSize}개 중 {cheapRank.rank === 1 ? '가장 저렴' : `${cheapRank.rank}번째로 저렴`}</p>}
+							{hashtags.length > 0 && <p class="r1-tags">{hashtags.map((k) => <span>#{k}</span>)}</p>}
+							{affiliateUrl && !discontinued ? (
+								<>
+									<a class="r1-btn r1-btn-primary r1-btn-buy" id="buy-main" href={posHref(buyHref, "card")} target="_blank" rel="nofollow sponsored noopener">할인 적용가 확인하기</a>
+									{productPrice && productPrice >= 100000 && <p class="r1-fine">🛡️ 교환·반품 배송비, 설치비, A/S·보증 조건은 판매 페이지 하단 안내에서 주문 전에 확인할 수 있습니다.</p>}
+									<p class="r1-fine">가격·배송비·재고는 판매처 표시가 기준입니다. 이 링크로 구매하면 쇼핑로그가 수수료를 받습니다.</p>
+								</>
+							) : discontinued ? (
+								<p class="r1-fine">이 상품은 판매처 페이지가 삭제되어 현재 구매할 수 없습니다. {guideLink ? "아래 비교 가이드나" : "아래"} "함께 보면 좋은 글"에서 같은 주제의 다른 상품을 확인하세요.</p>
+							) : null}
+							<p class="r1-byline">글 · <a rel="author" href="/about/">{AUTHOR_DISPLAY_NAME}</a> · <FormattedDate date={pubDate} />{updatedDate && <> · 수정 <FormattedDate date={updatedDate} /></>} · <a href="/about/">작성 기준</a></p>
+						</div>
+					</section>
+					{facts && (
+						<div class="r1-g2">
+							<section class="r1-kcard r1-tint-green">
+								<h2 class="r1-kh"><span class="r1-kh-ic r1-ic-green">✓</span>사도 되는 이유</h2>
+								<ul class="r1-dots">{reasons.map((x) => <li>{x}</li>)}</ul>
+								{affiliateUrl && !discontinued && <a class="r1-btn r1-btn-light r1-btn-sm" href={posHref(buyHref, "reason")} target="_blank" rel="nofollow sponsored noopener">할인 적용가 확인하기</a>}
+							</section>
+							<section class="r1-kcard r1-tint-orange">
+								<h2 class="r1-kh"><span class="r1-kh-ic r1-ic-orange">!</span>구매 전 확인하세요</h2>
+								<ul class="r1-dots">{facts.checks.map((x) => <li>{x}</li>)}</ul>
+								<p class="r1-mini">{facts.checks.slice(0, 3).map((x) => <span>{x.split(/[와과(·,]/)[0].trim()}</span>)}</p>
+							</section>
+						</div>
+					)}
+					{facts && (
+						<div class="r1-g3">
+							<section class="r1-kcard r1-tint-blue">
+								<h2 class="r1-kh"><span class="r1-kh-ic r1-ic-blue">👍</span>이런 분께 추천</h2>
+								<ul class="r1-dots">{facts.fit.map((x) => { const [a, b] = splitWho(x); return <li>{a}{b && <small>{b}</small>}</li>; })}</ul>
+							</section>
+							<section class="r1-kcard r1-tint-red">
+								<h2 class="r1-kh"><span class="r1-kh-ic r1-ic-red">✋</span>이런 분은 신중하게</h2>
+								<ul class="r1-dots">{facts.unfit.map((x) => { const [a, b] = splitWho(x); return <li>{a}{b && <small>{b}</small>}</li>; })}</ul>
+							</section>
+							<section class="r1-kcard r1-tint-violet">
+								<h2 class="r1-kh"><span class="r1-kh-ic r1-ic-violet">#</span>리뷰 키워드</h2>
+								<p class="r1-kw-label r1-kw-pos">긍정</p>
+								<p class="r1-kw pos">{posKw.map((k) => <span>{k}</span>)}</p>
+								{cautionKw.length > 0 && <><p class="r1-kw-label r1-kw-neg">주의</p><p class="r1-kw neg">{cautionKw.map((k) => <span>{k}</span>)}</p></>}
+							</section>
+						</div>
+					)}
+					<div class="r1-g2">
+						<section class="r1-kcard">
+							<h2 class="r1-kh">가격·배송 체크</h2>
+							<dl class="r1-kv">
+								{facts?.orig && <div><dt>상품가</dt><dd>{fmtWon(facts.orig)}</dd></div>}
+								{productPrice && <div><dt>{facts?.orig ? '할인가' : '판매가'}</dt><dd>{fmtWon(productPrice)}</dd></div>}
+								{comparison && <div><dt>같은 분류 중간값</dt><dd>{fmtWon(comparison.median)}</dd></div>}
+								<div><dt>배송비·무료배송 기준</dt><dd>스토어 확인</dd></div>
+								{priceDate && <div><dt>가격 기준일</dt><dd>{priceDate}</dd></div>}
+							</dl>
+						</section>
+						<section class="r1-kcard">
+							<h2 class="r1-kh">스토어 정보</h2>
+							<dl class="r1-kv">
+								<div><dt>스토어</dt><dd>{productStore || '-'}</dd></div>
+								{facts && <div><dt>리뷰 신뢰도</dt><dd>리뷰 신뢰도 {trustOf(facts.reviews)}</dd></div>}
+								{(facts?.reviews || reviewCount) && <div><dt>총 리뷰</dt><dd>{(facts?.reviews ?? reviewCount ?? 0).toLocaleString('ko-KR')}개</dd></div>}
+								<div><dt>평균 평점</dt><dd>{shownRating ? shownRating.toFixed(1) : '-'}</dd></div>
+								<div><dt>판매 상태</dt><dd>{discontinued ? '판매 종료' : '판매중'}</dd></div>
+							</dl>
+						</section>
+					</div>
+				</div>
+			)}
+			<div class:list={[{ 'r1': isProduct, 'r1-detail-cols': isProduct }]}>
+				<div>
+					{isProduct && (
+						<section class="r1-kcard r1-judge">
+							<h2 class="r1-kh">리뷰 기반 구매 판단</h2>
+							{answer && <a class="r1-jcard r1-jcard-wide" href="#article"><b>📋 {productName || title} 한 줄 정리</b><span>{answer}</span></a>}
+							{sections.length > 0 && (
+								<div class="r1-jgrid">
+									{sections.map((x) => <a class="r1-jcard" href={`#${x.slug}`}><b>{x.title}<i aria-hidden="true">›</i></b><span>{x.preview}</span></a>)}
+								</div>
+							)}
+							{guideLink && <p class="guide-link"><a href={guideLink.href}>{discontinued ? `판매 중인 ${guideLink.query} ${guideLink.n}종 비교 보기 →` : `${guideLink.query} ${guideLink.n}종 비교 보기 →`}</a></p>}
+						</section>
+					)}
+					{isProduct && comparison && productPrice && <PricePosition comparison={comparison} price={productPrice} dateLabel={priceDateLabel} />}
+					<article class="prose" id="article">
+						{!isProduct && (
+							<>
+								<div class="title">
+									<h1>{title}</h1>
+									<div class="byline">
+										<span class="by">글 ·</span>
+										<a rel="author" href="/about/">{AUTHOR_DISPLAY_NAME}</a>
+									</div>
+								</div>
+								<div class="hero-image">
+									{heroImage && (typeof heroImage === 'string'
+										? <img src={heroImage} alt={title} loading="lazy" decoding="async" />
+										: <Image width={1020} height={510} src={heroImage} alt={title} />)}
+								</div>
+							</>
+						)}
+						{/* 상품 글에만 Product 노드. 소개 페이지 등 일반 글에 붙으면 스키마 오류(가짜 상품)가 된다 */}
+						{isProduct && <script type="application/ld+json" set:html={JSON.stringify(productLd)} />}
+						{faqLd && <script type="application/ld+json" set:html={JSON.stringify(faqLd)} />}
+						{comparison && (
+							<section class="compare" aria-labelledby="compare-title">
+								<h2 id="compare-title">{comparison.label} 가격 비교</h2>
+								<p class="compare-note">
+									쇼핑로그가 정리한 {comparison.label} 상품 {comparison.groupSize}개 중 이 상품과 가격대가 가까운 상품입니다.
+									가격은 기준일의 판매가이며 현재 가격은 판매처에서 확인하세요.
+								</p>
+								<div class="compare-wrap">
+									<table>
+										<thead>
+											<tr><th scope="col">상품</th><th scope="col">판매처</th><th scope="col">판매가</th><th scope="col">평점</th><th scope="col">가격 기준일</th><th scope="col"><span class="sr-only">구매</span></th></tr>
+										</thead>
+										<tbody>
+											{comparison.rows.map((r) => (
+												<tr class={r.current ? 'current' : ''}>
+													<td>{r.current ? <>{r.name} <small>(이 글)</small></> : <a href={`/blog/${r.id}/`}>{r.name}</a>}</td>
+													<td>{r.store ?? '-'}</td>
+													<td class="num">{fmtWon(r.price)}</td>
+													<td class="num">{r.rating ? r.rating.toFixed(1) : '-'}</td>
+													<td class="num">{r.checkedAt ?? '-'}</td>
+													<td class="num">{r.buyHref ? <a class="alt-buy" href={posHref(r.buyHref, "table")} target="_blank" rel="nofollow sponsored noopener">가격 보기</a> : null}</td>
+												</tr>
+											))}
+										</tbody>
+									</table>
+								</div>
+							</section>
+						)}
+						{!isProduct && toc.length >= 3 && (
+							<nav class="toc" aria-label="목차">
+								<p class="toc-title">📑 목차</p>
+								<ul>{toc.map((h: any) => <li class={h.depth === 3 ? 'toc-sub' : ''}><a href={`#${h.slug}`}>{h.text}</a></li>)}</ul>
+							</nav>
+						)}
+						<slot />
+						{affiliateUrl && !discontinued && (
+							<div class="buy-cta buy-cta-bottom" id="buy-bottom">
+								<a class="buy-btn" href={posHref(buyHref, "bottom")} target="_blank" rel="nofollow sponsored noopener">
+									네이버에서 현재 가격 보기
+								</a>
+								<p class="buy-note">이 링크로 구매하면 쇼핑로그가 네이버 쇼핑 커넥트 수수료를 받습니다.</p>
 							</div>
+						)}
+						{relatedPosts.length > 0 && (
+							<aside class="related">
+								<h2>함께 보면 좋은 글</h2>
+								<ul>{relatedPosts.map((p) => <li><a href={`/blog/${p.id}/`}>{p.data.title}</a></li>)}</ul>
+								{hub && <p class="hub-link"><a href={`/topic/${hub.slug}/`}><strong>{hub.sub}</strong> 추천 모음 전체 보기 →</a></p>}
+							</aside>
+						)}
+					</article>
+				</div>
+				{isProduct && (
+					<aside class="r1-side" aria-label="다른 후기 제품과 제품 정보">
+						{relatedCards.length > 0 && (
+							<section class="r1-kcard r1-side-list">
+								<h2>다른 후기 제품 리뷰</h2>
+								{relatedCards.map((c) => (
+									<a class="r1-oth" href={c.href}>
+										{c.thumb ? <img src={sized(c.thumb, 300)} alt="" width="44" height="44" loading="lazy" decoding="async" /> : <i></i>}
+										<span><b>{c.name}</b><small>{c.score ? `구매 점수 ${c.score}점` : ''}{c.score && c.price ? ' · ' : ''}{c.price ? fmtWon(c.price) : ''}</small></span>
+									</a>
+								))}
+							</section>
+						)}
+						{facts && facts.spec.length > 0 && (
+							<section class="r1-kcard r1-side-list">
+								<h2>제품 상세 정보</h2>
+								<dl class="r1-kv">{facts.spec.map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}</dl>
+							</section>
+						)}
+						{affiliateUrl && !discontinued && (
+							<a class="r1-btn r1-btn-primary r1-btn-buy" href={posHref(buyHref, "side")} target="_blank" rel="nofollow sponsored noopener">{productPrice ? `${fmtWon(productPrice)} · 현재 가격 보기` : '현재 가격 보기'}</a>
 						)}
 					</aside>
 				)}
@@ -606,10 +589,11 @@ const searchTitle = seoTitle({ title, productName });
 		<Footer />
 		<script is:inline>
 			(function () {
-				var main = document.getElementById('pd-main');
+				var main = document.getElementById('pd-main'), cnt = document.getElementById('pd-count');
 				document.querySelectorAll('.pd-thumb').forEach(function (b) {
 					b.addEventListener('click', function () {
 						if (main) main.src = b.getAttribute('data-src');
+						if (cnt) cnt.textContent = b.getAttribute('data-i') + ' / ' + cnt.textContent.split('/')[1].trim();
 						document.querySelectorAll('.pd-thumb.on').forEach(function (x) { x.classList.remove('on'); });
 						b.classList.add('on');
 					});

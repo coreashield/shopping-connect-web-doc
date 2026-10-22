@@ -1,11 +1,11 @@
 ---
 import { getPosts, getGuides, CURRENT_SUB } from '../lib/site';
-import { compareForPost } from '../lib/compare';
 import { listed } from '../lib/pruned';
 import { postThumb } from '../lib/snippet';
+import { factsOf, trustOf } from '../lib/facts';
+import R1Card from '../components/R1Card.astro';
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
-import PricePosition from '../components/PricePosition.astro';
 import Header from '../components/Header.astro';
 import { categoryList, topicHubs } from '../lib/categories';
 import { ORGANIZATION, SITE_DESCRIPTION, SITE_TITLE, SITE_URL } from '../consts';
@@ -34,17 +34,10 @@ const cats = categoryList(shown);
 // 토픽 클러스터 허브 — 홈에서 필러(허브)로 직링크해 크롤러가 허브→클러스터 순으로 효율 색인하게 한다.
 const hubs = topicHubs(posts, 15).slice(0, 12);
 
-// 2026-10-08 리디자인: 상단 카드는 최신 글 중 같은 분류 가격 비교가 있는 첫 글에서 자동으로 뽑는다(실데이터).
 const won = (n: number) => `${n.toLocaleString('ko-KR')}원`;
 const ymd = (v: unknown) => (typeof v === 'string' ? v : (v as Date).toISOString()).slice(0, 10);
 const mdLabel = (iso: string) => `${Number(iso.slice(5, 7))}월 ${Number(iso.slice(8, 10))}일`;
 const dateOf = (p: (typeof posts)[number]) => mdLabel(ymd(p.data.priceCheckedAt ?? p.data.updatedDate ?? p.data.pubDate));
-let feature: { post: (typeof posts)[number]; comparison: NonNullable<ReturnType<typeof compareForPost>>; price: string; dateLabel: string } | null = null;
-for (const p of posts.slice(0, 80)) {
-	if (!p.data.productPrice || p.data.saleStatus === 'discontinued') continue;
-	const comparison = compareForPost(p, posts);
-	if (comparison) { feature = { post: p, comparison, price: won(p.data.productPrice), dateLabel: dateOf(p) }; break; }
-}
 const cards = recent.map((p) => ({
 	id: p.id,
 	title: p.data.title,
@@ -53,6 +46,18 @@ const cards = recent.map((p) => ({
 	price: p.data.productPrice && p.data.saleStatus !== 'discontinued' ? won(p.data.productPrice) : undefined,
 	dateLabel: dateOf(p),
 }));
+// 10/21 review101 홈 구조: 후기가 좋은 추천 상품 1~6위 · 리뷰 많은 인기 상품 · 할인율 높은데 리뷰도 좋은 상품 (상품 사실값 = src/data/product_facts.json)
+const seenPid = new Set<string>();
+const rated = shown.flatMap((p) => {
+	const pid = p.data.productId;
+	const f = factsOf(pid);
+	if (!pid || !f || p.data.saleStatus === 'discontinued' || seenPid.has(pid)) return [];
+	seenPid.add(pid);
+	return [{ href: `/blog/${p.id}/`, name: p.data.productName || p.data.title, thumb: postThumb(p.data.heroImage, p.body, p.data.gallery), facts: f }];
+});
+const best = [...rated].filter((x) => x.facts.reviews >= 300).sort((a, b) => b.facts.score - a.facts.score || b.facts.reviews - a.facts.reviews).slice(0, 6);
+const popular = [...rated].sort((a, b) => b.facts.reviews - a.facts.reviews).slice(0, 5);
+const deals = rated.filter((x) => x.facts.score >= 72 && x.facts.reviews >= 100 && (x.facts.discount ?? 0) >= 20).sort((a, b) => (b.facts.discount ?? 0) - (a.facts.discount ?? 0) || b.facts.score - a.facts.score).slice(0, 5);
 // 서브도메인은 설명문을 "헤드라인 — 부연"으로 나눠 쓴다. 본체는 고정 문구.
 const descParts = SITE_DESCRIPTION.split(' — ');
 const lead = CURRENT_SUB ? descParts[0] : '살까 말까 고민될 때, 가격표부터 펼쳐보세요';
@@ -68,6 +73,7 @@ const homeDesc = `${SITE_TITLE}는 네이버 스마트스토어 상품을 가격
 <html lang="ko">
 	<head>
 		<BaseHead title={homeTitle} description={homeDesc} />
+		<link rel="stylesheet" href="/r101.css?v=2" />
 		<script type="application/ld+json" set:html={JSON.stringify(orgLd)} />
 		<script type="application/ld+json" set:html={JSON.stringify(websiteLd)} />
 		<style>
@@ -346,26 +352,40 @@ const homeDesc = `${SITE_TITLE}는 네이버 스마트스토어 상품을 가격
 	<body>
 		<Header />
 		<main class="home">
-			<section class="hero">
-				<div class="hero-text">
-					<div class="eyebrow"><h1>{SITE_TITLE}</h1><span> · PRICE LOG</span></div>
-					<p class="lead">{lead}</p>
-					<p class="sub">{CURRENT_SUB ? descParts.slice(1).join(" — ") : SITE_DESCRIPTION}</p>
-					<div class="hero-cta">
-						<a class="btn primary" href="/blog/">전체 글 보기</a>
-						<a class="btn ghost" href="/category/">카테고리 둘러보기</a>
+			<div class="r1">
+				<section class="r1-hero">
+					<p class="r1-eyebrow">사기 전 1분, {SITE_TITLE}</p>
+					<h1>{CURRENT_SUB ? lead : '수많은 상품 후기, 1분 만에 살지 말지 확인하세요'}</h1>
+					<p class="r1-hero-sub">{CURRENT_SUB ? descParts.slice(1).join(" — ") : `평점·리뷰 수·구매자 응답 비율과 같은 분류 가격을 모아, 상품 ${shown.length.toLocaleString('ko-KR')}개가 나에게 맞는지 빠르게 보여드립니다.`}</p>
+					<div class="r1-hero-cta">
+						<a class="r1-btn r1-btn-primary" href="/blog/">전체 글 보기</a>
+						<a class="r1-btn r1-btn-light" href="/category/">카테고리 둘러보기</a>
+						<a class="r1-btn r1-btn-light" href="https://review.shopping-log.com/ranking/">리뷰 랭킹 TOP 100</a>
 					</div>
-				</div>
-				{feature && (
-					<div class="feature">
-						<p class="feature-label"><span>최근 글 · 가격 위치</span><span class="num">{feature.dateLabel} 기준</span></p>
-						<a class="feature-name" href={`/blog/${feature.post.id}/`}>{feature.post.data.productName || feature.post.data.title}</a>
-						<p class="feature-price num"><span class="hl">{feature.price}</span></p>
-						<p class="feature-meta">{feature.post.data.productStore}</p>
-						<PricePosition comparison={feature.comparison} price={feature.post.data.productPrice!} heading="p" compact />
+				</section>
+				{best.length > 0 && (
+					<section class="r1-sec">
+						<div class="r1-sec-head"><div><p class="r1-eyebrow">한눈에 보는 장단점</p><h2>후기가 좋은 추천 상품</h2></div><a class="r1-btn r1-btn-light r1-btn-sm" href="/blog/">더 보기</a></div>
+						<div class="r1-pgrid" role="list">{best.map((x, i) => <R1Card href={x.href} name={x.name} thumb={x.thumb} facts={x.facts} rank={i + 1} />)}</div>
+					</section>
+				)}
+				<section class="r1-sec">
+					<div class="r1-sec-head"><div><p class="r1-eyebrow">고민별 추천</p><h2>카테고리별 추천 상품</h2></div></div>
+					<ul class="r1-cchips">{cats.map((c) => <li><a href={`/category/${c.slug}/`}>{c.name} <small>{c.count.toLocaleString('ko-KR')}개</small></a></li>)}</ul>
+				</section>
+				{popular.length > 0 && (
+					<div class="r1-sec r1-two">
+						<section>
+							<div class="r1-sec-head"><div><p class="r1-eyebrow">리뷰 표본 충분</p><h2>리뷰 많은 인기 상품</h2></div></div>
+							<div class="r1-rows">{popular.map((x) => <a class="r1-rw" href={x.href}><span class="r1-rw-score">{x.facts.score}</span><span class="r1-rw-name">{x.name}</span><span class="r1-rw-tail">리뷰 {x.facts.reviews.toLocaleString('ko-KR')}개</span></a>)}</div>
+						</section>
+						<section>
+							<div class="r1-sec-head"><div><p class="r1-eyebrow">가격 조건 확인</p><h2>할인율 높은데 리뷰도 좋은 상품</h2></div></div>
+							<div class="r1-rows">{deals.map((x) => <a class="r1-rw" href={x.href}><span class="r1-rw-pct">{x.facts.discount}%</span><span class="r1-rw-name">{x.name}</span><span class="r1-rw-tail">리뷰 신뢰도 {trustOf(x.facts.reviews)}</span></a>)}</div>
+						</section>
 					</div>
 				)}
-			</section>
+			</div>
 
 			{guides.length > 0 && (
 				<section class="block">
@@ -377,23 +397,7 @@ const homeDesc = `${SITE_TITLE}는 네이버 스마트스토어 상품을 가격
 				</section>
 			)}
 
-			<section class="block">
-				<div class="block-head">
-					<h2>카테고리</h2>
-					<a href="/category/">전체 보기 →</a>
-				</div>
-				<ul class="cat-chips">
-					{
-						cats.map((c) => (
-							<li>
-								<a href={`/category/${c.slug}/`}>
-									{c.name} <span class="count">{c.count}</span>
-								</a>
-							</li>
-						))
-					}
-				</ul>
-			</section>
+
 
 			<section class="block">
 				<div class="block-head">

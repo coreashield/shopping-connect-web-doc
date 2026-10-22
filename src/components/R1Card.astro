@@ -1,0 +1,34 @@
+---
+// review101 상품 카드 (2026-10-21) — 썸네일+순위 · [구매 점수][판정] · 평점·리뷰·리뷰 신뢰도 · 가격·할인 · [많이 만족한 점][구매 전 확인할 점] · 후기 요약 보기
+import { type Facts, trustOf, splitWho } from '../lib/facts';
+
+interface Props { href: string; name: string; thumb?: string; facts: Facts; rank?: number }
+const { href, name, thumb, facts: f, rank } = Astro.props;
+const small = (u?: string) => (u && /^https:\/\/shop-phinf\.pstatic\.net\//.test(u) ? `${u.replace(/\?.*$/, '')}?type=f300_300` : u);
+const pro = f.fit[0] ? splitWho(f.fit[0])[1] || splitWho(f.fit[0])[0] : null;
+const con = f.checks[0] ?? null;
+---
+
+<article class="r1-pcard">
+	<div class="r1-pc-top">
+		<a class="r1-pc-img" href={href} aria-label={`${name} 상세 보기`}>
+			{rank && <span class="r1-pc-rank">{rank}위</span>}
+			{thumb && <img src={small(thumb)} alt={`${name} 이미지`} loading="lazy" decoding="async" width="96" height="96" />}
+		</a>
+		<div class="r1-pc-info">
+			<div class="r1-badges"><span class="r1-badge r1-badge-primary">구매 점수 {f.score}점</span><span class="r1-badge r1-badge-outline">{f.label}</span></div>
+			<h3><a href={href}>{name}</a></h3>
+			<div class="r1-pc-meta">
+				{f.rating && <span><i class="r1-star">★</i> {f.rating.toFixed(1)}</span>}
+				<span>리뷰 {f.reviews.toLocaleString('ko-KR')}개</span>
+				<span>리뷰 신뢰도 {trustOf(f.reviews)}</span>
+			</div>
+			<div class="r1-pc-price">{f.price && <strong>{f.price.toLocaleString('ko-KR')}원</strong>}{f.discount && <span class="r1-off">{f.discount}% 할인</span>}</div>
+		</div>
+	</div>
+	<div class="r1-verdict2">
+		{pro && <div class="r1-vi r1-vi-pro"><span class="r1-vi-ic" aria-hidden="true">✓</span><div><strong>많이 만족한 점</strong><p>{pro}</p></div></div>}
+		{con && <div class="r1-vi r1-vi-con"><span class="r1-vi-ic" aria-hidden="true">!</span><div><strong>구매 전 확인할 점</strong><p>{con}</p></div></div>}
+	</div>
+	<div class="r1-pc-foot"><a class="r1-btn r1-btn-primary r1-btn-sm" href={href}>후기 요약 보기</a></div>
+</article>

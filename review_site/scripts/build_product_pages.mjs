@@ -19,6 +19,7 @@ const SB = process.env.SUPABASE_URL;
 const KEY = process.env.SUPABASE_SERVICE_KEY;
 const argv = process.argv.slice(2);
 const DRY = argv.includes('--dry');
+const FACTS_ONLY = argv.includes('--facts-only');   // 본사이트 글 사실값(product_facts.json)만 쓰고 DB 는 건드리지 않는다
 const PUBLISH_WAVE = Number(argv[argv.indexOf('--publish-wave') + 1]) || 1;
 if (!SB || !KEY) { console.error('SUPABASE_URL / SUPABASE_SERVICE_KEY 필요'); process.exit(1); }
 
@@ -246,6 +247,24 @@ async function main() {
     if (k && v) (leafPrices.get(k) || leafPrices.set(k, []).get(k)).push(v);
   }
   for (const a of leafPrices.values()) a.sort((x, y) => x - y);
+
+  // 10/21: 본사이트(shopping-log.com) 상품 글도 review101 형식 카드(구매 점수·판정·사도 되는 이유·추천/신중·키워드·할인)를 쓰도록
+  //   블로그 글 상품의 같은 계산값을 src/data/product_facts.json 으로 낸다(사이트 빌드 CI 는 DB 키가 없어 파일로 전달).
+  const facts = {};
+  for (const p of products) {
+    const id = String(p.product_id);
+    if (!blog.has(id) || facts[id] || !p.name) continue;
+    const d = buildPage(p, { leafPrices, wave1Min }).data;
+    facts[id] = {
+      score: d.score, label: d.label, parts: d.parts, price: d.price, orig: d.orig, discount: d.discount, rating: d.rating, reviews: d.reviews,
+      leaf: d.leaf, leafN: d.leafN, leafMedian: d.leafMedian, pricePct: d.pricePct, store: d.store, brand: d.brand,
+      fit: d.fit, unfit: d.unfit, checks: d.checks, attrs: d.attrs, keywords: d.keywords, spec: d.spec, checkedAt: d.checkedAt,
+    };
+  }
+  const factsPath = path.resolve(SITE_DIR, '../src/data/product_facts.json');
+  fs.writeFileSync(factsPath, JSON.stringify(facts));
+  console.log(`본사이트 글 사실값 ${Object.keys(facts).length}개 → ${factsPath}`);
+  if (FACTS_ONLY) return;
 
   const seen = new Set();
   const pages = [];

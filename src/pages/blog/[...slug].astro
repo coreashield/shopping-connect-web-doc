@@ -7,7 +7,8 @@ import { compareForPost } from '../../lib/compare';
 import { extractFaq } from '../../lib/faq';
 import { isGoogleIndexable } from '../../lib/google-index';
 import { comparePrimary } from '../../lib/canonical';
-import { firstBodyImage } from '../../lib/snippet';
+import { firstBodyImage, postThumb } from '../../lib/snippet';
+import { factsOf } from '../../lib/facts';
 import { isSoftDead } from '../../lib/soft-dead';
 import { isPruned, listed } from '../../lib/pruned';
 
@@ -71,10 +72,22 @@ if (pid) {
 		if (primary.id !== post.id) canonicalPath = `/blog/${primary.id}/`;
 	}
 }
+// 10/21 review101 "리뷰 기반 구매 판단" 카드: 본문 h2 마다 제목 + 첫 문단 미리보기 → 해당 소제목으로 이동
+const plain = (md: string) => md
+	.replace(/!\[[^\]]*\]\([^)]*\)|<img[^>]*>/g, ' ').replace(/^\|.*\|$/gm, ' ').replace(/^>.*$/gm, ' ')
+	.replace(/\[([^\]]*)\]\([^)]*\)/g, '$1').replace(/[*_`#>]/g, '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+const chunks = post.body ? post.body.split(/^## /m).slice(1) : [];
+const h2s = headings.filter((h) => h.depth === 2);
+const sections = h2s.map((h, i) => {
+	const text = chunks[i] ? plain(chunks[i].split('\n').slice(1).join('\n').split(/^### /m)[0]) : '';
+	return { slug: h.slug, title: h.text, preview: text.slice(0, 140) };
+}).filter((x) => x.title);
+// 옆 "다른 후기 제품": 관련 글 썸네일·사실값
+const relatedCards = relatedPosts.slice(0, 5).map((p) => ({ href: `/blog/${p.id}/`, name: p.data.productName || p.data.title, thumb: postThumb(p.data.heroImage, p.body, p.data.gallery), score: factsOf(p.data.productId)?.score ?? null, price: p.data.productPrice ?? null }));
 // 판매 종료 + 노출 0 → noindex(소프트 404 후보, src/lib/soft-dead.ts)
 const softDead = isSoftDead(post.id, (post.data as any).saleStatus, post.data.category, !!pid && [post, ...all].filter((p) => pidOf(p) === pid).length > 1);
 ---
 
-<BlogPost {...post.data} bodyImage={firstBodyImage(post.body)} guideLink={guideLink} relatedPosts={relatedPosts} hub={hub} comparison={comparison} faq={faq} googleNoindex={googleNoindex} noindex={softDead || isPruned(post.id)} ads={false} headings={headings} canonicalPath={canonicalPath}>
+<BlogPost {...post.data} facts={factsOf(pid)} sections={sections} relatedCards={relatedCards} bodyImage={firstBodyImage(post.body)} guideLink={guideLink} relatedPosts={relatedPosts} hub={hub} comparison={comparison} faq={faq} googleNoindex={googleNoindex} noindex={softDead || isPruned(post.id)} ads={false} headings={headings} canonicalPath={canonicalPath}>
 	<Content />
 </BlogPost>
