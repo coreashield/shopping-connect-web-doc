@@ -87,22 +87,45 @@ const ogImage = imageUrl ?? new URL(image.src, Astro.url).href;
 <!-- 10/22 구매 버튼 직접 연결: 사람이 누르는 순간 /go/ 대신 네이버 제휴링크(naver.me)로 바로 보낸다.
      Cloudflare 함수 하루 한도(무료 10만)를 /go/ 가 같이 써서, 한도가 차면 구매 이동이 막히던 문제 대응.
      HTML 에는 /go/ 그대로 둔다 — 크롤러는 robots Disallow /go/ 로 제휴링크를 따라가지 않는다(인위 클릭 방지).
-     클릭 기록(web_doc_clicks)은 이 경로로는 남지 않는다. JS 꺼진 방문자는 기존 /go/ 로 간다. 되돌리려면 이 블록 삭제. -->
+     JS 꺼진 방문자는 기존 /go/ 로 간다. 되돌리려면 이 블록 삭제.
+     10/24 클릭 기록 복구: 실제 클릭(click·가운데 클릭) 1번마다 /go/ 로 POST 비콘 1건 — 함수가 GET 과 같은 봇·해외 판정으로
+     web_doc_clicks 에 남기고 204. 이동은 기다리지 않는다. 함수 호출은 사람 클릭 수만큼이라 한도에 영향 없음.
+     touchstart·mousedown 은 스크롤·누르다 만 것도 잡혀서 주소 교체에만 쓰고, 기록은 click 에서만. -->
 <script is:inline>
 (function () {
-	function direct(e) {
-		var a = e.target && e.target.closest && e.target.closest('a[href*="/go/"]');
-		if (!a) return;
+	function link(e) {
+		var a = e.target && e.target.closest && e.target.closest('a[data-go], a[href*="/go/"]');
+		if (!a) return null;
 		try {
-			var url = new URL(a.href, location.href);
-			if (url.origin !== location.origin || url.pathname.indexOf('/go/') !== 0) return;
-			var u = url.searchParams.get('u');
-			if (u && /^https:\/\/naver\.me\/[A-Za-z0-9]+$/.test(u)) a.href = u;
+			var url = new URL(a.getAttribute('data-go') || a.href, location.href);
+			if (url.origin !== location.origin || url.pathname.indexOf('/go/') !== 0) return null;
+			return { a: a, url: url };
+		} catch (err) { return null; }
+	}
+	function direct(e) {
+		var l = link(e);
+		if (!l || l.a.hasAttribute('data-go')) return;
+		var u = l.url.searchParams.get('u');
+		if (u && /^https:\/\/naver\.me\/[A-Za-z0-9]+$/.test(u)) { l.a.setAttribute('data-go', l.url.href); l.a.href = u; }
+	}
+	var last = 0;
+	function record(e) {
+		direct(e);
+		var l = link(e);
+		if (!l || !navigator.sendBeacon) return;
+		var now = Date.now();
+		if (now - last < 800) return;   // 같은 누름이 click·auxclick 으로 두 번 오는 경우
+		last = now;
+		try {
+			var b = new URL(l.url.href);
+			b.searchParams.set('p', location.pathname);
+			navigator.sendBeacon(b.pathname + b.search);
 		} catch (err) {}
 	}
 	document.addEventListener('mousedown', direct, true);
 	document.addEventListener('touchstart', direct, { capture: true, passive: true });
 	document.addEventListener('keydown', function (e) { if (e.key === 'Enter') direct(e); }, true);
-	document.addEventListener('click', direct, true);
+	document.addEventListener('click', record, true);
+	document.addEventListener('auxclick', function (e) { if (e.button === 1) record(e); }, true);
 })();
 </script>

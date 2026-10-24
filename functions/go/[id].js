@@ -88,18 +88,14 @@ p{color:#666;font-size:14px;line-height:1.6}a{color:#666}</style></head><body>
   });
 }
 
-export async function onRequestGet(context) {
+// 클릭 판정·기록 — GET(/go/ 이동, JS 꺼진 방문자)과 POST(10/24 구매 버튼 비콘) 공용
+function logClick(context) {
   const { request, params, env } = context;
   const url = new URL(request.url);
-  const home = new URL('/', url.origin).toString();
-  const productId = params.id || null;
   const rawTarget = url.searchParams.get('u');
-
-  // 리다이렉트 목적지 검증 — 네이버 제휴 도메인만, 아니면 홈으로.
+  // 리다이렉트 목적지 검증 — 네이버 제휴 도메인만.
   //   searchParams.get()이 이미 1회 디코드하므로 추가 decodeURIComponent 금지(URL 내 %xx 손상 방지).
-  const validDest = rawTarget && isAllowedDest(rawTarget);
-  const dest = validDest ? rawTarget : home;
-
+  const validDest = !!rawTarget && isAllowedDest(rawTarget);
   const ua = request.headers.get('user-agent') || '';
   const ip = request.headers.get('cf-connecting-ip') || null;
   const country = request.headers.get('cf-ipcountry') || null;
@@ -110,13 +106,16 @@ export async function onRequestGet(context) {
   if (env && env.SUPABASE_URL && env.SUPABASE_SERVICE_KEY) {
     const referer = request.headers.get('referer') || null;
     let slug = null;
-    try { if (referer) slug = new URL(referer).pathname; } catch (e) { /* ignore */ }
+    // 비콘은 보낸 페이지 경로를 p= 로 같이 준다(리퍼러 정책과 무관하게 정확히). 없으면 리퍼러 경로.
+    const p = url.searchParams.get('p');
+    if (p && p.startsWith('/') && p.length <= 300) slug = p;
+    else { try { if (referer) slug = new URL(referer).pathname; } catch (e) { /* ignore */ } }
     // 10/5: 어느 버튼이었는지(card/sticky/table/pick/body…) — 우리 링크에만 붙인 pos 를 slug 뒤에 '#pos' 로.
     //   표 구조를 안 바꾸려고 slug 에 붙인다. 집계는 split('#'). 제휴 URL(u=)은 손대지 않는다.
     const pos = (url.searchParams.get('pos') || '').replace(/[^a-z0-9_-]/gi, '').slice(0, 20);
     if (slug && pos) slug = `${slug}#${pos}`;
     const row = {
-      product_id: productId,
+      product_id: params.id || null,
       slug,
       channel: reason ? `web_doc_blocked:${reason}` : 'web_doc',
       referer,
@@ -136,8 +135,19 @@ export async function onRequestGet(context) {
     }).catch(() => {});
     context.waitUntil(logPromise);
   }
+  return { reason, dest: validDest ? rawTarget : null };
+}
 
+export async function onRequestGet(context) {
+  const home = new URL('/', new URL(context.request.url).origin).toString();
+  const { reason, dest } = logClick(context);
   if (reason === 'geo') return interstitial(dest, home);   // 해외 체류 한국인은 버튼으로 이동 가능
   if (reason) return Response.redirect(home, 302);          // 봇·데이터센터·잘못된 목적지 → 제휴링크로 보내지 않음
   return Response.redirect(dest, 302);
+}
+
+// 10/24: 구매 버튼 비콘(BaseHead) — 이동은 브라우저가 naver.me 로 직접 하고, 여기선 기록만.
+export async function onRequestPost(context) {
+  logClick(context);
+  return new Response(null, { status: 204, headers: { 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex, nofollow' } });
 }
