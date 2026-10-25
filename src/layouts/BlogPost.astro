@@ -501,6 +501,22 @@ const searchTitle = seoTitle({ title, productName });
 						{/* 상품 글에만 Product 노드. 소개 페이지 등 일반 글에 붙으면 스키마 오류(가짜 상품)가 된다 */}
 						{isProduct && <script type="application/ld+json" set:html={JSON.stringify(productLd)} />}
 						{faqLd && <script type="application/ld+json" set:html={JSON.stringify(faqLd)} />}
+						{!isProduct && toc.length >= 3 && (
+							<nav class="toc" aria-label="목차">
+								<p class="toc-title">📑 목차</p>
+								<ul>{toc.map((h: any) => <li class={h.depth === 3 ? 'toc-sub' : ''}><a href={`#${h.slug}`}>{h.text}</a></li>)}</ul>
+							</nav>
+						)}
+						<slot />
+						{affiliateUrl && !discontinued && (
+							<div class="buy-cta buy-cta-bottom" id="buy-bottom">
+								<a class="buy-btn" href={posHref(buyHref, "bottom")} target="_blank" rel="nofollow sponsored noopener">
+									네이버에서 현재 가격 보기
+								</a>
+								<p class="buy-note">이 링크로 구매하면 쇼핑로그가 네이버 쇼핑 커넥트 수수료를 받습니다.</p>
+							</div>
+						)}
+						{/* 10/26: 다른 상품 가격 비교표는 본문·구매 버튼 다음 — 본문보다 먼저 "가격 보기" 5개가 나와 독자가 이 상품을 읽기 전에 다른 상품으로 빠졌다 */}
 						{comparison && (
 							<section class="compare" aria-labelledby="compare-title">
 								<h2 id="compare-title">{comparison.label} 가격 비교</h2>
@@ -528,21 +544,6 @@ const searchTitle = seoTitle({ title, productName });
 									</table>
 								</div>
 							</section>
-						)}
-						{!isProduct && toc.length >= 3 && (
-							<nav class="toc" aria-label="목차">
-								<p class="toc-title">📑 목차</p>
-								<ul>{toc.map((h: any) => <li class={h.depth === 3 ? 'toc-sub' : ''}><a href={`#${h.slug}`}>{h.text}</a></li>)}</ul>
-							</nav>
-						)}
-						<slot />
-						{affiliateUrl && !discontinued && (
-							<div class="buy-cta buy-cta-bottom" id="buy-bottom">
-								<a class="buy-btn" href={posHref(buyHref, "bottom")} target="_blank" rel="nofollow sponsored noopener">
-									네이버에서 현재 가격 보기
-								</a>
-								<p class="buy-note">이 링크로 구매하면 쇼핑로그가 네이버 쇼핑 커넥트 수수료를 받습니다.</p>
-							</div>
 						)}
 						{relatedPosts.length > 0 && (
 							<aside class="related">
