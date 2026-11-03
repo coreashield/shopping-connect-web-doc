@@ -1,5 +1,6 @@
 ---
 import { primaryIds, pidOf } from '../../lib/canonical';
+import { listThumb } from '../../lib/snippet';
 import { getPosts, getGuides } from '../../lib/site';
 import { listed } from '../../lib/pruned';
 import BaseHead from '../../components/BaseHead.astro';
@@ -54,7 +55,7 @@ const description = gq.length
 <!doctype html>
 <html lang="ko">
 	<head>
-		<BaseHead title={title} description={description} />
+		<BaseHead title={title} description={description} imageUrl={listThumb(posts)} />
 		<style>
 			.cat-head {
 				margin-bottom: 1rem;

@@ -65,3 +65,17 @@ export function postThumb(heroImage: unknown, body?: string, gallery?: string[])
 	if (isProductPhoto(raw)) return raw;
 	return firstBodyImage(body) ?? raw;
 }
+
+// 11/3: 목록 페이지(분류·토픽) 검색결과 썸네일 — 그동안 og:image 가 회색 기본 이미지였다.
+//   서치어드바이저 30일: 같은 1~3위인데 상품 글(상품 사진 썸네일) CTR 1.1% vs 목록 페이지 0.04%.
+//   판매 중인 글 중 가장 먼저 쓴 글의 상품 사진을 쓴다(매일 새 글이 들어와도 썸네일이 바뀌지 않게).
+export function listThumb(posts: any[]): string | undefined {
+	const cands = posts
+		.filter((p) => p?.data?.saleStatus !== 'discontinued')
+		.sort((a, b) => a.data.pubDate.valueOf() - b.data.pubDate.valueOf());
+	for (const p of cands) {
+		const t = postThumb(p.data.heroImage, p.body, p.data.gallery);
+		if (t && /^https?:\/\//.test(t) && isProductPhoto(t)) return t;
+	}
+	return undefined;
+}

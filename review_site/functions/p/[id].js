@@ -140,5 +140,5 @@ ${checkGrid}
     },
     { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: d.faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) },
   ];
-  return layout({ title, description, canonical, body, jsonld, env, nav: 'category' });
+  return layout({ title, description, canonical, body, jsonld, env, nav: 'category', image: d.imgs[0] ? img(d.imgs[0], 640) : '' });
 }

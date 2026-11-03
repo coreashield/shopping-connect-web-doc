@@ -44,7 +44,8 @@ export function verdictLine(score) {
   return '근거가 아직 부족해 후기와 조건을 꼼꼼히 확인한 뒤 결정하세요.';
 }
 
-export function layout({ title, description, canonical, body, jsonld = [], noindex = false, env = {}, nav = '' }) {
+// 11/3: image = 검색결과·공유 썸네일(og:image). 그동안 없어서 네이버 웹문서에 사진 없이 떴다(리뷰 사이트 CTR 0.07%).
+export function layout({ title, description, canonical, body, jsonld = [], noindex = false, env = {}, nav = '', image = '' }) {
   // 서치어드바이저 HTML 태그 인증값(공개 메타, 2026-10-21 등록). env 가 있으면 그것이 우선.
   const verify = `<meta name="naver-site-verification" content="${esc(env.NAVER_SITE_VERIFICATION || '28bde2c3123ad3727a8e48d27e786e8d85d2250b')}">`;
   const ld = jsonld.map((o) => `<script type="application/ld+json">${JSON.stringify(o).replace(/</g, '\\u003c')}</script>`).join('');
@@ -61,6 +62,7 @@ ${verify}
 <meta property="og:type" content="website"><meta property="og:site_name" content="${SITE.name}">
 <meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(description)}">
 ${canonical ? `<meta property="og:url" content="${esc(canonical)}">` : ''}
+${image ? `<meta property="og:image" content="${esc(image)}"><meta name="twitter:card" content="summary_large_image">` : ''}
 <meta name="theme-color" content="#ffffff">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>

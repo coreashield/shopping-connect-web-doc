@@ -1,6 +1,6 @@
 // 분류 페이지 /c/{대}/{중}/.../?page=N — 점수 순 목록 30개씩
 import { sb, getCats, cached, CARD_COLS } from '../../lib/db.js';
-import { layout, card, catHref, breadcrumb, breadcrumbLd, esc, fmtN, html, notFound, SITE } from '../../lib/render.js';
+import { layout, img, card, catHref, breadcrumb, breadcrumbLd, esc, fmtN, html, notFound, SITE } from '../../lib/render.js';
 
 const PER = 30;
 
@@ -37,7 +37,7 @@ ${nav}`;
     return html(layout({
       title: `${last} 추천 순위·후기 비교 ${fmtN(total)}개${page > 1 ? ` (${page}쪽)` : ''} | ${SITE.name}`,
       description: `${last} ${fmtN(total)}개를 평점·리뷰 수·가격 위치로 계산한 점수 순으로 비교했어요. 상품마다 장단점과 사기 전 확인할 것을 정리합니다.`,
-      canonical, body, env, noindex: total < 5, nav: 'category',
+      canonical, body, env, noindex: total < 5, nav: 'category', image: rows.find((r) => r.img) ? img(rows.find((r) => r.img).img, 640) : '',
       jsonld: [breadcrumbLd(segs.slice(0, -1), last, `${SITE.origin}${catHref(segs)}`)],
     }));
   });
