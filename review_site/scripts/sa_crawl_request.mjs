@@ -59,7 +59,12 @@ const pg = await openTab('https://searchadvisor.naver.com/console/site/request/c
 const arm = () => pg.evaluate(() => { window.__m = []; window.alert = (m) => window.__m.push(String(m)); window.confirm = (m) => { window.__m.push(String(m)); return true; }; });
 try {
   await sleep(3000);
-  if (!pg.url().includes('searchadvisor.naver.com/console')) { res.state = 'not_logged_in'; res.url = pg.url(); }
+  // 11/8: 세션 만료 때 주소는 그대로, 제목 "로그인 - …"·본문 "접근권한이 없습니다"만 뜬다 → 로그인 풀림으로 본다.
+  const outPage = await pg.evaluate(() => /^로그인/.test(document.title) || /접근권한이 없습니다/.test(document.body.innerText)).catch(() => false);
+  if (!pg.url().includes('searchadvisor.naver.com/console') || outPage) {
+    res.state = 'not_logged_in';
+    res.url = '서치어드바이저 로그인 풀림 → 대표가 Aside에서 네이버 직접 로그인 필요';
+  }
   else {
     await snapshot(pg, { interactive: true });
     await arm();
