@@ -78,6 +78,10 @@ const buyHref = (affiliateUrl && productId)
 	: affiliateUrl;
 // 10/5: 버튼 위치 측정 — /go/ 링크에만 pos 를 붙인다(제휴 URL u= 는 그대로). functions/go 가 slug#pos 로 기록.
 const posHref = (h: string | undefined, pos: string) => (h && h.startsWith('/go/') ? `${h}&pos=${pos}` : h);
+// 11/8 버튼 문구 A/B (review 사이트와 같은 규칙): productId 끝에서 둘째 자리 0~4 = A(지금 문구) / 5~9 = B.
+//   "최저가"는 쓰지 않는다(실제 최저가 비교가 아님, 대표 결정 11/8). 판정 11/22경 — web_doc_clicks product_id 로 사후 집계.
+const textB = productId ? Number(String(productId).slice(-2, -1)) >= 5 : false;
+const lbl = (a: string, disc: unknown, short = false) => (!textB ? a : disc ? (short ? '할인가 확인 →' : '오늘 할인가 확인하기 →') : (short ? '가격 확인 →' : '오늘 가격 확인하기 →'));
 // og:image·구매 카드 썸네일: 상품 사진 갤러리 첫 장 → 상품 사진인 대표 이미지 → 본문 첫 상품 사진 (10/21)
 const heroStr = typeof heroImage === 'string' ? heroImage : heroImage?.src;
 const rawImg = gallery[0] ?? (isProductPhoto(heroStr) ? heroStr : (bodyImage ?? heroStr));
@@ -321,6 +325,9 @@ const searchTitle = seoTitle({ title, productName });
 			.compare th { font-size: 0.8rem; color: rgb(var(--gray)); font-weight: 600; white-space: nowrap; }
 			.compare td.num { text-align: right; white-space: nowrap; }
 			.compare tr.current td { background: var(--accent-soft); font-weight: 600; }
+			/* 11/8: 모바일에서 표를 옆으로 밀어도 상품명 칸 고정 (choicemon·rentre 방식, 가이드 글은 이미 적용) */
+			.compare .stick { position: sticky; left: 0; z-index: 1; background: #fff; box-shadow: 1px 0 0 rgb(var(--gray-light)); min-width: 8em; }
+			.compare tr.current td.stick { background: var(--accent-soft); }
 			.compare td a { color: rgb(var(--gray-dark)); }
 			.compare td a.alt-buy { display: inline-block; padding: 0.3em 0.6em; border-radius: 6px; background: var(--accent-soft); color: var(--accent-dark); font-weight: 700; text-decoration: none; white-space: nowrap; font-size: 0.82rem; }
 			.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
@@ -400,7 +407,7 @@ const searchTitle = seoTitle({ title, productName });
 							{hashtags.length > 0 && <p class="r1-tags">{hashtags.map((k) => <span>#{k}</span>)}</p>}
 							{affiliateUrl && !discontinued ? (
 								<>
-									<a class="r1-btn r1-btn-primary r1-btn-buy" id="buy-main" href={posHref(buyHref, "card")} target="_blank" rel="nofollow sponsored noopener">할인 적용가 확인하기</a>
+									<a class="r1-btn r1-btn-primary r1-btn-buy" id="buy-main" href={posHref(buyHref, "card")} target="_blank" rel="nofollow sponsored noopener">{lbl('할인 적용가 확인하기', facts?.discount)}</a>
 									{productPrice && productPrice >= 100000 && <p class="r1-fine">🛡️ 교환·반품 배송비, 설치비, A/S·보증 조건은 판매 페이지 하단 안내에서 주문 전에 확인할 수 있습니다.</p>}
 									<p class="r1-fine">가격·배송비·재고는 판매처 표시가 기준입니다. 이 링크로 구매하면 쇼핑로그가 수수료를 받습니다.</p>
 								</>
@@ -511,7 +518,7 @@ const searchTitle = seoTitle({ title, productName });
 						{affiliateUrl && !discontinued && (
 							<div class="buy-cta buy-cta-bottom" id="buy-bottom">
 								<a class="buy-btn" href={posHref(buyHref, "bottom")} target="_blank" rel="nofollow sponsored noopener">
-									네이버에서 현재 가격 보기
+									{lbl("네이버에서 현재 가격 보기", facts?.discount)}
 								</a>
 								<p class="buy-note">이 링크로 구매하면 쇼핑로그가 네이버 쇼핑 커넥트 수수료를 받습니다.</p>
 							</div>
@@ -527,12 +534,12 @@ const searchTitle = seoTitle({ title, productName });
 								<div class="compare-wrap">
 									<table>
 										<thead>
-											<tr><th scope="col">상품</th><th scope="col">판매처</th><th scope="col">판매가</th><th scope="col">평점</th><th scope="col">가격 기준일</th><th scope="col"><span class="sr-only">구매</span></th></tr>
+											<tr><th scope="col" class="stick">상품</th><th scope="col">판매처</th><th scope="col">판매가</th><th scope="col">평점</th><th scope="col">가격 기준일</th><th scope="col"><span class="sr-only">구매</span></th></tr>
 										</thead>
 										<tbody>
 											{comparison.rows.map((r) => (
 												<tr class={r.current ? 'current' : ''}>
-													<td>{r.current ? <>{r.name} <small>(이 글)</small></> : <a href={`/blog/${r.id}/`}>{r.name}</a>}</td>
+													<td class="stick">{r.current ? <>{r.name} <small>(이 글)</small></> : <a href={`/blog/${r.id}/`}>{r.name}</a>}</td>
 													<td>{r.store ?? '-'}</td>
 													<td class="num">{fmtWon(r.price)}</td>
 													<td class="num">{r.rating ? r.rating.toFixed(1) : '-'}</td>
@@ -574,7 +581,7 @@ const searchTitle = seoTitle({ title, productName });
 							</section>
 						)}
 						{affiliateUrl && !discontinued && (
-							<a class="r1-btn r1-btn-primary r1-btn-buy" href={posHref(buyHref, "side")} target="_blank" rel="nofollow sponsored noopener">{productPrice ? `${fmtWon(productPrice)} · 현재 가격 보기` : '현재 가격 보기'}</a>
+							<a class="r1-btn r1-btn-primary r1-btn-buy" href={posHref(buyHref, "side")} target="_blank" rel="nofollow sponsored noopener">{productPrice ? `${fmtWon(productPrice)} · ${lbl('현재 가격 보기', facts?.discount, true)}` : lbl('현재 가격 보기', facts?.discount, true)}</a>
 						)}
 					</aside>
 				)}
@@ -583,7 +590,7 @@ const searchTitle = seoTitle({ title, productName });
 			{affiliateUrl && !discontinued && (
 				<div class="buy-sticky" id="buy-sticky">
 					<span class="buy-sticky-price">{productPrice ? fmtWon(productPrice) : (productName || title)}{priceDateLabel && productPrice && <small>{priceDateLabel} 기준 · 판매처 가격 우선</small>}</span>
-					<a href={posHref(buyHref, "sticky")} target="_blank" rel="nofollow sponsored noopener">현재 가격 보기</a>
+					<a href={posHref(buyHref, "sticky")} target="_blank" rel="nofollow sponsored noopener">{lbl('현재 가격 보기', facts?.discount, true)}</a>
 				</div>
 			)}
 		</main>
