@@ -2,6 +2,7 @@
 import { sb, getCats } from '../../lib/db.js';
 import { SITE, catHref } from '../../lib/render.js';
 import { PER_MAP } from '../sitemap.xml.js';
+import { PILOT } from '../../lib/segments.js';
 
 const xmlRes = (urls) => new Response(`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls.map(([u, m]) => `<url><loc>${u}</loc>${m ? `<lastmod>${m}</lastmod>` : ''}</url>`).join('')}</urlset>`, {
   headers: { 'Content-Type': 'application/xml; charset=utf-8', 'Cache-Control': 'public, max-age=3600' },
@@ -14,6 +15,8 @@ export async function onRequestGet(context) {
     const urls = [[`${SITE.origin}/`], [`${SITE.origin}/about/`]];
     const walk = (node, path) => { for (const [c, v] of Object.entries(node)) { if (v.n < 5) continue; const p = [...path, c]; urls.push([SITE.origin + catHref(p)]); walk(v.k, p); } };
     walk(tree, []);
+    // 11/8 세그먼트 시범 분류 (lib/segments.js PILOT)
+    for (const [path, tabs] of PILOT) for (const t of tabs) urls.push([`${SITE.origin}${catHref(path.split('>'))}${t}/`]);
     return xmlRes(urls);
   }
   const n = Number(name);

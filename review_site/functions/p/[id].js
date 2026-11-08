@@ -3,7 +3,7 @@
 //   → 가격·배송 체크/스토어 정보 → 리뷰 기반 구매 판단(카드 묶음) + 옆(다른 후기 제품·제품 상세 정보)
 //   리뷰 원문·사진(review101 "스토어 구매자 리뷰")은 수집하지 않으므로 없다.
 import { getPage, cached } from '../../lib/db.js';
-import { layout, esc, won, fmtN, img, stars, scoreRing, breadcrumbLd, notFound, html, SITE, catHref, trustOf, riskOf, reasonsOf, verdictLine } from '../../lib/render.js';
+import { layout, esc, won, fmtN, img, stars, scoreRing, breadcrumbLd, notFound, html, SITE, catHref, trustOf, riskOf, reasonsOf, verdictLine, cmpVariant, buyLabel, wonShort, cntShort } from '../../lib/render.js';
 
 const PART_LABEL = { rating: ['평점', 40], reviews: ['리뷰 수', 25], price: ['같은 분류 가격', 20], attrs: ['리뷰 항목 만족', 15] };
 
@@ -24,7 +24,7 @@ function render(row, env) {
   const id = row.product_id;
   const canonical = `${SITE.origin}/p/${id}/`;
   const go = (pos) => `/go/${id}/?pos=${pos}`;
-  const buy = (pos, label = '네이버에서 현재 가격 확인하기', cls = 'btn btn-primary btn-buy') => `<a class="${cls}" href="${go(pos)}" rel="nofollow sponsored noopener" target="_blank">${label}</a>`;
+  const buy = (pos, label = buyLabel(id, d.discount), cls = 'btn btn-primary btn-buy') => `<a class="${cls}" href="${go(pos)}" rel="nofollow sponsored noopener" target="_blank">${label}</a>`;
   const title = `${row.name} 후기·장단점${d.reviews ? ` — 리뷰 ${fmtN(d.reviews)}개 분석` : ''} | ${SITE.name}`;
   const description = `${d.summary} 맞는 사람·안 맞는 사람과 사기 전 확인할 것까지 정리.`.slice(0, 155);
   const trust = trustOf(d.reviews);
@@ -56,8 +56,7 @@ function render(row, env) {
 
   const decision = `<div class="g2">
   <section class="kcard tint-green"><h2 class="kh"><span class="kh-ic ic-green">✓</span>사도 되는 이유</h2>
-    <ul class="dot-list">${reasons.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>
-    ${buy('reason', '할인 적용가 확인하기', 'btn btn-light btn-sm')}</section>
+    <ul class="dot-list">${reasons.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></section>
   <section class="kcard tint-orange"><h2 class="kh"><span class="kh-ic ic-orange">!</span>구매 전 확인하세요</h2>
     <ul class="dot-list">${d.checks.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>
     <p class="mini-chips">${d.checks.slice(0, 3).map((x) => `<span>${esc(x.split(/[와과(·,]/)[0].trim())}</span>`).join('')}</p></section>
@@ -103,7 +102,7 @@ function render(row, env) {
       <p>${esc(d.leaf)} ${fmtN(d.leafN)}개 중 <b>${d.pricePct <= 50 ? `싼 쪽 하위 ${Math.max(1, d.pricePct)}%` : `비싼 쪽 상위 ${Math.max(1, 100 - d.pricePct)}%`}</b>, 중앙값 ${won(d.leafMedian)}.</p>`] : null,
     ['🧮', '구매 점수 계산', `<ul class="parts">${parts}</ul><p class="muted"><a href="/about/">계산 방법</a> — 판매처·광고비는 반영하지 않습니다.</p>`],
     ['✅', '현명한 선택 기준', `<ol class="num-list">${d.checks.map((x) => `<li>${esc(x)}</li>`).join('')}</ol>`],
-    ['🏁', '최종 결론', `<p><b>${esc(d.label)}</b> — ${esc(verdictLine(d.score))}</p>${buy('verdict', '판매 페이지에서 확인하기', 'btn btn-primary btn-sm')}`],
+    ['🏁', '최종 결론', `<p><b>${esc(d.label)}</b> — ${esc(verdictLine(d.score))}</p>${buy('verdict')}`],
     ['❓', '자주 묻는 질문 (FAQ)', d.faq.map((f, i) => `<details${i === 0 ? ' open' : ''}><summary>${esc(f.q)}</summary><p>${esc(f.a)}</p></details>`).join('')],
   ].filter(Boolean);
   const judge = `<section class="kcard"><h2 class="kh">리뷰 기반 구매 판단</h2>
@@ -115,28 +114,53 @@ function render(row, env) {
   </section>` : '';
   const specSide = d.spec.length ? `<section class="kcard side-list"><h2 class="kh">제품 상세 정보</h2><dl class="kv kv-sm">${d.spec.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl></section>` : '';
 
+  // 11/8 한눈에 비교 — 이 상품 + 같은 분류 대안 3개. 상품명 칸 고정, 행마다 구매 버튼(pos=cmp / cmp_alt).
+  //   위치 A/B: cmpVariant(id) top = 첫 화면 아래, bottom = 결론 카드 묶음 아래.
+  const altRows = (d.alts || []).slice(0, 3);
+  const cmpRow = (p, me) => `<tr${me ? ' class="me"' : ''}>
+      <th scope="row" class="stick">${me ? `<span class="cmp-me">이 상품</span>` : `<a href="/p/${esc(p.id)}/">${esc(p.name)}</a>`}</th>
+      <td class="n">${p.score ?? '-'}</td><td class="n">${wonShort(p.price)}</td><td class="n opt">${p.rating ? Number(p.rating).toFixed(1) : '-'}</td><td class="n">${cntShort(p.reviews)}</td>
+      <td><a class="cmp-buy" href="/go/${esc(p.id)}/?pos=${me ? 'cmp' : 'cmp_alt'}" rel="nofollow sponsored noopener" target="_blank">확인</a></td></tr>`;
+  const compare = altRows.length ? `<section class="kcard cmp" aria-labelledby="cmp-h"><h2 class="kh" id="cmp-h">같은 ${esc(d.leaf)} 한눈에 비교</h2>
+  <div class="cmp-wrap"><table class="cmp-tbl">
+    <thead><tr><th scope="col" class="stick">상품</th><th scope="col">점수</th><th scope="col">가격</th><th scope="col" class="opt">평점</th><th scope="col">리뷰</th><th scope="col"><span class="sr">구매</span></th></tr></thead>
+    <tbody>${cmpRow({ id, name: row.name, score: d.score, price: d.price, rating: d.rating, reviews: d.reviews }, true)}${altRows.map((a) => cmpRow(a, false)).join('')}</tbody>
+  </table></div>
+  <p class="fine">점수는 평점·리뷰 수·같은 분류 가격·리뷰 항목 응답으로 계산 · 가격 기준일 ${esc(d.checkedAt)} · 확인 버튼은 제휴 링크</p>
+</section>` : '';
+  const cmpTop = cmpVariant(id) === 'top';
+
   const body = `
 <div class="detail-bar"><h2>상품 및 리뷰 분석 상세</h2><a class="btn btn-light btn-sm" href="${catHref(d.cats)}">← 목록으로</a></div>
 <p class="disc-line">* 이 페이지의 구매 버튼은 네이버 쇼핑 커넥트 제휴 링크이며, 구매 시 일정액의 수수료를 받습니다.</p>
 ${hero}
+${cmpTop ? compare : ''}
 ${decision}
 ${fitGrid}
 ${checkGrid}
 <div class="detail-cols">
-  <div>${judge}</div>
+  <div>${judge}${cmpTop ? '' : compare}</div>
   <aside class="detail-side">${others}${specSide}</aside>
 </div>
 <p class="back"><a class="btn btn-light" href="${catHref(d.cats)}">← 목록으로 돌아가기</a></p>
-<div class="sticky">${buy('sticky')}</div>
+<div class="sticky"><div class="sticky-in">${d.price ? `<span class="sticky-price">${won(d.price)}<small>${esc(d.checkedAt)} 기준</small></span>` : ''}${buy('sticky', buyLabel(id, d.discount, true))}</div></div>
 <script>(function(){var m=document.getElementById('gal-main'),c=document.getElementById('gal-count');document.querySelectorAll('.gal-th').forEach(function(b){b.addEventListener('click',function(){m.src=b.dataset.src;if(c)c.textContent=b.dataset.i+' / '+c.textContent.split('/')[1].trim();document.querySelectorAll('.gal-th.on').forEach(function(x){x.classList.remove('on')});b.classList.add('on')})})})();</script>`;
 
   const jsonld = [
     breadcrumbLd(d.cats, row.name, canonical),
+    // 11/8 Article → Product+Offer. AggregateRating 은 넣지 않는다 — 평점·리뷰 수가 우리 리뷰가 아니라 스토어 리뷰라
+    //   구글 정책(다른 사이트 리뷰 집계 표시 금지) 위반 소지(대표 결정 11/8).
     {
-      '@context': 'https://schema.org', '@type': 'Article', headline: `${row.name} 후기·장단점`, description,
-      image: d.imgs.slice(0, 3).map((u) => img(u, 640)), dateModified: row.built_at, datePublished: row.built_at,
-      author: { '@type': 'Organization', name: '쇼핑로그', url: SITE.parent }, publisher: { '@type': 'Organization', name: '쇼핑로그', url: SITE.parent },
-      mainEntityOfPage: canonical,
+      '@context': 'https://schema.org', '@type': 'Product', name: d.fullName || row.name, description,
+      image: d.imgs.slice(0, 3).map((u) => img(u, 640)),
+      ...(d.brand ? { brand: { '@type': 'Brand', name: d.brand } } : {}),
+      category: d.cats.join(' > '),
+      url: canonical,
+      ...(d.price ? { offers: {
+        '@type': 'Offer', price: d.price, priceCurrency: 'KRW', availability: 'https://schema.org/InStock',
+        itemCondition: 'https://schema.org/NewCondition', url: canonical,
+        ...(d.store ? { seller: { '@type': 'Organization', name: d.store } } : {}),
+      } } : {}),
     },
     { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: d.faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) },
   ];

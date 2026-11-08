@@ -239,6 +239,41 @@ details p{margin:6px 0 0}
 .foot .disc{color:var(--sub)}
 .foot-links a{text-decoration:underline}
 
+/* 11/8 한눈에 비교표 (상품 페이지 cmp · 분류 목록 TOP 5 · 세그먼트) — 상품명 칸 고정, 행마다 구매 버튼 */
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.cmp{margin:16px 0}
+.cmp-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r-sm);-webkit-overflow-scrolling:touch}
+.cmp-tbl{border-collapse:separate;border-spacing:0;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
+.cmp-tbl th,.cmp-tbl td{padding:10px 12px;border-bottom:1px solid var(--line2);text-align:left;white-space:nowrap;vertical-align:middle}
+.cmp-tbl tbody tr:last-child>*{border-bottom:0}
+.cmp-tbl thead th{font-size:12px;color:var(--mute);font-weight:500;background:var(--soft)}
+.cmp-tbl td.n{text-align:right}
+.cmp-tbl .stick{position:sticky;left:0;z-index:1;background:var(--card);box-shadow:1px 0 0 var(--line);min-width:9em;max-width:15em;white-space:normal;font-weight:600}
+.cmp-tbl thead .stick{background:var(--soft)}
+.cmp-tbl .stick a{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.cmp-tbl .stick a:hover{color:var(--primary)}
+.cmp-tbl tr.me>*{background:var(--primary-soft)}
+.cmp-me{color:var(--primary-ink)}
+.cmp-buy{display:inline-flex;align-items:center;height:30px;padding:0 12px;border-radius:6px;background:var(--primary);color:#fff;font-size:12px;font-weight:600}
+.cmp-buy:hover{background:var(--primary-ink)}
+.cmp .fine{text-align:left}
+@media (max-width:560px){
+  /* 모바일: 구매 버튼 칸이 화면 밖으로 밀리지 않게 평점 칸 숨김·여백 축소 */
+  .cmp-tbl .opt{display:none}
+  .cmp-tbl th,.cmp-tbl td{padding:9px 7px;font-size:13px}
+  .cmp-tbl .stick{min-width:7.5em;max-width:9.5em}
+  .cmp-buy{padding:0 9px}
+  .cmp.kcard{padding:16px 12px}
+}
+.sticky-in{display:flex;align-items:center;gap:12px}
+.sticky-in .btn-buy{flex:1;width:auto}
+.sticky-price{font-weight:800;font-size:16px;line-height:1.2;white-space:nowrap}
+.sticky-price small{display:block;font-size:11px;font-weight:400;color:var(--mute)}
+.seg-tabs{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 0}
+.seg-tabs a{border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-size:13px;color:var(--sub);background:#fff}
+.seg-tabs a[aria-current="page"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.seg-facts{margin:10px 0 0;padding-left:1.1em;color:var(--sub);font-size:14px}
+
 @media (max-width:900px){
   .detail-cols,.search-layout{grid-template-columns:minmax(0,1fr)}
   .search-side{position:static}

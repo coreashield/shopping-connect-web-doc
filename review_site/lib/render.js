@@ -44,6 +44,22 @@ export function verdictLine(score) {
   return '근거가 아직 부족해 후기와 조건을 꼼꼼히 확인한 뒤 결정하세요.';
 }
 
+// ── 11/8 전환 A/B (콘티 승인 11/8, 판정 11/22경) ────────────────────────────
+// 상품 번호로 고정 배정 → 엣지 캐시와 충돌 없음, 클릭(web_doc_clicks.product_id·slug)만으로 사후 집계 가능.
+//   비교표 위치: 끝자리 홀수 = 첫 화면 아래(top) / 짝수 = 결론 아래(bottom)
+//   버튼 문구:   끝에서 둘째 자리 0~4 = A(지금 문구) / 5~9 = B("오늘 할인가 확인하기 →") — 두 축이 섞이지 않게 다른 자리
+//   "최저가"는 쓰지 않는다(실제 최저가 비교가 아님 → 과장 표시 소지, 대표 결정 11/8).
+export const cmpVariant = (id) => (Number(String(id).slice(-1)) % 2 === 1 ? 'top' : 'bottom');
+export const textVariant = (id) => (Number(String(id).slice(-2, -1)) >= 5 ? 'b' : 'a');
+export function buyLabel(id, discount, short = false) {
+  if (textVariant(id) === 'a') return short ? '가격 확인하기' : '네이버에서 현재 가격 확인하기';
+  return discount ? (short ? '할인가 확인 →' : '오늘 할인가 확인하기 →') : (short ? '가격 확인 →' : '오늘 가격 확인하기 →');
+}
+// 만원 단위 짧은 가격(표 칸용): 389000 → 38.9만, 9800 → 9,800원
+export const wonShort = (n) => (!n ? '-' : n >= 10000 ? `${(Math.round(n / 1000) / 10).toLocaleString('ko-KR')}만` : `${fmtN(n)}원`);
+// 리뷰 수 짧게: 12431 → 1.2만
+export const cntShort = (n) => (n >= 10000 ? `${(Math.round(n / 1000) / 10).toLocaleString('ko-KR')}만` : fmtN(n));
+
 // 11/3: image = 검색결과·공유 썸네일(og:image). 그동안 없어서 네이버 웹문서에 사진 없이 떴다(리뷰 사이트 CTR 0.07%).
 export function layout({ title, description, canonical, body, jsonld = [], noindex = false, env = {}, nav = '', image = '' }) {
   // 서치어드바이저 HTML 태그 인증값(공개 메타, 2026-10-21 등록). env 가 있으면 그것이 우선.
@@ -67,7 +83,7 @@ ${image ? `<meta property="og:image" content="${esc(image)}"><meta name="twitter
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
-<link rel="stylesheet" href="/style.css?v=7">
+<link rel="stylesheet" href="/style.css?v=9">
 ${ld}
 </head><body>
 <header class="top"><div class="wrap top-in">
