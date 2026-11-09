@@ -1,6 +1,12 @@
 ---
 import { SITE_TITLE } from '../consts';
+import { SUB_SITES, CURRENT_SUB } from '../lib/site';
 const today = new Date();
+// 사이트끼리 잇는 링크 — 서브사이트가 사이트맵 말고 링크로도 발견되게 한다 (2026-11-09)
+const familySites = [
+	...(CURRENT_SUB ? [{ href: 'https://shopping-log.com/', label: '쇼핑로그 본사이트' }] : []),
+	...SUB_SITES.filter((s) => s.host !== CURRENT_SUB?.host).map((s) => ({ href: `https://${s.host}/`, label: s.title })),
+];
 ---
 
 <footer>
@@ -17,6 +23,7 @@ const today = new Date();
 			<a href="/blog/">전체 글</a>
 			<a href="/category/">카테고리</a>
 			<a href="https://review.shopping-log.com/">상품 리뷰 데이터</a>
+			{familySites.map((s) => <a href={s.href}>{s.label}</a>)}
 			<a href="/about/">소개</a>
 			<a href="/contact/">문의</a>
 			<a href="/terms/">이용약관</a>
