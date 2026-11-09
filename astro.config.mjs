@@ -57,6 +57,7 @@ function buildLastmodMap() {
 		const pick = (key) => head.match(new RegExp(`^${key}:\\s*"?([0-9]{4}-[0-9]{2}-[0-9]{2})`, 'm'))?.[1];
 		const date = pick('updatedDate') || pick('pubDate');
 		if (!date) continue;
+		const firstPub = pick('pubDate') || date;
 		const iso = new Date(`${date}T00:00:00Z`).toISOString();
 		const slug = file.replace(/\.mdx?$/, '');
 		map.set(`${B}/blog/${slug}/`, iso);
@@ -69,7 +70,7 @@ function buildLastmodMap() {
 		const category = head.match(/^category:\s*"?([^"\n]+)"?/m)?.[1]?.trim();
 		const top = topCategoryOf(category);
 		// 호스트 필터: 서브 빌드는 해당 카테고리만, 본체는 분리 카테고리 제외
-		if (SITE_CATEGORY_ENV ? top !== SITE_CATEGORY_ENV : SUB_CATEGORIES.includes(top)) continue;
+		if (!belongsToBuild(top, firstPub)) continue;
 		bump(`${B}/category/${top ? CATEGORY_SLUGS[top] : ETC_SLUG}/`, iso);
 
 		// categories.ts의 topicHubs는 대분류가 미등록이어도 허브를 만든다(etc로 폴백).
@@ -104,7 +105,7 @@ function buildNonCanonicalSet() {
 		const id = file.replace(/\.mdx?$/, '');
 		const category = head.match(/^category:\s*"?([^"\n]+)"?/m)?.[1]?.trim();
 		const top = topCategoryOf(category);
-		if (SITE_CATEGORY_ENV ? top !== SITE_CATEGORY_ENV : SUB_CATEGORIES.includes(top)) continue;
+		if (!belongsToBuild(top, head.match(/^pubDate:\s*"?([0-9]{4}-[0-9]{2}-[0-9]{2})/m)?.[1] || '')) continue;
 		const pid = head.match(/^productId:\s*"?([^"\n]+)"?/m)?.[1]?.trim() || id.match(/-(\d{6,})-\d{8}$/)?.[1];
 		const pub = Date.parse(head.match(/^pubDate:\s*"?([^"\n]+)"?/m)?.[1]?.trim() || '');
 		if (!pid || !Number.isFinite(pub)) continue;
@@ -122,9 +123,18 @@ function buildNonCanonicalSet() {
 }
 const SITE_URL_ENV = (process.env.SITE_URL || '').trim();
 const SITE_CATEGORY_ENV = (process.env.SITE_CATEGORY || '').trim();
-const SUB_CATEGORIES = ['디지털/가전', '식품'];   // src/lib/site.ts SUB_SITES 와 동일하게 유지
-const SUB_HOSTS = { '디지털/가전': 'https://digital.shopping-log.com', '식품': 'https://food.shopping-log.com' };
-const SITE_BASE = SITE_URL_ENV || (SITE_CATEGORY_ENV ? SUB_HOSTS[SITE_CATEGORY_ENV] : 'https://shopping-log.com');
+const GROUP_SINCE = '2026-11-10';
+const SUB_DEFS = [   // src/lib/site.ts SUB_SITES 와 동일하게 유지
+	{ cats: ['디지털/가전'], host: 'https://digital.shopping-log.com' },
+	{ cats: ['식품'], host: 'https://food.shopping-log.com' },
+	{ cats: ['화장품/미용', '패션의류', '패션잡화'], since: GROUP_SINCE, host: 'https://style.shopping-log.com' },
+	{ cats: ['출산/육아', '여가/생활편의'], since: GROUP_SINCE, host: 'https://family.shopping-log.com' },
+	{ cats: ['스포츠/레저', '가구/인테리어'], since: GROUP_SINCE, host: 'https://life.shopping-log.com' },
+];
+const CURRENT_DEF = SUB_DEFS.find((s) => s.cats.join(',') === SITE_CATEGORY_ENV) ?? null;
+const ownerDef = (top, day) => SUB_DEFS.find((s) => s.cats.includes(top) && (!s.since || day >= s.since)) ?? null;
+const belongsToBuild = (top, day) => { const o = ownerDef(top, day); return SITE_CATEGORY_ENV ? (o !== null && o === CURRENT_DEF) : o === null; };
+const SITE_BASE = SITE_URL_ENV || CURRENT_DEF?.host || 'https://shopping-log.com';
 const LASTMOD = buildLastmodMap();
 const PRUNED_IDS = (() => { try { return new Set(JSON.parse(fs.readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)), 'src/data/pruned_posts.json'), 'utf8')).ids || []); } catch { return new Set(); } })();
 const NON_CANONICAL = buildNonCanonicalSet();
@@ -151,7 +161,7 @@ function buildSoftDeadSet() {
 	}
 	const out = new Set();
 	for (const r of rows) {
-		if (r.status !== 'discontinued' || SUB_CATEGORIES.includes(r.top)) continue;
+		if (r.status !== 'discontinued' || r.top === '디지털/가전' || r.top === '식품') continue;
 		if (r.pid && pidCount.get(r.pid) > 1) continue;
 		if (IMP[r.id] > 0) continue;
 		out.add(`${SITE_BASE}/blog/${r.id}/`);

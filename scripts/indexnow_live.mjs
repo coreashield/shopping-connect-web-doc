@@ -21,7 +21,7 @@ const argv = process.argv.slice(2);
 const flag = (n, d) => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : d; };
 const dry = argv.includes('--dry');
 const days = Number(flag('--days', '2'));
-const hosts = (flag('--hosts', 'shopping-log.com,digital.shopping-log.com,food.shopping-log.com')).split(',');
+const hosts = (flag('--hosts', 'shopping-log.com,digital.shopping-log.com,food.shopping-log.com,style.shopping-log.com,family.shopping-log.com,life.shopping-log.com')).split(',');
 
 function findKey() {
 	const dir = path.join(ROOT, 'public');

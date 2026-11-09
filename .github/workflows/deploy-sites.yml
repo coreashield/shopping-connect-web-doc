@@ -15,9 +15,9 @@ on:
   workflow_dispatch:
     inputs:
       sites:
-        description: '배포할 호스트 (쉼표 구분: main,digital,food)'
+        description: '배포할 호스트 (쉼표 구분: main,digital,food,style,family,life)'
         required: false
-        default: 'main,digital,food'
+        default: 'main,digital,food,style,family,life'
 
 # 같은 브랜치의 배포는 순서대로. 진행 중인 배포를 끊지 않는다(부분 배포 방지).
 concurrency:
@@ -49,6 +49,18 @@ jobs:
             category: 식품
             project: shopping-log-food
             host: food.shopping-log.com
+          - site: style
+            category: 화장품/미용,패션의류,패션잡화
+            project: shopping-log-style
+            host: style.shopping-log.com
+          - site: family
+            category: 출산/육아,여가/생활편의
+            project: shopping-log-family
+            host: family.shopping-log.com
+          - site: life
+            category: 스포츠/레저,가구/인테리어
+            project: shopping-log-life
+            host: life.shopping-log.com
     name: ${{ matrix.site }}
     steps:
       - name: Skip if not selected (workflow_dispatch)

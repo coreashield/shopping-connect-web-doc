@@ -4,17 +4,23 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { topCategory } from './categories';
 
-export type SubSite = { category: string; host: string; slug: string; title: string; description: string; naverVerification: string };
-// 서브도메인으로 분리된 카테고리 (본체에서는 제외 + 301). 새 카테고리를 분리하면 여기에만 추가한다.
+// categories: 이 호스트의 대분류. SITE_CATEGORY env 는 이 값을 쉼표로 이은 문자열이다.
+// since(YYYY-MM-DD): 이 날짜 이후 쓴 글만 이 호스트로 간다. 그 전 글은 색인·노출을 지키려고 본체에 그대로 둔다(301 없음).
+export type SubSite = { categories: string[]; since?: string; host: string; slug: string; title: string; description: string; naverVerification: string };
+// 서브도메인으로 분리된 카테고리 (본체에서는 제외). 새 카테고리를 분리하면 여기와 astro.config.mjs SUB_DEFS 에 추가한다.
 // naverVerification: 서치어드바이저 HTML 태그 인증값(공개 메타). env NAVER_SITE_VERIFICATION 이 있으면 그것이 우선.
+const GROUP_SINCE = '2026-11-10';
 export const SUB_SITES: SubSite[] = [
-	{ category: '디지털/가전', host: 'digital.shopping-log.com', slug: 'digital', title: '쇼핑로그 디지털·가전', description: '가전·디지털 기기 스펙 비교와 구매 가이드 — 평수·소음·전기세·호환성 기준으로 고르는 법', naverVerification: '01636de0491b0bd12d5fa437c52b6cb725bb1bc6' },
-	{ category: '식품', host: 'food.shopping-log.com', slug: 'food', title: '쇼핑로그 식품', description: '식품·건강식품 비교 가이드 — 성분·용량·보관·가격 기준으로 고르는 법', naverVerification: 'ecc31ff9b1d10e864fdb95ecab620979984376b8' },
+	{ categories: ['디지털/가전'], host: 'digital.shopping-log.com', slug: 'digital', title: '쇼핑로그 디지털·가전', description: '가전·디지털 기기 스펙 비교와 구매 가이드 — 평수·소음·전기세·호환성 기준으로 고르는 법', naverVerification: '01636de0491b0bd12d5fa437c52b6cb725bb1bc6' },
+	{ categories: ['식품'], host: 'food.shopping-log.com', slug: 'food', title: '쇼핑로그 식품', description: '식품·건강식품 비교 가이드 — 성분·용량·보관·가격 기준으로 고르는 법', naverVerification: 'ecc31ff9b1d10e864fdb95ecab620979984376b8' },
+	{ categories: ['화장품/미용', '패션의류', '패션잡화'], since: GROUP_SINCE, host: 'style.shopping-log.com', slug: 'style', title: '쇼핑로그 스타일', description: '화장품·패션 상품 비교 가이드 — 가격·사이즈·구성 기준으로 고르는 법', naverVerification: '' },
+	{ categories: ['출산/육아', '여가/생활편의'], since: GROUP_SINCE, host: 'family.shopping-log.com', slug: 'family', title: '쇼핑로그 패밀리', description: '육아·여가 상품 비교 가이드 — 월령·구성·가격 기준으로 고르는 법', naverVerification: '' },
+	{ categories: ['스포츠/레저', '가구/인테리어'], since: GROUP_SINCE, host: 'life.shopping-log.com', slug: 'life', title: '쇼핑로그 라이프', description: '스포츠·레저·인테리어 상품 비교 가이드 — 규격·소재·가격 기준으로 고르는 법', naverVerification: '' },
 ];
 
 const env = (k: string) => (import.meta.env[k] as string | undefined)?.trim() || '';
 export const SITE_CATEGORY = env('SITE_CATEGORY');            // '' = 본체
-export const CURRENT_SUB = SUB_SITES.find((s) => s.category === SITE_CATEGORY) ?? null;
+export const CURRENT_SUB = SUB_SITES.find((s) => s.categories.join(',') === SITE_CATEGORY) ?? null;
 export const SITE_URL = env('SITE_URL') || (CURRENT_SUB ? `https://${CURRENT_SUB.host}` : 'https://shopping-log.com');
 export const SITE_TITLE = env('SITE_TITLE') || CURRENT_SUB?.title || '쇼핑로그';
 export const SITE_DESCRIPTION = env('SITE_DESCRIPTION') || CURRENT_SUB?.description || '꼼꼼히 비교한 쇼핑 추천 — 가격, 후기, 스펙을 한눈에';
@@ -27,30 +33,36 @@ export const GOOGLE_SITE_VERIFICATION = env('GOOGLE_SITE_VERIFICATION') || (CURR
 const adsenseRaw = env('PUBLIC_ADSENSE_CLIENT') || 'ca-pub-2497065312538646';
 export const ADSENSE_CLIENT = /^ca-pub-\d{10,20}$/.test(adsenseRaw) ? adsenseRaw : '';
 
-/** 이 호스트에 속하는 글인가 */
-export function belongsHere(category?: string): boolean {
+/** 이 글을 가져가는 서브 호스트 (없으면 본체) */
+function ownerOf(category?: string, pubDate?: Date): SubSite | null {
 	const top = topCategory(category);
-	if (SITE_CATEGORY) return top === SITE_CATEGORY;
-	return !SUB_SITES.some((s) => s.category === top);
+	const day = pubDate ? pubDate.toISOString().slice(0, 10) : '';
+	return SUB_SITES.find((s) => s.categories.includes(top) && (!s.since || day >= s.since)) ?? null;
+}
+
+/** 이 호스트에 속하는 글인가 */
+export function belongsHere(category?: string, pubDate?: Date): boolean {
+	const owner = ownerOf(category, pubDate);
+	return SITE_CATEGORY ? owner === CURRENT_SUB && owner !== null : owner === null;
 }
 
 /** getCollection('blog') 대체 — 호스트 필터 적용 */
 export async function getPosts(): Promise<CollectionEntry<'blog'>[]> {
 	const all = await getCollection('blog');
-	return all.filter((p) => belongsHere(p.data.category));
+	return all.filter((p) => belongsHere(p.data.category, p.data.pubDate));
 }
 
-/** 본체에서 서브도메인으로 옮겨간 글의 새 URL (없으면 null) */
+/** 본체에서 서브도메인으로 옮겨간 글의 새 URL (없으면 null) — 날짜 기준 분리 사이트는 옛 글을 옮기지 않으므로 제외 */
 export function movedTo(category?: string, slug?: string): string | null {
 	const top = topCategory(category);
-	const sub = SUB_SITES.find((s) => s.category === top);
+	const sub = SUB_SITES.find((s) => !s.since && s.categories.includes(top));
 	return sub && slug ? `https://${sub.host}/blog/${slug}/` : null;
 }
 
 /** 가이드 페이지 — 호스트 필터 적용 */
 export async function getGuides(): Promise<CollectionEntry<'guides'>[]> {
 	const all = await getCollection('guides');
-	return all.filter((g) => belongsHere(g.data.category)).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+	return all.filter((g) => belongsHere(g.data.category, g.data.pubDate)).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 }
 
 /** 여행 커넥트 패키지 — 본체 사이트에만 노출(서브도메인은 카테고리 전용이라 제외) */
