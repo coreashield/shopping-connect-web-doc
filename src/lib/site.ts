@@ -13,9 +13,9 @@ const GROUP_SINCE = '2026-11-10';
 export const SUB_SITES: SubSite[] = [
 	{ categories: ['디지털/가전'], host: 'digital.shopping-log.com', slug: 'digital', title: '쇼핑로그 디지털·가전', description: '가전·디지털 기기 스펙 비교와 구매 가이드 — 평수·소음·전기세·호환성 기준으로 고르는 법', naverVerification: '01636de0491b0bd12d5fa437c52b6cb725bb1bc6' },
 	{ categories: ['식품'], host: 'food.shopping-log.com', slug: 'food', title: '쇼핑로그 식품', description: '식품·건강식품 비교 가이드 — 성분·용량·보관·가격 기준으로 고르는 법', naverVerification: 'ecc31ff9b1d10e864fdb95ecab620979984376b8' },
-	{ categories: ['화장품/미용', '패션의류', '패션잡화'], since: GROUP_SINCE, host: 'style.shopping-log.com', slug: 'style', title: '쇼핑로그 스타일', description: '화장품·패션 상품 비교 가이드 — 가격·사이즈·구성 기준으로 고르는 법', naverVerification: '' },
-	{ categories: ['출산/육아', '여가/생활편의'], since: GROUP_SINCE, host: 'family.shopping-log.com', slug: 'family', title: '쇼핑로그 패밀리', description: '육아·여가 상품 비교 가이드 — 월령·구성·가격 기준으로 고르는 법', naverVerification: '' },
-	{ categories: ['스포츠/레저', '가구/인테리어'], since: GROUP_SINCE, host: 'life.shopping-log.com', slug: 'life', title: '쇼핑로그 라이프', description: '스포츠·레저·인테리어 상품 비교 가이드 — 규격·소재·가격 기준으로 고르는 법', naverVerification: '' },
+	{ categories: ['화장품/미용', '패션의류', '패션잡화'], since: GROUP_SINCE, host: 'style.shopping-log.com', slug: 'style', title: '쇼핑로그 스타일', description: '화장품·패션 상품 비교 가이드 — 가격·사이즈·구성 기준으로 고르는 법', naverVerification: '801fed74b50e839782b16839173c69c791e4b6f2' },
+	{ categories: ['출산/육아', '여가/생활편의'], since: GROUP_SINCE, host: 'family.shopping-log.com', slug: 'family', title: '쇼핑로그 패밀리', description: '육아·여가 상품 비교 가이드 — 월령·구성·가격 기준으로 고르는 법', naverVerification: '918a74cad33e76256969e08a06bd5abf5c64e472' },
+	{ categories: ['스포츠/레저', '가구/인테리어'], since: GROUP_SINCE, host: 'life.shopping-log.com', slug: 'life', title: '쇼핑로그 라이프', description: '스포츠·레저·인테리어 상품 비교 가이드 — 규격·소재·가격 기준으로 고르는 법', naverVerification: 'a33794c752ee388922e76b2525f74ed1b561bc06' },
 ];
 
 const env = (k: string) => (import.meta.env[k] as string | undefined)?.trim() || '';
