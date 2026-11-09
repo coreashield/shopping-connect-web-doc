@@ -9,7 +9,7 @@ import { topCategory } from './categories';
 export type SubSite = { categories: string[]; since?: string; host: string; slug: string; title: string; description: string; naverVerification: string };
 // 서브도메인으로 분리된 카테고리 (본체에서는 제외). 새 카테고리를 분리하면 여기와 astro.config.mjs SUB_DEFS 에 추가한다.
 // naverVerification: 서치어드바이저 HTML 태그 인증값(공개 메타). env NAVER_SITE_VERIFICATION 이 있으면 그것이 우선.
-const GROUP_SINCE = '2026-11-10';
+const GROUP_SINCE = '2026-11-09';
 export const SUB_SITES: SubSite[] = [
 	{ categories: ['디지털/가전'], host: 'digital.shopping-log.com', slug: 'digital', title: '쇼핑로그 디지털·가전', description: '가전·디지털 기기 스펙 비교와 구매 가이드 — 평수·소음·전기세·호환성 기준으로 고르는 법', naverVerification: '01636de0491b0bd12d5fa437c52b6cb725bb1bc6' },
 	{ categories: ['식품'], host: 'food.shopping-log.com', slug: 'food', title: '쇼핑로그 식품', description: '식품·건강식품 비교 가이드 — 성분·용량·보관·가격 기준으로 고르는 법', naverVerification: 'ecc31ff9b1d10e864fdb95ecab620979984376b8' },

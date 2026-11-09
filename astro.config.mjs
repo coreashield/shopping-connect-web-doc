@@ -123,7 +123,7 @@ function buildNonCanonicalSet() {
 }
 const SITE_URL_ENV = (process.env.SITE_URL || '').trim();
 const SITE_CATEGORY_ENV = (process.env.SITE_CATEGORY || '').trim();
-const GROUP_SINCE = '2026-11-10';
+const GROUP_SINCE = '2026-11-09';
 const SUB_DEFS = [   // src/lib/site.ts SUB_SITES 와 동일하게 유지
 	{ cats: ['디지털/가전'], host: 'https://digital.shopping-log.com' },
 	{ cats: ['식품'], host: 'https://food.shopping-log.com' },
