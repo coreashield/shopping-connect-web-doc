@@ -7,8 +7,9 @@ import Header from '../components/Header.astro';
 import { SITE_URL } from '../lib/site';
 import { AUTHOR_NODE, ORGANIZATION } from '../consts';
 
-type Props = CollectionEntry<'guides'>['data'] & { slug: string };
-const { title, description, pubDate, updatedDate, category, query, related = [], heroImage, products, faq = [], slug, verdict, picks = [], priceCheckedAt } = Astro.props;
+type MoreLink = { href: string; title: string };
+type Props = CollectionEntry<'guides'>['data'] & { slug: string; moreGuides?: MoreLink[]; morePosts?: MoreLink[] };
+const { title, description, pubDate, updatedDate, category, query, related = [], heroImage, products, faq = [], slug, verdict, picks = [], priceCheckedAt, moreGuides = [], morePosts = [] } = Astro.props;
 const url = `${SITE_URL}/guide/${slug}/`;
 // pos: 어느 버튼에서 눌렀는지(pick/table/card) — functions/go 가 slug#pos 로 기록. 제휴 URL(u=)은 그대로.
 const buyHref = (p: any, pos = 'card') => `/go/${encodeURIComponent(p.productId)}?u=${encodeURIComponent(p.affiliateUrl)}&pos=${pos}`;
@@ -78,6 +79,10 @@ const disclosure = '이 글에는 네이버 쇼핑 커넥트 제휴 링크가 �
 			}
 			.faq details { border-bottom: 1px solid rgb(var(--gray-light)); padding: .6em 0; }
 			.faq summary { cursor: pointer; font-weight: 600; }
+			.more-links { margin-top: 2em; }
+			.more-links h2 { font-size: 1.15em; margin: 0 0 .5em; }
+			.more-links ul { margin: 0; padding-left: 1.2em; }
+			.more-links li { margin: .35em 0; line-height: 1.45; }
 		</style>
 	</head>
 	<body>
@@ -149,6 +154,19 @@ const disclosure = '이 글에는 네이버 쇼핑 커넥트 제휴 링크가 �
 						{hasUnit && <p>{unitLabelAll}당 가격 = 판매가 ÷ 상품명에 적힌 총 수량(묶음 수 × 1개당 수량). 수량 표기가 없는 상품은 '-'로 둡니다.</p>}
 						<p>평점은 판매처 평점이며, 소수점 없이 표시된 값(5.0·4.0 등)은 기본값일 수 있어 표시하지 않습니다. 이 사이트는 상품을 직접 사용해 평가하지 않습니다.</p>
 					</section>
+				)}
+				{morePosts.length > 0 && (
+					<nav class="more-links" aria-label="이 가이드의 상품 글">
+						<h2>상품별 자세히 보기</h2>
+						<ul>{morePosts.map((l) => <li><a href={l.href}>{l.title}</a></li>)}</ul>
+					</nav>
+				)}
+				{moreGuides.length > 0 && (
+					<nav class="more-links" aria-label="함께 보면 좋은 가이드">
+						<h2>함께 보면 좋은 비교 가이드</h2>
+						<ul>{moreGuides.map((l) => <li><a href={l.href}>{l.title}</a></li>)}</ul>
+						<p><a href="/guide/">구매 가이드 전체 보기 →</a></p>
+					</nav>
 				)}
 			</article>
 			{isNew && <a class="sticky-cta" href="#compare-table">{products.length}종 비교표 보기</a>}

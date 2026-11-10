@@ -2,12 +2,15 @@
 import { render } from 'astro:content';
 import GuidePost from '../../layouts/GuidePost.astro';
 import { getGuides } from '../../lib/site';
+import { postsForGuide, relatedGuides } from '../../lib/guide-links';
 export async function getStaticPaths() {
 	const guides = await getGuides();
 	return guides.map((g) => ({ params: { slug: g.id }, props: g }));
 }
 const guide = Astro.props;
 const { Content } = await render(guide);
+const moreGuides = (await relatedGuides(guide)).map((g) => ({ href: `/guide/${g.id}/`, title: g.data.title }));
+const morePosts = (await postsForGuide(guide)).map((p) => ({ href: `/blog/${p.id}/`, title: p.data.title }));
 ---
 
-<GuidePost {...guide.data} slug={guide.id}><Content /></GuidePost>
+<GuidePost {...guide.data} slug={guide.id} moreGuides={moreGuides} morePosts={morePosts}><Content /></GuidePost>
