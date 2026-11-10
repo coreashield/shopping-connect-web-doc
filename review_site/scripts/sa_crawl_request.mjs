@@ -88,32 +88,41 @@ try {
   else {
     await snapshot(pg, { interactive: true });
     await arm();
-    const t0 = Date.now();
-    for (const url of QUEUE) {
-      if (Date.now() - t0 > ${budgetMs}) { res.state = 'budget'; break; }
-      const p = new URL(url).pathname;
+    const submit = async (url, p) => {
       const before = await top(pg);
+      await pg.evaluate(() => { window.__m = []; });
       const inp = pg.locator('main input[type=text], main input:not([type])').first();
       await inp.click(); await inp.press('Control+A'); await inp.press('Backspace');
       await inp.pressSequentially(url, { delay: 5 });
       await pg.locator('button:has-text("확인")').first().click();
-      let r = { url, status: 'unknown' };
       for (let t = 0; t < 8; t++) {
         await sleep(600);
         const msgs = await pg.evaluate(() => window.__m || []);
-        if (msgs.length) { r = { url, status: /한도|초과/.test(msgs[0]) ? 'limit' : /이미|중복/.test(msgs[0]) ? 'dup' : 'msg', msg: msgs[0] }; break; }
+        if (msgs.length) return { url, status: /한도|초과/.test(msgs[0]) ? 'limit' : /이미|중복/.test(msgs[0]) ? 'dup' : 'msg', msg: msgs[0] };
         const now = await top(pg);
-        if (now && now !== before && decodeURIComponent(p) === decodeURIComponent(now)) { r = { url, status: 'ok' }; break; }
+        if (now && now !== before && decodeURIComponent(p) === decodeURIComponent(now)) return { url, status: 'ok' };
       }
+      return { url, status: 'unknown' };
+    };
+    const reload = async () => { await pg.reload(); await sleep(3000); await snapshot(pg, { interactive: true }); await arm(); };
+    // 11/10: 2번째 글에서 응답 확인 실패 1건으로 1건 제출 후 통째로 멈춤(라이브 naver_sa_aside.mjs 10/22 수정과 같은 처리) →
+    //   새로고침 후 내역 재확인 → 없으면 1회 재시도 → 그래도 안 되면 그 URL만 건너뜀(내일 재시도). 연속 3건 실패 시에만 중단.
+    let fails = 0;
+    const t0 = Date.now();
+    for (const url of QUEUE) {
+      if (Date.now() - t0 > ${budgetMs}) { res.state = 'budget'; break; }
+      const p = new URL(url).pathname;
+      let r = await submit(url, p);
       if (r.status === 'unknown') {
-        await pg.reload(); await sleep(3000); await snapshot(pg, { interactive: true }); await arm();
+        await reload();
         const now = await top(pg);
-        if (now && decodeURIComponent(now) === decodeURIComponent(p)) r = { url, status: 'ok' };
+        if (now && decodeURIComponent(now) === decodeURIComponent(p)) r = { url, status: 'ok', note: 'reload' };
+        else { r = await submit(url, p); if (r.status === 'unknown') { r = { url, status: 'skip' }; await reload(); } }
       }
       res.results.push(r);
       if (r.status === 'limit') { res.state = 'limit'; break; }
-      if (r.status !== 'ok' && r.status !== 'dup') { res.state = 'error'; break; }
-      await pg.evaluate(() => { window.__m = []; });
+      if (r.status === 'ok' || r.status === 'dup') fails = 0;
+      else if (++fails >= 3) { res.state = 'error'; break; }
       await sleep(1200);
     }
   }
@@ -138,7 +147,9 @@ for (let call = 0; call < MAX_CALLS && budget > 0 && queue.length; call++) {
   const res = JSON.parse(line.slice('__SA_RESULT__'.length));
   for (const r of res.results) if (r.status === 'ok' || r.status === 'dup') { done[r.url] = today; if (r.status === 'ok') { ok++; budget--; } }
   fs.writeFileSync(DONE_PATH, JSON.stringify(done, null, 1));
-  const handled = new Set(res.results.filter((r) => r.status === 'ok' || r.status === 'dup').map((r) => r.url));
+  // skip·msg 는 done 에 안 적는다(내일 다시 시도) — 오늘 대기열에서만 뺀다
+  for (const r of res.results) if (r.status === 'skip' || r.status === 'msg') console.log(`  ⤼ 건너뜀(${r.status}${r.msg ? ': ' + r.msg : ''}): ${r.url}`);
+  const handled = new Set(res.results.filter((r) => r.status !== 'limit').map((r) => r.url));
   queue = queue.filter((u) => !handled.has(u));
   state = res.state;
   console.log(`  call ${call + 1}: state=${res.state} 제출 ${ok} 남은 한도 ${budget}`);
