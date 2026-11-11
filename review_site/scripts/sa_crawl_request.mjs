@@ -5,7 +5,10 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { spawn } from 'node:child_process';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+
+// 로그인 판정·버튼 복구는 라이브 repo 공용 모듈(11/11)
+const { SA_WAIT_CODE, saRelogin } = await import(pathToFileURL('F:/기타/새 폴더/shopping_connect/tools/naver_sa_login.mjs').href);
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const SITE = 'review.shopping-log.com';
@@ -71,17 +74,15 @@ function runAside(code) {
 // aside repl 안에서 도는 코드 — 제출 판정은 "수집 요청 내역" 맨 위 행이 바뀌었는지로(경고창 없음 = 성공 오판 방지).
 //   이 화면은 내역 표가 제출 직후 갱신되지 않을 때가 있어, 판정이 안 나면 새로고침해 한 번 더 본다.
 function replCode(queue, budgetMs) {
-  return `
+  return `${SA_WAIT_CODE}
 const QUEUE = ${JSON.stringify(queue)};
 const res = { results: [], state: 'ok' };
 const top = async (pg) => (await pg.evaluate(() => (document.body.innerText.match(/수집 요청 내역[\\s\\S]*?\\n(\\/[^\\n]*)\\n/) || [])[1] || null));
 const pg = await openTab('https://searchadvisor.naver.com/console/site/request/crawl?site=' + encodeURIComponent('https://${SITE}'));
 const arm = () => pg.evaluate(() => { window.__m = []; window.alert = (m) => window.__m.push(String(m)); window.confirm = (m) => { window.__m.push(String(m)); return true; }; });
 try {
-  await sleep(3000);
-  // 11/8: 세션 만료 때 주소는 그대로, 제목 "로그인 - …"·본문 "접근권한이 없습니다"만 뜬다 → 로그인 풀림으로 본다.
-  const outPage = await pg.evaluate(() => /^로그인/.test(document.title) || /접근권한이 없습니다/.test(document.body.innerText)).catch(() => false);
-  if (!pg.url().includes('searchadvisor.naver.com/console') || outPage) {
+  // 11/11: 자동 재인증 중 제목이 잠깐 "로그인 - …"이라 한 번만 보면 오경보 → 안정될 때까지 본다.
+  if ((await saWaitIn(pg)) !== 'in') {
     res.state = 'not_logged_in';
     res.url = '서치어드바이저 로그인 풀림 → 대표가 Aside에서 네이버 직접 로그인 필요';
   }
@@ -141,7 +142,9 @@ if (DRY) { queue.slice(0, budget || DAILY_LIMIT).forEach((u) => console.log('  -
 
 let ok = 0, state = 'ok', note = '';
 for (let call = 0; call < MAX_CALLS && budget > 0 && queue.length; call++) {
-  const { out, code } = await runAside(replCode(queue.slice(0, budget), 80000));
+  let { out, code } = await runAside(replCode(queue.slice(0, budget), 80000));
+  // 로그아웃 판정이면 "로그인" 버튼을 눌러 보고 같은 호출을 한 번 다시 한다(비밀번호 입력 없음)
+  if (out.includes('"state":"not_logged_in"') && await saRelogin(runAside)) ({ out, code } = await runAside(replCode(queue.slice(0, budget), 80000)));
   const line = out.split(/\r?\n/).find((l) => l.startsWith('__SA_RESULT__'));
   if (!line) { state = 'aside_fail'; note = `Aside 실행 실패(exit ${code}): ${out.trim().slice(0, 200)}`; break; }
   const res = JSON.parse(line.slice('__SA_RESULT__'.length));
