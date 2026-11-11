@@ -1,0 +1,62 @@
+---
+// 가격 데이터 리포트 목록 (2026-11-11, 구글 색인 시험) — 본체에만 만든다. 서브사이트 빌드는 본체로 보낸다.
+import BaseHead from '../../components/BaseHead.astro';
+import Footer from '../../components/Footer.astro';
+import Header from '../../components/Header.astro';
+import { SITE_TITLE } from '../../consts';
+import { SITE_CATEGORY } from '../../lib/site';
+import data from '../../data/market_reports.json';
+
+if (SITE_CATEGORY) return Astro.redirect('https://shopping-log.com/data/');
+const won = (v: number) => `${v.toLocaleString('ko-KR')}원`;
+const [y, m] = data.builtAt.split('-');
+const period = `${y}년 ${Number(m)}월`;
+const total = data.reports.reduce((a, r) => a + r.price.n, 0);
+const title = `분류별 가격 조사 ${data.reports.length}건 — 판매가 중앙값·리뷰 쏠림 집계 (${period}) | ${SITE_TITLE}`;
+const description = `${SITE_TITLE}가 스마트스토어 상품 ${total.toLocaleString('ko-KR')}개의 판매가와 리뷰 수를 직접 집계한 분류별 가격 조사입니다. 중앙값, 가격 분포, 가격대별 리뷰·평점을 표와 그래프로 정리했습니다.`;
+const groups = new Map<string, typeof data.reports>();
+for (const r of data.reports) { if (!groups.has(r.top)) groups.set(r.top, []); groups.get(r.top)!.push(r); }
+const ld = { '@context': 'https://schema.org', '@type': 'CollectionPage', name: title, description, hasPart: data.reports.map((r) => ({ '@type': 'Dataset', name: `${r.leaf} 판매가·리뷰 집계 (${period})`, url: `https://shopping-log.com/data/${r.slug}/` })) };
+---
+
+<!doctype html>
+<html lang="ko">
+	<head>
+		<BaseHead title={title} description={description} ads={false} />
+		<script type="application/ld+json" set:html={JSON.stringify(ld)} />
+		<style>
+			main { width: 780px; max-width: 100%; margin: 0 auto; padding: 1.6rem 1.2rem 3rem; box-sizing: border-box; }
+			.lead { color: rgb(var(--gray)); line-height: 1.7; word-break: keep-all; }
+			h2 { font-size: 1.15rem; margin: 2rem 0 0.6rem; }
+			.wrap { overflow-x: auto; }
+			table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+			th, td { border: 1px solid rgba(var(--gray), 0.3); padding: 0.5em 0.6em; text-align: right; }
+			th:first-child, td:first-child { text-align: left; }
+			th { background: rgba(var(--gray-light), 0.5); white-space: nowrap; }
+		</style>
+	</head>
+	<body>
+		<Header />
+		<main>
+			<h1>분류별 가격 조사</h1>
+			<p class="lead">스마트스토어에서 판매 중인 상품 {total.toLocaleString('ko-KR')}개의 판매가와 리뷰 수를 {SITE_TITLE}가 직접 모아 분류별로 집계했습니다. 상품 추천 글이 아니라 "이 분류는 보통 얼마인가, 비싼 상품이 리뷰도 더 좋은가"를 숫자로 확인하는 자료입니다. {period} 기준 {data.reports.length}개 분류.</p>
+			{[...groups.entries()].map(([top, list]) => (
+				<>
+					<h2>{top}</h2>
+					<div class="wrap">
+						<table>
+							<thead><tr><th>분류</th><th>조사 상품</th><th>판매가 중앙값</th><th>가운데 50% 범위</th><th>리뷰 상위 10% 쏠림</th></tr></thead>
+							<tbody>
+								{list.map((r) => (
+									<tr><td><a href={`/data/${r.slug}/`}>{r.leaf}</a></td><td>{r.price.n}개</td><td>{won(r.price.median)}</td><td>{won(r.price.p25)} ~ {won(r.price.p75)}</td><td>{r.review.top10Share}%</td></tr>
+								))}
+							</tbody>
+						</table>
+					</div>
+				</>
+			))}
+			<p class="lead">조사 대상은 네이버 브랜드커넥트에 등록된 상품 가운데 {data.since} 이후 가격을 확인한 것으로, 각 분류의 전체 상품이 아닌 표본입니다. 조사 방법과 한계는 각 리포트 아래에 적었습니다.</p>
+		</main>
+		<Footer />
+	</body>
+</html>
