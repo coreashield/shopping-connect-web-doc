@@ -5,6 +5,8 @@ import { categoryList, topicHubs } from '../lib/categories';
 import { isGoogleIndexable } from '../lib/google-index';
 import { comparePrimary, pidOf } from '../lib/canonical';
 import { SITE_URL } from '../consts';
+import { SITE_CATEGORY } from '../lib/site';
+import market from '../data/market_reports.json';
 
 // /sitemap-google.xml — 구글 Search Console 전용 사이트맵 (2026-09-29)
 //   구글에만 noindex(googlebot)를 건 옛 형식 글은 빼고, 색인 대상만 싣는다.
@@ -35,6 +37,11 @@ export const GET: APIRoute = async () => {
 	for (const c of categoryList(posts)) add(`/category/${c.slug}/`);
 	for (const h of topicHubs(posts, 15)) add(`/topic/${encodeURI(h.slug)}/`);
 	for (const g of await getGuides()) add(`/guide/${g.id}/`, day(g.data.updatedDate ?? g.data.pubDate));
+	// 11/11 가격 데이터 리포트(구글 색인 시험) — 본체에만 있다
+	if (!SITE_CATEGORY) {
+		add('/data/', market.builtAt);
+		for (const r of market.reports) add(`/data/${encodeURI(r.slug)}/`, market.builtAt);
+	}
 	const trips = await getTravel();
 	if (trips.length) {
 		add('/travel/');

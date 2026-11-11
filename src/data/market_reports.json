@@ -1,0 +1,6167 @@
+{
+	"builtAt": "2026-11-11",
+	"since": "2026-09-01",
+	"universe": 22255,
+	"reports": [
+		{
+			"slug": "프로바이오틱스-가격",
+			"leaf": "프로바이오틱스",
+			"category": "식품>건강식품>영양제>프로바이오틱스",
+			"top": "식품",
+			"checkedFrom": "2026-09-11",
+			"checkedTo": "2026-11-10",
+			"price": {
+				"n": 264,
+				"min": 9900,
+				"p25": 35978,
+				"median": 56800,
+				"p75": 88250,
+				"max": 395900,
+				"mean": 71739
+			},
+			"bins": [
+				{
+					"from": 0,
+					"to": 50000,
+					"n": 113
+				},
+				{
+					"from": 50000,
+					"to": 100000,
+					"n": 94
+				},
+				{
+					"from": 100000,
+					"to": 150000,
+					"n": 34
+				},
+				{
+					"from": 150000,
+					"to": 200000,
+					"n": 18
+				},
+				{
+					"from": 200000,
+					"to": null,
+					"n": 5
+				}
+			],
+			"binStep": 50000,
+			"discount": {
+				"share": 92.8,
+				"median": 38,
+				"over30": 62.9
+			},
+			"rating": {
+				"n": 232,
+				"median": 4.8,
+				"share48": 95.7
+			},
+			"review": {
+				"total": 2103231,
+				"median": 1881,
+				"top10Share": 67.9,
+				"top10N": 26,
+				"under10": 0.8
+			},
+			"tiers": [
+				{
+					"label": "저가",
+					"n": 88,
+					"from": 9900,
+					"to": 41900,
+					"medianReviews": 1964,
+					"reviewShare": 28.6,
+					"medianRating": 4.8,
+					"sold": 0
+				},
+				{
+					"label": "중간",
+					"n": 88,
+					"from": 41900,
+					"to": 78800,
+					"medianReviews": 1595,
+					"reviewShare": 24.8,
+					"medianRating": 4.9,
+					"sold": 0
+				},
+				{
+					"label": "고가",
+					"n": 88,
+					"from": 79000,
+					"to": 395900,
+					"medianReviews": 2494,
+					"reviewShare": 46.6,
+					"medianRating": 4.9,
+					"sold": 0
+				}
+			],
+			"corr": 0.06,
+			"stores": [
+				{
+					"store": "유한양행 본사직영몰",
+					"n": 13,
+					"reviews": 949650,
+					"reviewShare": 45.2
+				},
+				{
+					"store": "CJ웰케어 스토어",
+					"n": 17,
+					"reviews": 241255,
+					"reviewShare": 11.5
+				},
+				{
+					"store": "키즈텐",
+					"n": 10,
+					"reviews": 129725,
+					"reviewShare": 6.2
+				},
+				{
+					"store": "듀오락 유산균",
+					"n": 2,
+					"reviews": 98927,
+					"reviewShare": 4.7
+				},
+				{
+					"store": "락토필듀오",
+					"n": 5,
+					"reviews": 93465,
+					"reviewShare": 4.4
+				}
+			],
+			"storeCount": 96,
+			"specs": [],
+			"sold": null,
+			"products": [
+				{
+					"id": "1001548871134624",
+					"name": "엘레나 질유산균 임산부 수유부 프로바이오틱스 60캡슐",
+					"price": 97000,
+					"orig": 180000,
+					"rating": 4.9,
+					"reviews": 174798,
+					"store": "유한양행 본사직영몰",
+					"tier": "고가",
+					"pricePct": 78
+				},
+				{
+					"id": "1000545472997600",
+					"name": "엘레나 질유산균 임산부 수유부 프로바이오틱스 180캡슐",
+					"price": 146000,
+					"orig": 180000,
+					"rating": 4.9,
+					"reviews": 173972,
+					"store": "유한양행 본사직영몰",
+					"tier": "고가",
+					"pricePct": 91
+				},
+				{
+					"id": "1001904712958592",
+					"name": "엘레나 질유산균 임산부 수유부 프로바이오틱스 30캡슐",
+					"price": 36000,
+					"orig": 45000,
+					"rating": 4.9,
+					"reviews": 173655,
+					"store": "유한양행 본사직영몰",
+					"tier": "저가",
+					"pricePct": 25
+				},
+				{
+					"id": "1001548871142816",
+					"name": "엘레나 질유산균 임산부 수유부 프로바이오틱스 60캡슐",
+					"price": 52000,
+					"orig": 90000,
+					"rating": 4.9,
+					"reviews": 172786,
+					"store": "유한양행 본사직영몰",
+					"tier": "중간",
+					"pricePct": 44
+				},
+				{
+					"id": "1000545473001696",
+					"name": "엘레나 질유산균 임산부 수유부 프로바이오틱스 100캡슐",
+					"price": 83000,
+					"orig": 87000,
+					"rating": 4.9,
+					"reviews": 99999,
+					"store": "유한양행 본사직영몰",
+					"tier": "고가",
+					"pricePct": 72
+				},
+				{
+					"id": "805688898798382",
+					"name": "CJ 바이오코어 500억 보장 부자 화사 유산균 상온보관 프로바이오틱스",
+					"price": 39000,
+					"orig": 65000,
+					"rating": null,
+					"reviews": 63379,
+					"store": "CJ웰케어 스토어",
+					"tier": "저가",
+					"pricePct": 28
+				},
+				{
+					"id": "1001580063691904",
+					"name": "듀오락 얌얌플러스 어린이 키즈 생존력 강한 유산균 80정",
+					"price": 46000,
+					"orig": null,
+					"rating": 4.9,
+					"reviews": 49610,
+					"store": "듀오락 유산균",
+					"tier": "중간",
+					"pricePct": 38
+				},
+				{
+					"id": "1001580063720576",
+					"name": "듀오락 얌얌플러스 어린이 키즈 생존력 강한 유산균 80정",
+					"price": 92000,
+					"orig": null,
+					"rating": 4.9,
+					"reviews": 49317,
+					"store": "듀오락 유산균",
+					"tier": "고가",
+					"pricePct": 76
+				},
+				{
+					"id": "805688898798380",
+					"name": "CJ 바이오코어 피부면역 유산균 / 100억보장 부자유산균 화사 유산균",
+					"price": 41500,
+					"orig": 111500,
+					"rating": 4.8,
+					"reviews": 43565,
+					"store": "CJ웰케어 스토어",
+					"tier": "저가",
+					"pricePct": 32
+				},
+				{
+					"id": "805688898802470",
+					"name": "CJ 바이오코어 피부면역 유산균 / 100억보장 부자유산균 화사 유산균",
+					"price": 15900,
+					"orig": 27900,
+					"rating": 4.8,
+					"reviews": 43555,
+					"store": "CJ웰케어 스토어",
+					"tier": "저가",
+					"pricePct": 4
+				}
+			]
+		},
+		{
+			"slug": "블루투스-이어폰-가격",
+			"leaf": "블루투스 이어폰",
+			"category": "디지털/가전>음향가전>블루투스셋>블루투스이어폰/이어셋",
+			"top": "디지털/가전",
+			"checkedFrom": "2026-09-22",
+			"checkedTo": "2026-11-10",
+			"price": {
+				"n": 130,
+				"min": 16990,
+				"p25": 40175,
+				"median": 89000,
+				"p75": 216663,
+				"max": 359000,
+				"mean": 133327
+			},
+			"bins": [
+				{
+					"from": 0,
+					"to": 100000,
+					"n": 72
+				},
+				{
+					"from": 100000,
+					"to": 200000,
+					"n": 21
+				},
+				{
+					"from": 200000,
+					"to": 300000,
+					"n": 23
+				},
+				{
+					"from": 300000,
+					"to": 400000,
+					"n": 14
+				}
+			],
+			"binStep": 100000,
+			"discount": {
+				"share": 93.8,
+				"median": 22,
+				"over30": 33.8
+			},
+			"rating": {
+				"n": 118,
+				"median": 4.8,
+				"share48": 62.7
+			},
+			"review": {
+				"total": 148122,
+				"median": 349,
+				"top10Share": 57.8,
+				"top10N": 13,
+				"under10": 1.5
+			},
+			"tiers": [
+				{
+					"label": "저가",
+					"n": 43,
+					"from": 16990,
+					"to": 49900,
+					"medianReviews": 260,
+					"reviewShare": 17.2,
+					"medianRating": 4.7,
+					"sold": 0
+				},
+				{
+					"label": "중간",
+					"n": 44,
+					"from": 49900,
+					"to": 184000,
+					"medianReviews": 571,
+					"reviewShare": 46,
+					"medianRating": 4.8,
+					"sold": 0
+				},
+				{
+					"label": "고가",
+					"n": 43,
+					"from": 184000,
+					"to": 359000,
+					"medianReviews": 409,
+					"reviewShare": 36.8,
+					"medianRating": 4.8,
+					"sold": 0
+				}
+			],
+			"corr": 0.1,
+			"stores": [
+				{
+					"store": "블라우풍트",
+					"n": 4,
+					"reviews": 34225,
+					"reviewShare": 23.1
+				},
+				{
+					"store": "보스 공식스토어",
+					"n": 14,
+					"reviews": 24857,
+					"reviewShare": 16.8
+				},
+				{
+					"store": "애플 공식 브랜드스토어",
+					"n": 6,
+					"reviews": 16699,
+					"reviewShare": 11.3
+				},
+				{
+					"store": "삼성JBL온라인스토어",
+					"n": 12,
+					"reviews": 9728,
+					"reviewShare": 6.6
+				},
+				{
+					"store": "TOZO",
+					"n": 3,
+					"reviews": 8292,
+					"reviewShare": 5.6
+				}
+			],
+			"storeCount": 49,
+			"specs": [],
+			"sold": null,
+			"products": [
+				{
+					"id": "807235326634441",
+					"name": "블라우풍트 ENC 노이즈캔슬링 오픈형 블루투스 이어폰 오픈픽",
+					"price": 69900,
+					"orig": 84800,
+					"rating": 4.8,
+					"reviews": 27146,
+					"store": "블라우풍트",
+					"tier": "중간",
+					"pricePct": 43
+				},
+				{
+					"id": "865418502036896",
+					"name": "애플 에어팟 프로 3 블루투스 무선 이어폰",
+					"price": 332950,
+					"orig": 369000,
+					"rating": 4.9,
+					"reviews": 16585,
+					"store": "애플 공식 브랜드스토어",
+					"tier": "고가",
+					"pricePct": 95
+				},
+				{
+					"id": "805947678533056",
+					"name": "TOZO 오픈버즈 AI 오픈형 블루투스 무선 이어폰 멀티페어링 골전도",
+					"price": 69000,
+					"orig": 119000,
+					"rating": 4.8,
+					"reviews": 5388,
+					"store": "TOZO",
+					"tier": "중간",
+					"pricePct": 42
+				},
+				{
+					"id": "823511105664523",
+					"name": "블라우풍트 ENC 노이즈캔슬링 블루투스5.4 무선이어폰",
+					"price": 24900,
+					"orig": 85470,
+					"rating": 4.7,
+					"reviews": 5149,
+					"store": "블라우풍트",
+					"tier": "저가",
+					"pricePct": 8
+				},
+				{
+					"id": "870329682640065",
+					"name": "볼티움 수영 러닝 골전도 블루투스 무선 운동용 이어폰 아쿠아본x",
+					"price": 139000,
+					"orig": 245000,
+					"rating": 4.8,
+					"reviews": 3764,
+					"store": "볼티움",
+					"tier": "중간",
+					"pricePct": 58
+				},
+				{
+					"id": "867895500951328",
+					"name": "삼성전자 갤럭시 버즈3 FE 무선 블루투스 이어폰 ANC",
+					"price": 146920,
+					"orig": null,
+					"rating": 4.9,
+					"reviews": 3603,
+					"store": "삼성공식파트너 엠디텍",
+					"tier": "중간",
+					"pricePct": 60
+				},
+				{
+					"id": "867895500951329",
+					"name": "삼성전자 갤럭시 버즈3 FE 무선 블루투스 이어폰 ANC",
+					"price": 146920,
+					"orig": null,
+					"rating": 4.9,
+					"reviews": 3593,
+					"store": "삼성공식파트너 엠디텍",
+					"tier": "중간",
+					"pricePct": 60
+				},
+				{
+					"id": "892574573958688",
+					"name": "N배송 보스 울트라 오픈 이어버드 미드나잇 바이올렛",
+					"price": 321000,
+					"orig": 359000,
+					"rating": 4.8,
+					"reviews": 3441,
+					"store": "보스 공식스토어",
+					"tier": "고가",
+					"pricePct": 92
+				},
+				{
+					"id": "892574573954593",
+					"name": "N배송 보스 울트라 오픈 이어버드 데저트 골드",
+					"price": 313000,
+					"orig": 359000,
+					"rating": 4.8,
+					"reviews": 3434,
+					"store": "보스 공식스토어",
+					"tier": "고가",
+					"pricePct": 91
+				},
+				{
+					"id": "892574573954592",
+					"name": "N배송 보스 울트라 오픈 이어버드 드리프트우드 샌드",
+					"price": 313000,
+					"orig": 359000,
+					"rating": 4.8,
+					"reviews": 3418,
+					"store": "보스 공식스토어",
+					"tier": "고가",
+					"pricePct": 91
+				}
+			]
+		},
+		{
+			"slug": "블루투스-스피커-가격",
+			"leaf": "블루투스 스피커",
+			"category": "디지털/가전>음향가전>스피커>블루투스스피커",
+			"top": "디지털/가전",
+			"checkedFrom": "2026-09-19",
+			"checkedTo": "2026-11-10",
+			"price": {
+				"n": 121,
+				"min": 9900,
+				"p25": 69900,
+				"median": 149900,
+				"p75": 349000,
+				"max": 899000,
+				"mean": 230115
+			},
+			"bins": [
+				{
+					"from": 0,
+					"to": 200000,
+					"n": 78
+				},
+				{
+					"from": 200000,
+					"to": 400000,
+					"n": 17
+				},
+				{
+					"from": 400000,
+					"to": 600000,
+					"n": 18
+				},
+				{
+					"from": 600000,
+					"to": 800000,
+					"n": 7
+				},
+				{
+					"from": 800000,
+					"to": null,
+					"n": 1
+				}
+			],
+			"binStep": 200000,
+			"discount": {
+				"share": 81,
+				"median": 21,
+				"over30": 19
+			},
+			"rating": {
+				"n": 104,
+				"median": 4.9,
+				"share48": 95.2
+			},
+			"review": {
+				"total": 130549,
+				"median": 522,
+				"top10Share": 51.8,
+				"top10N": 12,
+				"under10": 0.8
+			},
+			"tiers": [
+				{
+					"label": "저가",
+					"n": 40,
+					"from": 9900,
+					"to": 94900,
+					"medianReviews": 608,
+					"reviewShare": 44.5,
+					"medianRating": 4.9,
+					"sold": 0
+				},
+				{
+					"label": "중간",
+					"n": 41,
+					"from": 94900,
+					"to": 248000,
+					"medianReviews": 624,
+					"reviewShare": 44.6,
+					"medianRating": 4.9,
+					"sold": 0
+				},
+				{
+					"label": "고가",
+					"n": 40,
+					"from": 279000,
+					"to": 899000,
+					"medianReviews": 251,
+					"reviewShare": 10.9,
+					"medianRating": 4.9,
+					"sold": 0
+				}
+			],
+			"corr": -0.27,
+			"stores": [
+				{
+					"store": "삼성파트너 케이원에이브이",
+					"n": 24,
+					"reviews": 30713,
+					"reviewShare": 23.5
+				},
+				{
+					"store": "삼성JBL온라인스토어",
+					"n": 16,
+					"reviews": 23725,
+					"reviewShare": 18.2
+				},
+				{
+					"store": "브리츠몰",
+					"n": 1,
+					"reviews": 20187,
+					"reviewShare": 15.5
+				},
+				{
+					"store": "오아스토어",
+					"n": 1,
+					"reviews": 14483,
+					"reviewShare": 11.1
+				},
+				{
+					"store": "보스 공식스토어",
+					"n": 12,
+					"reviews": 10837,
+					"reviewShare": 8.3
+				}
+			],
+			"storeCount": 30,
+			"specs": [],
+			"sold": null,
+			"products": [
+				{
+					"id": "807982087642627",
+					"name": "BA-C1 포터블 블루투스 스피커 / FM라디오 / 미니스피커 리모콘",
+					"price": 58500,
+					"orig": 79000,
+					"rating": 4.8,
+					"reviews": 20187,
+					"store": "브리츠몰",
+					"tier": "저가",
+					"pricePct": 16
+				},
+				{
+					"id": "805498728743104",
+					"name": "오아 아이브릭 미니 블루투스 스피커 무선 휴대용 캠핑 야외 감성 탁상용",
+					"price": 24800,
+					"orig": null,
+					"rating": 4.8,
+					"reviews": 14483,
+					"store": "오아스토어",
+					"tier": "저가",
+					"pricePct": 2
+				},
+				{
+					"id": "805529029845204",
+					"name": "삼성공식파트너 JBL CHARGE5 차지5 휴대용 블루투스 스피커 화이트",
+					"price": 127900,
+					"orig": 229000,
+					"rating": 4.9,
+					"reviews": 4435,
+					"store": "삼성JBL온라인스토어",
+					"tier": "중간",
+					"pricePct": 37
+				},
+				{
+					"id": "813027226875201",
+					"name": "블루투스 스피커 마이크 휴대용 고출력 버스킹 스피커 노래방 무선 미니",
+					"price": 159000,
+					"orig": 198000,
+					"rating": 4.9,
+					"reviews": 3723,
+					"store": "미라클엠스토어",
+					"tier": "중간",
+					"pricePct": 52
+				},
+				{
+					"id": "825399844522915",
+					"name": "삼성공식파트너 JBL FLIP7 휴대용 캠핑 무선 블루투스 스피커 화이트",
+					"price": 149900,
+					"orig": 189000,
+					"rating": 4.9,
+					"reviews": 3201,
+					"store": "삼성파트너 케이원에이브이",
+					"tier": "중간",
+					"pricePct": 46
+				},
+				{
+					"id": "825399844522914",
+					"name": "삼성공식파트너 JBL FLIP7 휴대용 무선 블루투스 스피커 스쿼드",
+					"price": 149900,
+					"orig": 189000,
+					"rating": 4.9,
+					"reviews": 3196,
+					"store": "삼성파트너 케이원에이브이",
+					"tier": "중간",
+					"pricePct": 46
+				},
+				{
+					"id": "825399844522917",
+					"name": "삼성공식파트너 JBL FLIP7 휴대용 무선 블루투스 스피커 레드",
+					"price": 149900,
+					"orig": 189000,
+					"rating": 4.9,
+					"reviews": 3161,
+					"store": "삼성파트너 케이원에이브이",
+					"tier": "중간",
+					"pricePct": 46
+				},
+				{
+					"id": "825399844522913",
+					"name": "삼성공식파트너 JBL FLIP7 휴대용 캠핑 무선 블루투스 스피커 블루",
+					"price": 149900,
+					"orig": 189000,
+					"rating": 4.9,
+					"reviews": 3152,
+					"store": "삼성파트너 케이원에이브이",
+					"tier": "중간",
+					"pricePct": 46
+				},
+				{
+					"id": "958451755719137",
+					"name": "삼성공식파트너 JBL FLIP7 휴대용 무선 블루투스 스피커 블랙",
+					"price": 149900,
+					"orig": 189000,
+					"rating": 4.9,
+					"reviews": 3147,
+					"store": "삼성파트너 케이원에이브이",
+					"tier": "중간",
+					"pricePct": 46
+				},
+				{
+					"id": "825399844522916",
+					"name": "JBL FLIP7 휴대용 캠핑 무선 블루투스 스피커 퍼플",
+					"price": 149900,
+					"orig": 189000,
+					"rating": 4.9,
+					"reviews": 3143,
+					"store": "삼성파트너 케이원에이브이",
+					"tier": "중간",
+					"pricePct": 46
+				}
+			]
+		},
+		{
+			"slug": "단백질파우더-가격",
+			"leaf": "단백질파우더",
+			"category": "식품>다이어트식품>단백질보충제>단백질파우더",
+			"top": "식품",
+			"checkedFrom": "2026-09-22",
+			"checkedTo": "2026-11-10",
+			"price": {
+				"n": 119,
+				"min": 12800,
+				"p25": 29850,
+				"median": 46800,
+				"p75": 78750,
+				"max": 193000,
+				"mean": 57399
+			},
+			"bins": [
+				{
+					"from": 0,
+					"to": 20000,
+					"n": 13
+				},
+				{
+					"from": 20000,
+					"to": 40000,
+					"n": 34
+				},
+				{
+					"from": 40000,
+					"to": 60000,
+					"n": 26
+				},
+				{
+					"from": 60000,
+					"to": 80000,
+					"n": 21
+				},
+				{
+					"from": 80000,
+					"to": 100000,
+					"n": 12
+				},
+				{
+					"from": 100000,
+					"to": 120000,
+					"n": 7
+				},
+				{
+					"from": 120000,
+					"to": 140000,
+					"n": 4
+				},
+				{
+					"from": 140000,
+					"to": null,
+					"n": 2
+				}
+			],
+			"binStep": 20000,
+			"discount": {
+				"share": 86.6,
+				"median": 34,
+				"over30": 51.3
+			},
+			"rating": {
+				"n": 105,
+				"median": 4.9,
+				"share48": 95.2
+			},
+			"review": {
+				"total": 938590,
+				"median": 1762,
+				"top10Share": 75.2,
+				"top10N": 12,
+				"under10": 0.8
+			},
+			"tiers": [
+				{
+					"label": "저가",
+					"n": 39,
+					"from": 12800,
+					"to": 32800,
+					"medianReviews": 1566,
+					"reviewShare": 48.3,
+					"medianRating": 4.9,
+					"sold": 0
+				},
+				{
+					"label": "중간",
+					"n": 41,
+					"from": 32800,
+					"to": 67500,
+					"medianReviews": 1611,
+					"reviewShare": 34.9,
+					"medianRating": 4.8,
+					"sold": 0
+				},
+				{
+					"label": "고가",
+					"n": 39,
+					"from": 69600,
+					"to": 193000,
+					"medianReviews": 2006,
+					"reviewShare": 16.8,
+					"medianRating": 4.8,
+					"sold": 0
+				}
+			],
+			"corr": -0.01,
+			"stores": [
+				{
+					"store": "쉐이크베이비 다이어트",
+					"n": 7,
+					"reviews": 428629,
+					"reviewShare": 45.7
+				},
+				{
+					"store": "뉴트리션팩토리",
+					"n": 6,
+					"reviews": 196231,
+					"reviewShare": 20.9
+				},
+				{
+					"store": "포대유청단백질",
+					"n": 10,
+					"reviews": 56308,
+					"reviewShare": 6
+				},
+				{
+					"store": "프로틴스토리",
+					"n": 9,
+					"reviews": 48435,
+					"reviewShare": 5.2
+				},
+				{
+					"store": "잇더핏EAT THE FIT",
+					"n": 5,
+					"reviews": 32288,
+					"reviewShare": 3.4
+				}
+			],
+			"storeCount": 48,
+			"specs": [],
+			"sold": null,
+			"products": [
+				{
+					"id": "881579098434635",
+					"name": "뉴욕웨이 WPC 초코맛 2kg 단백질보충제 헬스보충제 웨이프로틴",
+					"price": 59000,
+					"orig": null,
+					"rating": 4.8,
+					"reviews": 92340,
+					"store": "뉴트리션팩토리",
+					"tier": "중간",
+					"pricePct": 60
+				},
+				{
+					"id": "822145433587527",
+					"name": "쉐이크베이비 단백질 쉐이크 대용량 초코맛, 630g",
+					"price": 32800,
+					"orig": 47800,
+					"rating": 4.9,
+					"reviews": 84776,
+					"store": "쉐이크베이비 다이어트",
+					"tier": "저가",
+					"pricePct": 29
+				},
+				{
+					"id": "822145433587525",
+					"name": "쉐이크베이비 단백질 쉐이크 대용량 말차, 630g",
+					"price": 32800,
+					"orig": 52800,
+					"rating": 4.9,
+					"reviews": 84760,
+					"store": "쉐이크베이비 다이어트",
+					"tier": "저가",
+					"pricePct": 29
+				},
+				{
+					"id": "822145433587520",
+					"name": "쉐이크베이비 단백질 쉐이크 대용량 마시멜로초코, 630g",
+					"price": 32800,
+					"orig": 52800,
+					"rating": 4.9,
+					"reviews": 84750,
+					"store": "쉐이크베이비 다이어트",
+					"tier": "저가",
+					"pricePct": 29
+				},
+				{
+					"id": "842663310386336",
+					"name": "쉐이크베이비 단백질 쉐이크 대용량 쿠키앤크림맛, 630g",
+					"price": 32800,
+					"orig": 52800,
+					"rating": 4.9,
+					"reviews": 84721,
+					"store": "쉐이크베이비 다이어트",
+					"tier": "중간",
+					"pricePct": 29
+				},
+				{
+					"id": "822145433587523",
+					"name": "쉐이크베이비 단백질 쉐이크 대용량 스윗콘플레이크, 630g",
+					"price": 32800,
+					"orig": 52800,
+					"rating": 4.9,
+					"reviews": 84686,
+					"store": "쉐이크베이비 다이어트",
+					"tier": "저가",
+					"pricePct": 29
+				},
+				{
+					"id": "881579098434641",
+					"name": "유당제로 뉴욕웨이 WPI 초코맛 2kg 단백질보충제 프로틴",
+					"price": 69900,
+					"orig": null,
+					"rating": 4.8,
+					"reviews": 56169,
+					"store": "뉴트리션팩토리",
+					"tier": "고가",
+					"pricePct": 69
+				},
+				{
+					"id": "815767922917033",
+					"name": "프로틴스토리 맛있는 단백질 퓨어프로틴7 아몬드 3kg",
+					"price": 43500,
+					"orig": 70000,
+					"rating": null,
+					"reviews": 38932,
+					"store": "프로틴스토리",
+					"tier": "중간",
+					"pricePct": 44
+				},
+				{
+					"id": "951739674829152",
+					"name": "독일 분리유청단백질 저먼프로트9000 웨이프로틴 파우더 쉐이크 분말",
+					"price": 52900,
+					"orig": 89000,
+					"rating": 4.8,
+					"reviews": 36705,
+					"store": "포대유청단백질",
+					"tier": "중간",
+					"pricePct": 55
+				},
+				{
+					"id": "881579098434626",
+					"name": "1+1 닥터큐어 식사대용 단백질 쉐이크 딸기+초코",
+					"price": 29900,
+					"orig": null,
+					"rating": 4.7,
+					"reviews": 32714,
+					"store": "뉴트리션팩토리",
+					"tier": "저가",
+					"pricePct": 25
+				}
+			]
+		},
+		{
+			"slug": "멀티비타민-가격",
+			"leaf": "멀티비타민",
+			"category": "식품>건강식품>비타민제>멀티비타민",
+			"top": "식품",
+			"checkedFrom": "2026-09-26",
+			"checkedTo": "2026-11-10",
+			"price": {
+				"n": 118,
+				"min": 10500,
+				"p25": 29200,
+				"median": 47700,
+				"p75": 84675,
+				"max": 222300,
+				"mean": 59932
+			},
+			"bins": [
+				{
+					"from": 0,
+					"to": 25000,
+					"n": 22
+				},
+				{
+					"from": 25000,
+					"to": 50000,
+					"n": 41
+				},
+				{
+					"from": 50000,
+					"to": 75000,
+					"n": 19
+				},
+				{
+					"from": 75000,
+					"to": 100000,
+					"n": 20
+				},
+				{
+					"from": 100000,
+					"to": 125000,
+					"n": 5
+				},
+				{
+					"from": 125000,
+					"to": 150000,
+					"n": 6
+				},
+				{
+					"from": 150000,
+					"to": null,
+					"n": 5
+				}
+			],
+			"binStep": 25000,
+			"discount": {
+				"share": 87.3,
+				"median": 40,
+				"over30": 55.1
+			},
+			"rating": {
+				"n": 96,
+				"median": 4.9,
+				"share48": 100
+			},
+			"review": {
+				"total": 419811,
+				"median": 1014,
+				"top10Share": 51.7,
+				"top10N": 12,
+				"under10": 0
+			},
+			"tiers": [
+				{
+					"label": "저가",
+					"n": 39,
+					"from": 10500,
+					"to": 34900,
+					"medianReviews": 1492,
+					"reviewShare": 32.9,
+					"medianRating": 4.9,
+					"sold": 0
+				},
+				{
+					"label": "중간",
+					"n": 40,
+					"from": 35000,
+					"to": 69800,
+					"medianReviews": 771,
+					"reviewShare": 34.1,
+					"medianRating": 4.9,
+					"sold": 0
+				},
+				{
+					"label": "고가",
+					"n": 39,
+					"from": 69900,
+					"to": 222300,
+					"medianReviews": 934,
+					"reviewShare": 33,
+					"medianRating": 4.9,
+					"sold": 0
+				}
+			],
+			"corr": -0.05,
+			"stores": [
+				{
+					"store": "정담건강",
+					"n": 5,
+					"reviews": 97024,
+					"reviewShare": 23.1
+				},
+				{
+					"store": "키즈텐",
+					"n": 7,
+					"reviews": 77120,
+					"reviewShare": 18.4
+				},
+				{
+					"store": "동국제약 뉴트리션",
+					"n": 6,
+					"reviews": 33889,
+					"reviewShare": 8.1
+				},
+				{
+					"store": "하루틴 공식스토어",
+					"n": 3,
+					"reviews": 21142,
+					"reviewShare": 5
+				},
+				{
+					"store": "익스트림공식스토어",
+					"n": 2,
+					"reviews": 20042,
+					"reviewShare": 4.8
+				}
+			],
+			"storeCount": 61,
+			"specs": [],
+			"sold": null,
+			"products": [
+				{
+					"id": "807991572909697",
+					"name": "연세 키즈텐 어린이 유아 종합비타민 미네랄 초등학생 멀티비타민 아연",
+					"price": 24500,
+					"orig": 28000,
+					"rating": 4.9,
+					"reviews": 25656,
+					"store": "키즈텐",
+					"tier": "저가",
+					"pricePct": 16
+				},
+				{
+					"id": "807991572909719",
+					"name": "연세 키즈텐 어린이 유아 종합비타민 미네랄 초등학생 멀티비타민 아연",
+					"price": 47700,
+					"orig": 56000,
+					"rating": 4.9,
+					"reviews": 25277,
+					"store": "키즈텐",
+					"tier": "중간",
+					"pricePct": 49
+				},
+				{
+					"id": "805847094363082",
+					"name": "뉴트키즈타민 어린이 유아 아기 키즈 종합 멀티 비타민 영양제 아연 30포",
+					"price": 57600,
+					"orig": 64000,
+					"rating": 4.8,
+					"reviews": 22432,
+					"store": "정담건강",
+					"tier": "중간",
+					"pricePct": 59
+				},
+				{
+					"id": "805847094367172",
+					"name": "뉴트키즈타민 어린이 유아 아기 키즈 종합 멀티 비타민 영양제 아연 30포",
+					"price": 32000,
+					"orig": null,
+					"rating": 4.8,
+					"reviews": 22359,
+					"store": "정담건강",
+					"tier": "저가",
+					"pricePct": 30
+				},
+				{
+					"id": "810885245157536",
+					"name": "닥터체크 투퍼데이 액티브 멀티비타민 120정",
+					"price": 82300,
+					"orig": 98000,
+					"rating": 4.9,
+					"reviews": 18411,
+					"store": "닥터체크",
+					"tier": "고가",
+					"pricePct": 72
+				},
+				{
+					"id": "906774566780512",
+					"name": "익스트림 남성 올인원 영양제 멀티 종합 비타민 멀티팩 포맨 30포",
+					"price": 39900,
+					"orig": 50000,
+					"rating": 4.9,
+					"reviews": 17615,
+					"store": "익스트림공식스토어",
+					"tier": "중간",
+					"pricePct": 42
+				},
+				{
+					"id": "805847094367188",
+					"name": "뉴트맘스올인원 임산부 종합 멀티 비타민 활성엽산 임신준비 출산후 영양제",
+					"price": 45600,
+					"orig": 48000,
+					"rating": 4.8,
+					"reviews": 17433,
+					"store": "정담건강",
+					"tier": "중간",
+					"pricePct": 47
+				},
+				{
+					"id": "805847094367189",
+					"name": "뉴트맘스올인원 임산부 종합 멀티 비타민 활성엽산 임신준비 출산후 영양제",
+					"price": 61200,
+					"orig": 72000,
+					"rating": 4.8,
+					"reviews": 17406,
+					"store": "정담건강",
+					"tier": "중간",
+					"pricePct": 63
+				},
+				{
+					"id": "805847094367190",
+					"name": "뉴트맘스올인원 임산부 종합 멀티 비타민 활성엽산 임신준비 출산후 영양제",
+					"price": 76800,
+					"orig": 96000,
+					"rating": 4.8,
+					"reviews": 17394,
+					"store": "정담건강",
+					"tier": "고가",
+					"pricePct": 69
+				},
+				{
+					"id": "979422694679680",
+					"name": "동국제약 마이핏V 멀티비타민 이뮨에너지샷 마시는 올인원 액상비타민",
+					"price": 20900,
+					"orig": 55000,
+					"rating": 4.9,
+					"reviews": 11123,
+					"store": "동국제약 뉴트리션",
+					"tier": "저가",
+					"pricePct": 12
+				}
+			]
+		},
+		{
+			"slug": "오메가3-가격",
+			"leaf": "오메가3",
+			"category": "식품>건강식품>영양제>오메가3",
+			"top": "식품",
+			"checkedFrom": "2026-09-04",
+			"checkedTo": "2026-11-10",
+			"price": {
+				"n": 102,
+				"min": 11500,
+				"p25": 31625,
+				"median": 52000,
+				"p75": 95220,
+				"max": 347200,
+				"mean": 69383
+			},
+			"bins": [
+				{
+					"from": 0,
+					"to": 25000,
+					"n": 16
+				},
+				{
+					"from": 25000,
+					"to": 50000,
+					"n": 32
+				},
+				{
+					"from": 50000,
+					"to": 75000,
+					"n": 21
+				},
+				{
+					"from": 75000,
+					"to": 100000,
+					"n": 10
+				},
+				{
+					"from": 100000,
+					"to": 125000,
+					"n": 8
+				},
+				{
+					"from": 125000,
+					"to": 150000,
+					"n": 8
+				},
+				{
+					"from": 150000,
+					"to": 175000,
+					"n": 3
+				},
+				{
+					"from": 175000,
+					"to": null,
+					"n": 4
+				}
+			],
+			"binStep": 25000,
+			"discount": {
+				"share": 87.3,
+				"median": 36,
+				"over30": 57.8
+			},
+			"rating": {
+				"n": 83,
+				"median": 4.9,
+				"share48": 96.4
+			},
+			"review": {
+				"total": 478168,
+				"median": 1484,
+				"top10Share": 53.2,
+				"top10N": 10,
+				"under10": 2
+			},
+			"tiers": [
+				{
+					"label": "저가",
+					"n": 34,
+					"from": 11500,
+					"to": 38900,
+					"medianReviews": 1147,
+					"reviewShare": 21,
+					"medianRating": 4.9,
+					"sold": 0
+				},
+				{
+					"label": "중간",
+					"n": 34,
+					"from": 39900,
+					"to": 70000,
+					"medianReviews": 1611,
+					"reviewShare": 49.4,
+					"medianRating": 4.9,
+					"sold": 0
+				},
+				{
+					"label": "고가",
+					"n": 34,
+					"from": 74400,
+					"to": 347200,
+					"medianReviews": 1912,
+					"reviewShare": 29.5,
+					"medianRating": 4.9,
+					"sold": 0
+				}
+			],
+			"corr": 0.14,
+			"stores": [
+				{
+					"store": "유한양행 본사직영몰",
+					"n": 3,
+					"reviews": 90074,
+					"reviewShare": 18.8
+				},
+				{
+					"store": "뉴트리 모어",
+					"n": 1,
+					"reviews": 44145,
+					"reviewShare": 9.2
+				},
+				{
+					"store": "블랙모어스",
+					"n": 4,
+					"reviews": 31954,
+					"reviewShare": 6.7
+				},
+				{
+					"store": "닥터파이토",
+					"n": 1,
+					"reviews": 30971,
+					"reviewShare": 6.5
+				},
+				{
+					"store": "나우케어",
+					"n": 2,
+					"reviews": 25905,
+					"reviewShare": 5.4
+				}
+			],
+			"storeCount": 59,
+			"specs": [
+				{
+					"key": "종류",
+					"have": 60,
+					"values": [
+						{
+							"value": "rTG",
+							"n": 26,
+							"share": 43.3,
+							"median": 35500
+						},
+						{
+							"value": "rTG, 식물성",
+							"n": 15,
+							"share": 25,
+							"median": 60000
+						},
+						{
+							"value": "rTG, 동물성",
+							"n": 12,
+							"share": 20,
+							"median": 54950
+						}
+					]
+				}
+			],
+			"sold": null,
+			"products": [
+				{
+					"id": "946691093703329",
+					"name": "뉴트리모어 식물성 초임계 알티지 오메가3 DHA 1000 임산부 수유부",
+					"price": 46000,
+					"orig": 59000,
+					"rating": null,
+					"reviews": 44145,
+					"store": "뉴트리 모어",
+					"tier": "중간",
+					"pricePct": 38
+				},
+				{
+					"id": "811210205241733",
+					"name": "닥터파이토 식물성 초임계 알티지 오메가3 85%순도 임산부, 수유부",
+					"price": 135000,
+					"orig": 320000,
+					"rating": 4.9,
+					"reviews": 30971,
+					"store": "닥터파이토",
+					"tier": "고가",
+					"pricePct": 87
+				},
+				{
+					"id": "1001905030890112",
+					"name": "유한양행 소형캡슐 초임계 RTG 오메가3 미니 60캡슐",
+					"price": 60000,
+					"orig": 92000,
+					"rating": 4.9,
+					"reviews": 30132,
+					"store": "유한양행 본사직영몰",
+					"tier": "중간",
+					"pricePct": 57
+				},
+				{
+					"id": "1003640686982240",
+					"name": "유한양행 소형캡슐 초임계 RTG 오메가3 미니 60캡슐",
+					"price": 48000,
+					"orig": 69000,
+					"rating": 4.9,
+					"reviews": 30047,
+					"store": "유한양행 본사직영몰",
+					"tier": "중간",
+					"pricePct": 40
+				},
+				{
+					"id": "1000864844189568",
+					"name": "유한양행 소형캡슐 초임계 RTG 오메가3 미니 60캡슐",
+					"price": 70000,
+					"orig": 138000,
+					"rating": 4.9,
+					"reviews": 29895,
+					"store": "유한양행 본사직영몰",
+					"tier": "중간",
+					"pricePct": 66
+				},
+				{
+					"id": "808684973127104",
+					"name": "1+1 인테로 알티지 오메가3 RTG 엔초비 캐나다 대용량 EPA",
+					"price": 49900,
+					"orig": 100000,
+					"rating": null,
+					"reviews": 23860,
+					"store": "인테로",
+					"tier": "중간",
+					"pricePct": 44
+				},
+				{
+					"id": "808386638807171",
+					"name": "rTG알티지오메가3 1박스 60캡슐 1000mg 비타민D3 식물성캡슐",
+					"price": 11500,
+					"orig": 20000,
+					"rating": 4.8,
+					"reviews": 17411,
+					"store": "순수식품",
+					"tier": "저가",
+					"pricePct": 0
+				},
+				{
+					"id": "805849343718439",
+					"name": "엔초비 알티지오메가3 3개월 멸치 RTG오메가3 비타민D 노르웨이",
+					"price": 18900,
+					"orig": 32000,
+					"rating": 4.8,
+					"reviews": 16915,
+					"store": "비타플랜",
+					"tier": "저가",
+					"pricePct": 9
+				},
+				{
+					"id": "819683055492453",
+					"name": "종근당 프로메가 알티지 오메가3 비타민D 60캡슐",
+					"price": 48000,
+					"orig": 129000,
+					"rating": 4.8,
+					"reviews": 16120,
+					"store": "DSmall",
+					"tier": "중간",
+					"pricePct": 40
+				},
+				{
+					"id": "912065443918432",
+					"name": "블랙모어스 알티지오메가3 80캡슐 4병",
+					"price": 55900,
+					"orig": 95600,
+					"rating": 4.9,
+					"reviews": 15097,
+					"store": "블랙모어스",
+					"tier": "중간",
+					"pricePct": 55
+				}
+			]
+		},
+		{
+			"slug": "선크림-가격",
+			"leaf": "선크림",
+			"category": "화장품/미용>선케어>선크림",
+			"top": "화장품/미용",
+			"checkedFrom": "2026-09-20",
+			"checkedTo": "2026-11-10",
+			"price": {
+				"n": 93,
+				"min": 5400,
+				"p25": 17600,
+				"median": 24900,
+				"p75": 33000,
+				"max": 118800,
+				"mean": 29285
+			},
+			"bins": [
+				{
+					"from": 0,
+					"to": 10000,
+					"n": 1
+				},
+				{
+					"from": 10000,
+					"to": 20000,
+					"n": 35
+				},
+				{
+					"from": 20000,
+					"to": 30000,
+					"n": 27
+				},
+				{
+					"from": 30000,
+					"to": 40000,
+					"n": 11
+				},
+				{
+					"from": 40000,
+					"to": 50000,
+					"n": 11
+				},
+				{
+					"from": 50000,
+					"to": 60000,
+					"n": 1
+				},
+				{
+					"from": 60000,
+					"to": 70000,
+					"n": 4
+				},
+				{
+					"from": 70000,
+					"to": null,
+					"n": 3
+				}
+			],
+			"binStep": 10000,
+			"discount": {
+				"share": 93.5,
+				"median": 34,
+				"over30": 63.4
+			},
+			"rating": {
+				"n": 81,
+				"median": 4.8,
+				"share48": 85.2
+			},
+			"review": {
+				"total": 258339,
+				"median": 821,
+				"top10Share": 63.5,
+				"top10N": 9,
+				"under10": 4.3
+			},
+			"tiers": [
+				{
+					"label": "저가",
+					"n": 31,
+					"from": 5400,
+					"to": 19400,
+					"medianReviews": 1133,
+					"reviewShare": 31.4,
+					"medianRating": 4.8,
+					"sold": 0
+				},
+				{
+					"label": "중간",
+					"n": 31,
+					"from": 19600,
+					"to": 28900,
+					"medianReviews": 628,
+					"reviewShare": 37.5,
+					"medianRating": 4.9,
+					"sold": 0
+				},
+				{
+					"label": "고가",
+					"n": 31,
+					"from": 29900,
+					"to": 118800,
+					"medianReviews": 674,
+					"reviewShare": 31.1,
+					"medianRating": 4.9,
+					"sold": 0
+				}
+			],
+			"corr": -0.27,
+			"stores": [
+				{
+					"store": "닥터지",
+					"n": 3,
+					"reviews": 73813,
+					"reviewShare": 28.6
+				},
+				{
+					"store": "듀이트리",
+					"n": 5,
+					"reviews": 38960,
+					"reviewShare": 15.1
+				},
+				{
+					"store": "이니스프리",
+					"n": 4,
+					"reviews": 36340,
+					"reviewShare": 14.1
+				},
+				{
+					"store": "달바 공식스토어",
+					"n": 1,
+					"reviews": 20256,
+					"reviewShare": 7.8
+				},
+				{
+					"store": "피토트리",
+					"n": 1,
+					"reviews": 8302,
+					"reviewShare": 3.2
+				}
+			],
+			"storeCount": 59,
+			"specs": [
+				{
+					"key": "용량",
+					"have": 76,
+					"values": [
+						{
+							"value": "50ml",
+							"n": 55,
+							"share": 72.4,
+							"median": 27200
+						},
+						{
+							"value": "30ml",
+							"n": 5,
+							"share": 6.6,
+							"median": 33000
+						},
+						{
+							"value": "40ml",
+							"n": 5,
+							"share": 6.6,
+							"median": 15900
+						}
+					]
+				},
+				{
+					"key": "종류",
+					"have": 67,
+					"values": [
+						{
+							"value": "유기자차",
+							"n": 29,
+							"share": 43.3,
+							"median": 23000
+						},
+						{
+							"value": "혼합자차",
+							"n": 19,
+							"share": 28.4,
+							"median": 29900
+						},
+						{
+							"value": "무기자차",
+							"n": 19,
+							"share": 28.4,
+							"median": 24000
+						}
+					]
+				}
+			],
+			"sold": null,
+			"products": [
+				{
+					"id": "991054072230817",
+					"name": "닥터지 브라이트닝 업 선 플러스 50mL X2개 톤업",
+					"price": 30900,
+					"orig": 64000,
+					"rating": 4.9,
+					"reviews": 37484,
+					"store": "닥터지",
+					"tier": "고가",
+					"pricePct": 69
+				},
+				{
+					"id": "991054072230816",
+					"name": "닥터지 그린 마일드 업 선 플러스 50mL X2개 (SPF50+",
+					"price": 26000,
+					"orig": 58000,
+					"rating": 4.9,
+					"reviews": 32746,
+					"store": "닥터지",
+					"tier": "중간",
+					"pricePct": 52
+				},
+				{
+					"id": "815854174872256",
+					"name": "어반 쉐이드 안티폴루션 선 톤업 선크림 50ml SPF50+PA",
+					"price": 12900,
+					"orig": 38000,
+					"rating": 4.8,
+					"reviews": 25153,
+					"store": "듀이트리",
+					"tier": "저가",
+					"pricePct": 3
+				},
+				{
+					"id": "850844547851274",
+					"name": "달바 워터 베리어 선 앰플 50mlX2개 / 우유 선크림 밀크자차",
+					"price": 27900,
+					"orig": 90000,
+					"rating": 4.9,
+					"reviews": 20256,
+					"store": "달바 공식스토어",
+					"tier": "중간",
+					"pricePct": 56
+				},
+				{
+					"id": "842070258290009",
+					"name": "이니스프리 히알루론 수분 백탁없는 선크림 SPF50+ PA++++",
+					"price": 19600,
+					"orig": 28000,
+					"rating": 4.9,
+					"reviews": 14509,
+					"store": "이니스프리",
+					"tier": "중간",
+					"pricePct": 33
+				},
+				{
+					"id": "842070258310484",
+					"name": "이니스프리 히알루론 수분 선크림 SPF 50+ PA++++ 50ml",
+					"price": 42000,
+					"orig": 84000,
+					"rating": 4.9,
+					"reviews": 14336,
+					"store": "이니스프리",
+					"tier": "고가",
+					"pricePct": 83
+				},
+				{
+					"id": "844762365333473",
+					"name": "피토트리 선인장 수딩 아쿠아 선젤 100ml 얼굴 바디 피부 수분 진정",
+					"price": 12800,
+					"orig": 20000,
+					"rating": 4.8,
+					"reviews": 8302,
+					"store": "피토트리",
+					"tier": "저가",
+					"pricePct": 2
+				},
+				{
+					"id": "808362900012998",
+					"name": "닥터올가 100 무기자차 선크림 SPF50+ PA+++ 50ml",
+					"price": 22400,
+					"orig": 32000,
+					"rating": 4.6,
+					"reviews": 6330,
+					"store": "닥터올가",
+					"tier": "중간",
+					"pricePct": 44
+				},
+				{
+					"id": "815854174876353",
+					"name": "어반쉐이드 커버앤핏 선 톤업 선케어 40ml SPF50+PA",
+					"price": 14900,
+					"orig": 24000,
+					"rating": 4.7,
+					"reviews": 5054,
+					"store": "듀이트리",
+					"tier": "저가",
+					"pricePct": 8
+				},
+				{
+					"id": "869660122442944",
+					"name": "벨르랑코 톤업선크림 파데프리 메이크업베이스 눈시림 없는 승무원 선크림",
+					"price": 42000,
+					"orig": 48000,
+					"rating": 4.8,
+					"reviews": 4921,
+					"store": "벨르랑코",
+					"tier": "고가",
+					"pricePct": 83
+				}
+			]
+		},
+		{
+			"slug": "샴푸-가격",
+			"leaf": "샴푸",
+			"category": "화장품/미용>헤어케어>샴푸",
+			"top": "화장품/미용",
+			"checkedFrom": "2026-09-21",
+			"checkedTo": "2026-11-10",
+			"price": {
+				"n": 93,
+				"min": 9600,
+				"p25": 19800,
+				"median": 25000,
+				"p75": 37000,
+				"max": 219000,
+				"mean": 32087
+			},
+			"bins": [
+				{
+					"from": 0,
+					"to": 10000,
+					"n": 1
+				},
+				{
+					"from": 10000,
+					"to": 20000,
+					"n": 30
+				},
+				{
+					"from": 20000,
+					"to": 30000,
+					"n": 29
+				},
+				{
+					"from": 30000,
+					"to": 40000,
+					"n": 15
+				},
+				{
+					"from": 40000,
+					"to": 50000,
+					"n": 8
+				},
+				{
+					"from": 50000,
+					"to": 60000,
+					"n": 4
+				},
+				{
+					"from": 60000,
+					"to": 70000,
+					"n": 1
+				},
+				{
+					"from": 70000,
+					"to": null,
+					"n": 5
+				}
+			],
+			"binStep": 10000,
+			"discount": {
+				"share": 92.5,
+				"median": 34,
+				"over30": 53.8
+			},
+			"rating": {
+				"n": 88,
+				"median": 4.8,
+				"share48": 84.1
+			},
+			"review": {
+				"total": 286055,
+				"median": 998,
+				"top10Share": 62,
+				"top10N": 9,
+				"under10": 2.2
+			},
+			"tiers": [
+				{
+					"label": "저가",
+					"n": 31,
+					"from": 9600,
+					"to": 19950,
+					"medianReviews": 1279,
+					"reviewShare": 52.3,
+					"medianRating": 4.8,
+					"sold": 0
+				},
+				{
+					"label": "중간",
+					"n": 31,
+					"from": 20000,
+					"to": 31900,
+					"medianReviews": 1621,
+					"reviewShare": 34.1,
+					"medianRating": 4.8,
+					"sold": 0
+				},
+				{
+					"label": "고가",
+					"n": 31,
+					"from": 32000,
+					"to": 219000,
+					"medianReviews": 647,
+					"reviewShare": 13.6,
+					"medianRating": 4.8,
+					"sold": 0
+				}
+			],
+			"corr": -0.26,
+			"stores": [
+				{
+					"store": "살림백서",
+					"n": 3,
+					"reviews": 71453,
+					"reviewShare": 25
+				},
+				{
+					"store": "AROMATICA",
+					"n": 9,
+					"reviews": 28424,
+					"reviewShare": 9.9
+				},
+				{
+					"store": "현대약품 마이녹셀",
+					"n": 3,
+					"reviews": 26480,
+					"reviewShare": 9.3
+				},
+				{
+					"store": "바이아우어 공식스토어",
+					"n": 1,
+					"reviews": 26441,
+					"reviewShare": 9.2
+				},
+				{
+					"store": "닥터올가",
+					"n": 1,
+					"reviews": 16028,
+					"reviewShare": 5.6
+				}
+			],
+			"storeCount": 56,
+			"specs": [],
+			"sold": null,
+			"products": [
+				{
+					"id": "805885450990911",
+					"name": "1+1 살림백서 천연 지수81% 샴푸 500ml 약산성 퍼퓸 비듬",
+					"price": 15900,
+					"orig": 25900,
+					"rating": 4.7,
+					"reviews": 68002,
+					"store": "살림백서",
+					"tier": "저가",
+					"pricePct": 13
+				},
+				{
+					"id": "923776793320608",
+					"name": "바이아우어 맥주효모 탈모샴푸 500ml",
+					"price": 12400,
+					"orig": 23000,
+					"rating": 4.8,
+					"reviews": 26441,
+					"store": "바이아우어 공식스토어",
+					"tier": "저가",
+					"pricePct": 4
+				},
+				{
+					"id": "886866870389152",
+					"name": "현대약품 마이녹셀 프레스티지 스칼프 뿌리볼륨 탈모샴푸 960ml",
+					"price": 27900,
+					"orig": 76000,
+					"rating": 4.8,
+					"reviews": 18492,
+					"store": "현대약품 마이녹셀",
+					"tier": "중간",
+					"pricePct": 55
+				},
+				{
+					"id": "808362900012994",
+					"name": "닥터올가 지성 두피 호호바 티트리 비건 천연 샴푸 무향, 500ml",
+					"price": 23100,
+					"orig": 33000,
+					"rating": 4.6,
+					"reviews": 16028,
+					"store": "닥터올가",
+					"tier": "중간",
+					"pricePct": 42
+				},
+				{
+					"id": "852971555585409",
+					"name": "미르엔 네추럴 테라피 샴푸 500ml 어성초 각질 무실리콘 초등학생",
+					"price": 29800,
+					"orig": 34200,
+					"rating": 4.6,
+					"reviews": 12633,
+					"store": "미르엔",
+					"tier": "중간",
+					"pricePct": 61
+				},
+				{
+					"id": "808730266482254",
+					"name": "아로마티카 로즈마리 스칼프 스케일링 샴푸 400ML 비건 탈모 기능성",
+					"price": 18200,
+					"orig": 26000,
+					"rating": 4.8,
+					"reviews": 10125,
+					"store": "AROMATICA",
+					"tier": "저가",
+					"pricePct": 17
+				},
+				{
+					"id": "808730266486339",
+					"name": "아로마티카 로즈마리 스칼프 스케일링 샴푸 750ML+리필500ML 비건",
+					"price": 37200,
+					"orig": 64000,
+					"rating": 4.8,
+					"reviews": 9677,
+					"store": "AROMATICA",
+					"tier": "고가",
+					"pricePct": 75
+				},
+				{
+					"id": "809781160409273",
+					"name": "커리쉴 에프터 살롱 케어 샴푸 (극손상) 500ml",
+					"price": 19500,
+					"orig": 26000,
+					"rating": 4.9,
+					"reviews": 8581,
+					"store": "커리쉴",
+					"tier": "저가",
+					"pricePct": 24
+				},
+				{
+					"id": "969055186131296",
+					"name": "톤28 건강한 여름 두피 관리 샴푸바 400g S21 약산성샴푸",
+					"price": 29700,
+					"orig": 33000,
+					"rating": 4.9,
+					"reviews": 7432,
+					"store": "톤28",
+					"tier": "중간",
+					"pricePct": 60
+				},
+				{
+					"id": "886866870401440",
+					"name": "현대약품 마이녹셀 스칼프 인텐시브 샴푸 960ml",
+					"price": 23900,
+					"orig": 60000,
+					"rating": 4.8,
+					"reviews": 6411,
+					"store": "현대약품 마이녹셀",
+					"tier": "중간",
+					"pricePct": 44
+				}
+			]
+		},
+		{
+			"slug": "캡형-물티슈-가격",
+			"leaf": "캡형 물티슈",
+			"category": "출산/육아>물티슈>캡형",
+			"top": "출산/육아",
+			"checkedFrom": "2026-09-14",
+			"checkedTo": "2026-11-10",
+			"price": {
+				"n": 83,
+				"min": 10900,
+				"p25": 17200,
+				"median": 21800,
+				"p75": 29900,
+				"max": 49980,
+				"mean": 24350
+			},
+			"bins": [
+				{
+					"from": 10000,
+					"to": 20000,
+					"n": 39
+				},
+				{
+					"from": 20000,
+					"to": 30000,
+					"n": 24
+				},
+				{
+					"from": 30000,
+					"to": 40000,
+					"n": 12
+				},
+				{
+					"from": 40000,
+					"to": 50000,
+					"n": 8
+				}
+			],
+			"binStep": 10000,
+			"discount": {
+				"share": 86.7,
+				"median": 22,
+				"over30": 31.3
+			},
+			"rating": {
+				"n": 66,
+				"median": 4.9,
+				"share48": 97
+			},
+			"review": {
+				"total": 324350,
+				"median": 558,
+				"top10Share": 75.9,
+				"top10N": 8,
+				"under10": 1.2
+			},
+			"tiers": [
+				{
+					"label": "저가",
+					"n": 27,
+					"from": 10900,
+					"to": 18500,
+					"medianReviews": 574,
+					"reviewShare": 26,
+					"medianRating": 4.8,
+					"sold": 0
+				},
+				{
+					"label": "중간",
+					"n": 29,
+					"from": 18900,
+					"to": 25900,
+					"medianReviews": 214,
+					"reviewShare": 15.7,
+					"medianRating": 4.9,
+					"sold": 0
+				},
+				{
+					"label": "고가",
+					"n": 27,
+					"from": 26200,
+					"to": 49980,
+					"medianReviews": 1133,
+					"reviewShare": 58.3,
+					"medianRating": 4.9,
+					"sold": 0
+				}
+			],
+			"corr": 0.01,
+			"stores": [
+				{
+					"store": "베베숲",
+					"n": 12,
+					"reviews": 108624,
+					"reviewShare": 33.5
+				},
+				{
+					"store": "살림백서",
+					"n": 1,
+					"reviews": 99999,
+					"reviewShare": 30.8
+				},
+				{
+					"store": "지앤티클린",
+					"n": 11,
+					"reviews": 40133,
+					"reviewShare": 12.4
+				},
+				{
+					"store": "아망떼물티슈",
+					"n": 10,
+					"reviews": 33072,
+					"reviewShare": 10.2
+				},
+				{
+					"store": "미엘물티슈",
+					"n": 8,
+					"reviews": 13907,
+					"reviewShare": 4.3
+				}
+			],
+			"storeCount": 27,
+			"specs": [],
+			"sold": null,
+			"products": [
+				{
+					"id": "805885451007284",
+					"name": "살림백서 네이처 퓨어 아기 신생아 대용량 물티슈 엠보싱 도톰한 100매",
+					"price": 35800,
+					"orig": 55800,
+					"rating": 4.8,
+					"reviews": 99999,
+					"store": "살림백서",
+					"tier": "고가",
+					"pricePct": 84
+				},
+				{
+					"id": "864336334011961",
+					"name": "베베숲 아기물티슈 시그니처 레드 캡형 70매",
+					"price": 25690,
+					"orig": 26900,
+					"rating": 4.9,
+					"reviews": 34444,
+					"store": "베베숲",
+					"tier": "중간",
+					"pricePct": 61
+				},
+				{
+					"id": "864336334016050",
+					"name": "베베숲 아기물티슈 시그니처 레드 캡형 70매",
+					"price": 49980,
+					"orig": 50800,
+					"rating": 4.9,
+					"reviews": 34424,
+					"store": "베베숲",
+					"tier": "고가",
+					"pricePct": 99
+				},
+				{
+					"id": "887246727584032",
+					"name": "아이러브베베 아이보리 캡형 72매",
+					"price": 14900,
+					"orig": 19900,
+					"rating": 4.9,
+					"reviews": 24018,
+					"store": "지앤티클린",
+					"tier": "저가",
+					"pricePct": 13
+				},
+				{
+					"id": "864336334011936",
+					"name": "베베숲 아기물티슈 제로 플레인 캡형 80매",
+					"price": 38890,
+					"orig": 40800,
+					"rating": 4.9,
+					"reviews": 19900,
+					"store": "베베숲",
+					"tier": "고가",
+					"pricePct": 88
+				},
+				{
+					"id": "902206914781633",
+					"name": "아망떼 물티슈 베이직 대용량 아기물티슈 엠보싱 캡형 120매",
+					"price": 12900,
+					"orig": 17900,
+					"rating": 4.8,
+					"reviews": 16036,
+					"store": "아망떼물티슈",
+					"tier": "저가",
+					"pricePct": 5
+				},
+				{
+					"id": "808324528107472",
+					"name": "미엘 더 클래식 시그니처 물티슈 100매 10팩 캡형 평량 55g 도톰",
+					"price": 14400,
+					"orig": 16900,
+					"rating": 4.9,
+					"reviews": 9664,
+					"store": "미엘물티슈",
+					"tier": "저가",
+					"pricePct": 12
+				},
+				{
+					"id": "946397345815072",
+					"name": "청담도리 시그니처 옐로우 물티슈 두꺼운 안전한 저자극 아기 무향 도톰한",
+					"price": 13900,
+					"orig": 17900,
+					"rating": 4.8,
+					"reviews": 7680,
+					"store": "청담도리",
+					"tier": "저가",
+					"pricePct": 10
+				},
+				{
+					"id": "864336334011953",
+					"name": "베베숲 시그니처 브라운 캡형 안전한 아기물티슈 70매",
+					"price": 43980,
+					"orig": 44800,
+					"rating": 4.9,
+					"reviews": 7672,
+					"store": "베베숲",
+					"tier": "고가",
+					"pricePct": 94
+				},
+				{
+					"id": "902206914781632",
+					"name": "아망떼 물티슈 프렌즈 70평량 도톰한 두꺼운 신생아 유아 아기물티슈",
+					"price": 13900,
+					"orig": 22000,
+					"rating": 4.8,
+					"reviews": 7434,
+					"store": "아망떼물티슈",
+					"tier": "저가",
+					"pricePct": 10
+				}
+			]
+		},
+		{
+			"slug": "헤어드라이어-가격",
+			"leaf": "헤어드라이어",
+			"category": "디지털/가전>이미용가전>헤어기기>드라이어",
+			"top": "디지털/가전",
+			"checkedFrom": "2026-09-23",
+			"checkedTo": "2026-11-10",
+			"price": {
+				"n": 81,
+				"min": 17900,
+				"p25": 49000,
+				"median": 76000,
+				"p75": 119000,
+				"max": 398000,
+				"mean": 90997
+			},
+			"bins": [
+				{
+					"from": 0,
+					"to": 50000,
+					"n": 26
+				},
+				{
+					"from": 50000,
+					"to": 100000,
+					"n": 30
+				},
+				{
+					"from": 100000,
+					"to": 150000,
+					"n": 14
+				},
+				{
+					"from": 150000,
+					"to": 200000,
+					"n": 7
+				},
+				{
+					"from": 200000,
+					"to": null,
+					"n": 4
+				}
+			],
+			"binStep": 50000,
+			"discount": {
+				"share": 86.4,
+				"median": 30,
+				"over30": 43.2
+			},
+			"rating": {
+				"n": 66,
+				"median": 4.8,
+				"share48": 90.9
+			},
+			"review": {
+				"total": 161917,
+				"median": 670,
+				"top10Share": 53.4,
+				"top10N": 8,
+				"under10": 1.2
+			},
+			"tiers": [
+				{
+					"label": "저가",
+					"n": 27,
+					"from": 17900,
+					"to": 54800,
+					"medianReviews": 1274,
+					"reviewShare": 54.8,
+					"medianRating": 4.8,
+					"sold": 0
+				},
+				{
+					"label": "중간",
+					"n": 27,
+					"from": 55900,
+					"to": 99000,
+					"medianReviews": 973,
+					"reviewShare": 33.6,
+					"medianRating": 4.9,
+					"sold": 0
+				},
+				{
+					"label": "고가",
+					"n": 27,
+					"from": 99000,
+					"to": 398000,
+					"medianReviews": 285,
+					"reviewShare": 11.6,
+					"medianRating": 4.9,
+					"sold": 0
+				}
+			],
+			"corr": -0.36,
+			"stores": [
+				{
+					"store": "유닉스전자",
+					"n": 19,
+					"reviews": 72014,
+					"reviewShare": 44.5
+				},
+				{
+					"store": "JMW",
+					"n": 7,
+					"reviews": 19081,
+					"reviewShare": 11.8
+				},
+				{
+					"store": "라이징몰",
+					"n": 1,
+					"reviews": 10996,
+					"reviewShare": 6.8
+				},
+				{
+					"store": "비달사순",
+					"n": 2,
+					"reviews": 10618,
+					"reviewShare": 6.6
+				},
+				{
+					"store": "조아 마켓",
+					"n": 1,
+					"reviews": 8580,
+					"reviewShare": 5.3
+				}
+			],
+			"storeCount": 43,
+			"specs": [
+				{
+					"key": "용도",
+					"have": 58,
+					"values": [
+						{
+							"value": "전문가용",
+							"n": 32,
+							"share": 55.2,
+							"median": 59455
+						},
+						{
+							"value": "휴대용",
+							"n": 14,
+							"share": 24.1,
+							"median": 62350
+						},
+						{
+							"value": "멀티형",
+							"n": 9,
+							"share": 15.5,
+							"median": 99000
+						}
+					]
+				},
+				{
+					"key": "소비전력",
+					"have": 31,
+					"values": [
+						{
+							"value": "1600W",
+							"n": 8,
+							"share": 25.8,
+							"median": 44850
+						},
+						{
+							"value": "1700W",
+							"n": 6,
+							"share": 19.4,
+							"median": 35450
+						},
+						{
+							"value": "2000W",
+							"n": 5,
+							"share": 16.1,
+							"median": 33500
+						}
+					]
+				}
+			],
+			"sold": null,
+			"products": [
+				{
+					"id": "845102223421604",
+					"name": "유닉스 헤어 드라이기 UN-A1690 접이식",
+					"price": 25900,
+					"orig": 35000,
+					"rating": 4.8,
+					"reviews": 24055,
+					"store": "유닉스전자",
+					"tier": "저가",
+					"pricePct": 7
+				},
+				{
+					"id": "845102223421605",
+					"name": "유닉스 헤어 전문가용 드라이기 UN-A1958 2000W",
+					"price": 37900,
+					"orig": 59000,
+					"rating": 4.8,
+					"reviews": 13840,
+					"store": "유닉스전자",
+					"tier": "저가",
+					"pricePct": 16
+				},
+				{
+					"id": "966583579711744",
+					"name": "한일전자 파테크 접이식 미니 드라이기 휴대용 여행용 저소음 업소용 초경량",
+					"price": 22900,
+					"orig": 39800,
+					"rating": 4.7,
+					"reviews": 10996,
+					"store": "라이징몰",
+					"tier": "저가",
+					"pricePct": 5
+				},
+				{
+					"id": "810134831611207",
+					"name": "유닉스 에어스피더 하이스피드 BLDC 드라이어 UN-A7610",
+					"price": 61200,
+					"orig": 80000,
+					"rating": 4.9,
+					"reviews": 10418,
+					"store": "유닉스전자",
+					"tier": "중간",
+					"pricePct": 38
+				},
+				{
+					"id": "884767069813600",
+					"name": "예스뷰티 드라이기 드라이어 전문가용 미용실 가정용 경량 저소음 가벼운",
+					"price": 96000,
+					"orig": null,
+					"rating": 4.8,
+					"reviews": 8580,
+					"store": "조아 마켓",
+					"tier": "중간",
+					"pricePct": 62
+				},
+				{
+					"id": "811200899932512",
+					"name": "JMW 에어슈팅 MC3A01A 강력한 컴팩트 BLDC 항공모터 헤어",
+					"price": 70000,
+					"orig": 99000,
+					"rating": 4.8,
+					"reviews": 7175,
+					"store": "JMW",
+					"tier": "중간",
+					"pricePct": 48
+				},
+				{
+					"id": "887334187022912",
+					"name": "헤어드라이기 비달사순 2000W 파워 쿨샷 저소음 가벼운 가정용",
+					"price": 19900,
+					"orig": null,
+					"rating": 4.8,
+					"reviews": 6182,
+					"store": "비달사순",
+					"tier": "저가",
+					"pricePct": 2
+				},
+				{
+					"id": "811201055228384",
+					"name": "JMW 터치온 BLDC 항공모터 터치센서 헤어 드라이기 MCS6001A",
+					"price": 99000,
+					"orig": 158000,
+					"rating": 4.8,
+					"reviews": 5222,
+					"store": "JMW",
+					"tier": "중간",
+					"pricePct": 63
+				},
+				{
+					"id": "993879979716800",
+					"name": "닥터하르 BLDC 초고출력 저소음 헤어 드라이기 화이트 가벼운 드라이어",
+					"price": 38800,
+					"orig": 70000,
+					"rating": 4.8,
+					"reviews": 5143,
+					"store": "닥터하르",
+					"tier": "저가",
+					"pricePct": 19
+				},
+				{
+					"id": "866773605467200",
+					"name": "유닉스 BLDC 디오 저소음 경량 드라이기 UN-A7360B",
+					"price": 93100,
+					"orig": 109900,
+					"rating": null,
+					"reviews": 4893,
+					"store": "유닉스전자",
+					"tier": "중간",
+					"pricePct": 58
+				}
+			]
+		},
+		{
+			"slug": "캠핑테이블-가격",
+			"leaf": "캠핑테이블",
+			"category": "스포츠/레저>캠핑>캠핑가구>캠핑테이블",
+			"top": "스포츠/레저",
+			"checkedFrom": "2026-09-24",
+			"checkedTo": "2026-11-10",
+			"price": {
+				"n": 68,
+				"min": 8950,
+				"p25": 17850,
+				"median": 28950,
+				"p75": 50425,
+				"max": 279900,
+				"mean": 47976
+			},
+			"bins": [
+				{
+					"from": 0,
+					"to": 25000,
+					"n": 27
+				},
+				{
+					"from": 25000,
+					"to": 50000,
+					"n": 24
+				},
+				{
+					"from": 50000,
+					"to": 75000,
+					"n": 7
+				},
+				{
+					"from": 75000,
+					"to": 100000,
+					"n": 2
+				},
+				{
+					"from": 100000,
+					"to": 125000,
+					"n": 0
+				},
+				{
+					"from": 125000,
+					"to": 150000,
+					"n": 5
+				},
+				{
+					"from": 150000,
+					"to": null,
+					"n": 3
+				}
+			],
+			"binStep": 25000,
+			"discount": {
+				"share": 79.4,
+				"median": 21,
+				"over30": 23.5
+			},
+			"rating": {
+				"n": 63,
+				"median": 4.9,
+				"share48": 87.3
+			},
+			"review": {
+				"total": 61859,
+				"median": 326,
+				"top10Share": 54,
+				"top10N": 7,
+				"under10": 1.5
+			},
+			"tiers": [
+				{
+					"label": "저가",
+					"n": 22,
+					"from": 8950,
+					"to": 22900,
+					"medianReviews": 281,
+					"reviewShare": 48.2,
+					"medianRating": 4.8,
+					"sold": 0
+				},
+				{
+					"label": "중간",
+					"n": 24,
+					"from": 23000,
+					"to": 39900,
+					"medianReviews": 328,
+					"reviewShare": 23.6,
+					"medianRating": 4.9,
+					"sold": 0
+				},
+				{
+					"label": "고가",
+					"n": 22,
+					"from": 39900,
+					"to": 279900,
+					"medianReviews": 358,
+					"reviewShare": 28.2,
+					"medianRating": 4.9,
+					"sold": 0
+				}
+			],
+			"corr": 0.01,
+			"stores": [
+				{
+					"store": "로티몰닷컴",
+					"n": 4,
+					"reviews": 15080,
+					"reviewShare": 24.4
+				},
+				{
+					"store": "쿨맨캠핑 - KOOLMAN",
+					"n": 2,
+					"reviews": 11038,
+					"reviewShare": 17.8
+				},
+				{
+					"store": "Karnik Sports",
+					"n": 4,
+					"reviews": 8884,
+					"reviewShare": 14.4
+				},
+				{
+					"store": "원스위크라이프",
+					"n": 7,
+					"reviews": 5601,
+					"reviewShare": 9.1
+				},
+				{
+					"store": "인디에이",
+					"n": 6,
+					"reviews": 4116,
+					"reviewShare": 6.7
+				}
+			],
+			"storeCount": 25,
+			"specs": [],
+			"sold": null,
+			"products": [
+				{
+					"id": "806274207808000",
+					"name": "로티캠프 휴대용 원액션 접이식 피크닉 경량 좌식 미니 캠핑 테이블 우드",
+					"price": 13400,
+					"orig": 19500,
+					"rating": 4.6,
+					"reviews": 6873,
+					"store": "로티몰닷컴",
+					"tier": "저가",
+					"pricePct": 9
+				},
+				{
+					"id": "806274207844868",
+					"name": "로티캠프 휴대용 원액션 접이식 피크닉 경량 좌식 미니 캠핑 테이블",
+					"price": 17400,
+					"orig": 22900,
+					"rating": 4.6,
+					"reviews": 6855,
+					"store": "로티몰닷컴",
+					"tier": "저가",
+					"pricePct": 24
+				},
+				{
+					"id": "806278343256402",
+					"name": "KOOLMAN 쿨맨 접이식 캠핑 미니 폴딩 테이블 피크닉 차박 좌식용",
+					"price": 12200,
+					"orig": 12500,
+					"rating": 4.7,
+					"reviews": 5519,
+					"store": "쿨맨캠핑 - KOOLMAN",
+					"tier": "저가",
+					"pricePct": 4
+				},
+				{
+					"id": "806278343256403",
+					"name": "KOOLMAN 쿨맨 접이식 캠핑 미니 폴딩 테이블 피크닉 차박 좌식용",
+					"price": 12200,
+					"orig": 12500,
+					"rating": 4.7,
+					"reviews": 5519,
+					"store": "쿨맨캠핑 - KOOLMAN",
+					"tier": "저가",
+					"pricePct": 4
+				},
+				{
+					"id": "810172167278512",
+					"name": "카르닉 접이식 캠핑 테이블 2단 높이조절 롤 경량 휴대용 ACT 중형,",
+					"price": 69000,
+					"orig": 79000,
+					"rating": 4.8,
+					"reviews": 2875,
+					"store": "Karnik Sports",
+					"tier": "고가",
+					"pricePct": 82
+				},
+				{
+					"id": "810172167282610",
+					"name": "카르닉 접이식 캠핑 테이블 2단 높이조절 롤 경량 휴대용 ACT 중형,",
+					"price": 69000,
+					"orig": 79000,
+					"rating": 4.8,
+					"reviews": 2872,
+					"store": "Karnik Sports",
+					"tier": "고가",
+					"pricePct": 82
+				},
+				{
+					"id": "810172167282612",
+					"name": "카르닉 접이식 캠핑 테이블 2단 높이조절 롤 경량 휴대용 ACT 대형,",
+					"price": 79000,
+					"orig": 89000,
+					"rating": 4.8,
+					"reviews": 2871,
+					"store": "Karnik Sports",
+					"tier": "고가",
+					"pricePct": 87
+				},
+				{
+					"id": "850791641405659",
+					"name": "원스위크라이프 행어 캠핑 선반 접이식 우드 쉘프 수납 장 4단,",
+					"price": 39990,
+					"orig": 53000,
+					"rating": 4.8,
+					"reviews": 2493,
+					"store": "원스위크라이프",
+					"tier": "고가",
+					"pricePct": 69
+				},
+				{
+					"id": "810106864986522",
+					"name": "원스위크라이프 행어 캠핑 선반 접이식 우드 쉘프 수납 장 3단, 네추럴",
+					"price": 34990,
+					"orig": 45000,
+					"rating": 4.8,
+					"reviews": 2472,
+					"store": "원스위크라이프",
+					"tier": "중간",
+					"pricePct": 57
+				},
+				{
+					"id": "942490872240288",
+					"name": "빅앤트 59리터 폴딩박스 접이식 수납정리상자(일반형)",
+					"price": 32000,
+					"orig": null,
+					"rating": 4.9,
+					"reviews": 2324,
+					"store": "Big Ant  빅앤트",
+					"tier": "중간",
+					"pricePct": 53
+				}
+			]
+		},
+		{
+			"slug": "쿠션-파운데이션-가격",
+			"leaf": "쿠션 파운데이션",
+			"category": "화장품/미용>베이스메이크업>쿠션",
+			"top": "화장품/미용",
+			"checkedFrom": "2026-09-22",
+			"checkedTo": "2026-11-10",
+			"price": {
+				"n": 66,
+				"min": 10400,
+				"p25": 23800,
+				"median": 29550,
+				"p75": 42600,
+				"max": 135000,
+				"mean": 37003
+			},
+			"bins": [
+				{
+					"from": 0,
+					"to": 20000,
+					"n": 11
+				},
+				{
+					"from": 20000,
+					"to": 40000,
+					"n": 36
+				},
+				{
+					"from": 40000,
+					"to": 60000,
+					"n": 12
+				},
+				{
+					"from": 60000,
+					"to": 80000,
+					"n": 3
+				},
+				{
+					"from": 80000,
+					"to": 100000,
+					"n": 3
+				},
+				{
+					"from": 100000,
+					"to": null,
+					"n": 1
+				}
+			],
+			"binStep": 20000,
+			"discount": {
+				"share": 90.9,
+				"median": 28,
+				"over30": 43.9
+			},
+			"rating": {
+				"n": 64,
+				"median": 4.8,
+				"share48": 64.1
+			},
+			"review": {
+				"total": 121942,
+				"median": 274,
+				"top10Share": 64.1,
+				"top10N": 7,
+				"under10": 0
+			},
+			"tiers": [
+				{
+					"label": "저가",
+					"n": 22,
+					"from": 10400,
+					"to": 24500,
+					"medianReviews": 532,
+					"reviewShare": 30.4,
+					"medianRating": 4.8,
+					"sold": 0
+				},
+				{
+					"label": "중간",
+					"n": 22,
+					"from": 24900,
+					"to": 38000,
+					"medianReviews": 298,
+					"reviewShare": 39.3,
+					"medianRating": 4.8,
+					"sold": 0
+				},
+				{
+					"label": "고가",
+					"n": 22,
+					"from": 39000,
+					"to": 135000,
+					"medianReviews": 253,
+					"reviewShare": 30.3,
+					"medianRating": 4.8,
+					"sold": 0
+				}
+			],
+			"corr": -0.23,
+			"stores": [
+				{
+					"store": "뷰디아니",
+					"n": 6,
+					"reviews": 22644,
+					"reviewShare": 18.6
+				},
+				{
+					"store": "설화수",
+					"n": 2,
+					"reviews": 20374,
+					"reviewShare": 16.7
+				},
+				{
+					"store": "벨르랑코",
+					"n": 1,
+					"reviews": 15979,
+					"reviewShare": 13.1
+				},
+				{
+					"store": "투쿨포스쿨 본사직영샵",
+					"n": 2,
+					"reviews": 9969,
+					"reviewShare": 8.2
+				},
+				{
+					"store": "아이오페",
+					"n": 4,
+					"reviews": 9948,
+					"reviewShare": 8.2
+				}
+			],
+			"storeCount": 35,
+			"specs": [],
+			"sold": null,
+			"products": [
+				{
+					"id": "812905322897920",
+					"name": "뷰디아니 커버력좋은 파운데이션 승무원 쿠션팩트 +퍼프2매",
+					"price": 23000,
+					"orig": 48000,
+					"rating": 4.7,
+					"reviews": 16586,
+					"store": "뷰디아니",
+					"tier": "저가",
+					"pricePct": 23
+				},
+				{
+					"id": "867513063386752",
+					"name": "벨르랑코 하이커버퓨어 쿠션팩트 커버력좋은 승무원 쿠션 에스테틱전용 1.",
+					"price": 38000,
+					"orig": 40000,
+					"rating": 4.6,
+					"reviews": 15979,
+					"store": "벨르랑코",
+					"tier": "중간",
+					"pricePct": 62
+				},
+				{
+					"id": "1001965706822368",
+					"name": "설화수 퍼펙팅 쿠션 15g SPF50+/PA+++ x 2개 (본품+리필)",
+					"price": 89000,
+					"orig": null,
+					"rating": 4.8,
+					"reviews": 13307,
+					"store": "설화수",
+					"tier": "고가",
+					"pricePct": 94
+				},
+				{
+					"id": "995713371762976",
+					"name": "투쿨포스쿨 아트클래스 픽싱 커버 쿠션 기획세트 (본품12g",
+					"price": 26900,
+					"orig": 46000,
+					"rating": 4.8,
+					"reviews": 9406,
+					"store": "투쿨포스쿨 본사직영샵",
+					"tier": "중간",
+					"pricePct": 39
+				},
+				{
+					"id": "810099218893229",
+					"name": "어뮤즈 듀 젤리 마스터 쿠션 본품+리필x2개, 0.5 페어, 15g",
+					"price": 39900,
+					"orig": 78000,
+					"rating": 4.8,
+					"reviews": 8865,
+					"store": "어뮤즈 공식몰",
+					"tier": "고가",
+					"pricePct": 70
+				},
+				{
+					"id": "1001965706842848",
+					"name": "설화수 퍼펙팅 쿠션 에어리 15g SPF50+/PA+++ x 2개",
+					"price": 89000,
+					"orig": null,
+					"rating": 4.8,
+					"reviews": 7067,
+					"store": "설화수",
+					"tier": "고가",
+					"pricePct": 94
+				},
+				{
+					"id": "817519782654624",
+					"name": "이자녹스 비타웨어 커버쿠션 13g (SPF 50+/PA+++) 단품",
+					"price": 26600,
+					"orig": 28000,
+					"rating": 4.6,
+					"reviews": 6971,
+					"store": "이자녹스",
+					"tier": "중간",
+					"pricePct": 38
+				},
+				{
+					"id": "957281763572544",
+					"name": "에어쿠션 5.5세대 커버 본품 15g (SPF50/PA+++)",
+					"price": 23800,
+					"orig": 28000,
+					"rating": 4.6,
+					"reviews": 5658,
+					"store": "아이오페",
+					"tier": "저가",
+					"pricePct": 24
+				},
+				{
+					"id": "812907262227105",
+					"name": "뷰디아니 커버력좋은 파운데이션 쿠션팩트 리필세트 + 퍼프2매 추가",
+					"price": 38000,
+					"orig": 84000,
+					"rating": 4.8,
+					"reviews": 4172,
+					"store": "뷰디아니",
+					"tier": "중간",
+					"pricePct": 62
+				},
+				{
+					"id": "857839607836960",
+					"name": "에어리 커버 쿠션 가벼운 밀착력 균일한 커버력 매트피니쉬",
+					"price": 12340,
+					"orig": 19600,
+					"rating": 4.8,
+					"reviews": 3075,
+					"store": "바이옴 액티베이트",
+					"tier": "저가",
+					"pricePct": 3
+				}
+			]
+		},
+		{
+			"slug": "루테인-가격",
+			"leaf": "루테인",
+			"category": "식품>건강식품>영양제>루테인",
+			"top": "식품",
+			"checkedFrom": "2026-09-21",
+			"checkedTo": "2026-11-10",
+			"price": {
+				"n": 63,
+				"min": 11900,
+				"p25": 25500,
+				"median": 40900,
+				"p75": 73250,
+				"max": 162000,
+				"mean": 52433
+			},
+			"bins": [
+				{
+					"from": 0,
+					"to": 20000,
+					"n": 12
+				},
+				{
+					"from": 20000,
+					"to": 40000,
+					"n": 19
+				},
+				{
+					"from": 40000,
+					"to": 60000,
+					"n": 10
+				},
+				{
+					"from": 60000,
+					"to": 80000,
+					"n": 8
+				},
+				{
+					"from": 80000,
+					"to": 100000,
+					"n": 10
+				},
+				{
+					"from": 100000,
+					"to": 120000,
+					"n": 0
+				},
+				{
+					"from": 120000,
+					"to": 140000,
+					"n": 2
+				},
+				{
+					"from": 140000,
+					"to": null,
+					"n": 2
+				}
+			],
+			"binStep": 20000,
+			"discount": {
+				"share": 95.2,
+				"median": 35,
+				"over30": 61.9
+			},
+			"rating": {
+				"n": 56,
+				"median": 4.8,
+				"share48": 94.6
+			},
+			"review": {
+				"total": 335446,
+				"median": 1537,
+				"top10Share": 70.8,
+				"top10N": 6,
+				"under10": 0
+			},
+			"tiers": [
+				{
+					"label": "저가",
+					"n": 21,
+					"from": 11900,
+					"to": 32980,
+					"medianReviews": 1537,
+					"reviewShare": 28.8,
+					"medianRating": 4.8,
+					"sold": 0
+				},
+				{
+					"label": "중간",
+					"n": 21,
+					"from": 33800,
+					"to": 63100,
+					"medianReviews": 1867,
+					"reviewShare": 37,
+					"medianRating": 4.8,
+					"sold": 0
+				},
+				{
+					"label": "고가",
+					"n": 21,
+					"from": 64000,
+					"to": 162000,
+					"medianReviews": 777,
+					"reviewShare": 34.2,
+					"medianRating": 4.8,
+					"sold": 0
+				}
+			],
+			"corr": -0.04,
+			"stores": [
+				{
+					"store": "유한양행 본사직영몰",
+					"n": 3,
+					"reviews": 132633,
+					"reviewShare": 39.5
+				},
+				{
+					"store": "뉴트리코어",
+					"n": 1,
+					"reviews": 52763,
+					"reviewShare": 15.7
+				},
+				{
+					"store": "닥터파이토",
+					"n": 1,
+					"reviews": 43457,
+					"reviewShare": 13
+				},
+				{
+					"store": "퓨어랑",
+					"n": 3,
+					"reviews": 16145,
+					"reviewShare": 4.8
+				},
+				{
+					"store": "키즈텐",
+					"n": 3,
+					"reviews": 13447,
+					"reviewShare": 4
+				}
+			],
+			"storeCount": 38,
+			"specs": [],
+			"sold": null,
+			"products": [
+				{
+					"id": "944665180665536",
+					"name": "뉴트리코어 NCS 초임계 루테인 아스타잔틴 헤마토쿠스 30캡슐",
+					"price": 29000,
+					"orig": 42500,
+					"rating": 4.8,
+					"reviews": 52763,
+					"store": "뉴트리코어",
+					"tier": "저가",
+					"pricePct": 29
+				},
+				{
+					"id": "1001903154599264",
+					"name": "유한양행 눈건강 케어 루테인 지아잔틴 60캡슐",
+					"price": 50000,
+					"orig": 90000,
+					"rating": 4.8,
+					"reviews": 44264,
+					"store": "유한양행 본사직영몰",
+					"tier": "중간",
+					"pricePct": 62
+				},
+				{
+					"id": "1003640686908512",
+					"name": "유한양행 눈건강 케어 루테인 지아잔틴 60캡슐",
+					"price": 41000,
+					"orig": 60000,
+					"rating": 4.8,
+					"reviews": 44203,
+					"store": "유한양행 본사직영몰",
+					"tier": "중간",
+					"pricePct": 51
+				},
+				{
+					"id": "1000864941535040",
+					"name": "유한양행 눈건강 케어 루테인 지아잔틴 60캡슐",
+					"price": 66000,
+					"orig": 120000,
+					"rating": 4.8,
+					"reviews": 44166,
+					"store": "유한양행 본사직영몰",
+					"tier": "고가",
+					"pricePct": 68
+				},
+				{
+					"id": "865034783770272",
+					"name": "루테인 지아잔틴 아스타잔틴 서목태 추출물 식물성캡슐 8중 복합기능성",
+					"price": 124000,
+					"orig": 300000,
+					"rating": 4.8,
+					"reviews": 43457,
+					"store": "닥터파이토",
+					"tier": "고가",
+					"pricePct": 94
+				},
+				{
+					"id": "911385199807713",
+					"name": "안국약품 토비콤 루테인 지아잔틴 아스타잔틴 루지아 30캡슐",
+					"price": 15000,
+					"orig": 20000,
+					"rating": null,
+					"reviews": 8745,
+					"store": "안국약품",
+					"tier": "저가",
+					"pricePct": 3
+				},
+				{
+					"id": "811165908128207",
+					"name": "연세 루테인 플러스 4개월분 연세대 연세생활건강 인포벨 홈쇼핑",
+					"price": 49900,
+					"orig": 69900,
+					"rating": null,
+					"reviews": 7132,
+					"store": "인포벨홈쇼핑",
+					"tier": "중간",
+					"pricePct": 57
+				},
+				{
+					"id": "805912171427559",
+					"name": "대웅생명과학 루테인 지아잔틴 아스타잔틴 알티지 오메가3 60캡슐",
+					"price": 83900,
+					"orig": 200000,
+					"rating": 4.8,
+					"reviews": 5872,
+					"store": "퓨어랑",
+					"tier": "고가",
+					"pricePct": 79
+				},
+				{
+					"id": "805912171427556",
+					"name": "대웅생명과학 루테인 지아잔틴 아스타잔틴 알티지 오메가3 60캡슐",
+					"price": 18700,
+					"orig": 40000,
+					"rating": null,
+					"reviews": 5794,
+					"store": "퓨어랑",
+					"tier": "저가",
+					"pricePct": 11
+				},
+				{
+					"id": "808685763679680",
+					"name": "인테로 눈건강 루테인 지아잔틴 30캡슐",
+					"price": 15800,
+					"orig": 37600,
+					"rating": 4.9,
+					"reviews": 5361,
+					"store": "인테로",
+					"tier": "저가",
+					"pricePct": 5
+				}
+			]
+		},
+		{
+			"slug": "젖병-가격",
+			"leaf": "젖병",
+			"category": "출산/육아>수유용품>젖병",
+			"top": "출산/육아",
+			"checkedFrom": "2026-09-26",
+			"checkedTo": "2026-11-10",
+			"price": {
+				"n": 60,
+				"min": 11500,
+				"p25": 24650,
+				"median": 33200,
+				"p75": 44625,
+				"max": 102800,
+				"mean": 39802
+			},
+			"bins": [
+				{
+					"from": 0,
+					"to": 20000,
+					"n": 7
+				},
+				{
+					"from": 20000,
+					"to": 40000,
+					"n": 28
+				},
+				{
+					"from": 40000,
+					"to": 60000,
+					"n": 17
+				},
+				{
+					"from": 60000,
+					"to": 80000,
+					"n": 2
+				},
+				{
+					"from": 80000,
+					"to": 100000,
+					"n": 5
+				},
+				{
+					"from": 100000,
+					"to": null,
+					"n": 1
+				}
+			],
+			"binStep": 20000,
+			"discount": {
+				"share": 98.3,
+				"median": 22,
+				"over30": 26.7
+			},
+			"rating": {
+				"n": 55,
+				"median": 4.9,
+				"share48": 96.4
+			},
+			"review": {
+				"total": 55992,
+				"median": 281,
+				"top10Share": 57.8,
+				"top10N": 6,
+				"under10": 0
+			},
+			"tiers": [
+				{
+					"label": "저가",
+					"n": 20,
+					"from": 11500,
+					"to": 27600,
+					"medianReviews": 202,
+					"reviewShare": 47.9,
+					"medianRating": 4.9,
+					"sold": 0
+				},
+				{
+					"label": "중간",
+					"n": 20,
+					"from": 27900,
+					"to": 44500,
+					"medianReviews": 214,
+					"reviewShare": 20.8,
+					"medianRating": 4.8,
+					"sold": 0
+				},
+				{
+					"label": "고가",
+					"n": 20,
+					"from": 44500,
+					"to": 102800,
+					"medianReviews": 418,
+					"reviewShare": 31.3,
+					"medianRating": 4.9,
+					"sold": 0
+				}
+			],
+			"corr": 0.15,
+			"stores": [
+				{
+					"store": "맘스마트",
+					"n": 1,
+					"reviews": 18120,
+					"reviewShare": 32.4
+				},
+				{
+					"store": "Dr Browns",
+					"n": 23,
+					"reviews": 15023,
+					"reviewShare": 26.8
+				},
+				{
+					"store": "그린맘샵",
+					"n": 17,
+					"reviews": 9475,
+					"reviewShare": 16.9
+				},
+				{
+					"store": "forBaby",
+					"n": 1,
+					"reviews": 4607,
+					"reviewShare": 8.2
+				},
+				{
+					"store": "그로미미",
+					"n": 4,
+					"reviews": 4348,
+					"reviewShare": 7.8
+				}
+			],
+			"storeCount": 9,
+			"specs": [
+				{
+					"key": "종류",
+					"have": 54,
+					"values": [
+						{
+							"value": "일반젖병",
+							"n": 23,
+							"share": 42.6,
+							"median": 44500
+						},
+						{
+							"value": "젖병세트",
+							"n": 16,
+							"share": 29.6,
+							"median": 44000
+						},
+						{
+							"value": "노꼭지젖병",
+							"n": 14,
+							"share": 25.9,
+							"median": 27750
+						}
+					]
+				},
+				{
+					"key": "용량",
+					"have": 45,
+					"values": [
+						{
+							"value": "150ml",
+							"n": 11,
+							"share": 24.4,
+							"median": 44500
+						},
+						{
+							"value": "250ml",
+							"n": 9,
+							"share": 20,
+							"median": 35600
+						},
+						{
+							"value": "270ml",
+							"n": 6,
+							"share": 13.3,
+							"median": 66500
+						},
+						{
+							"value": "120ml",
+							"n": 4,
+							"share": 8.9,
+							"median": 43950
+						}
+					]
+				}
+			],
+			"sold": null,
+			"products": [
+				{
+					"id": "897549108137248",
+					"name": "마더케이 일회용 젖병 휴대용 외출 수유 젖병",
+					"price": 16500,
+					"orig": 18400,
+					"rating": 4.7,
+					"reviews": 18120,
+					"store": "맘스마트",
+					"tier": "저가",
+					"pricePct": 10
+				},
+				{
+					"id": "850132347083009",
+					"name": "닥터브라운 / PPSU 젖병 와이드넥 150ml 트윈팩, 1,2단계",
+					"price": 51800,
+					"orig": 67300,
+					"rating": 4.8,
+					"reviews": 4607,
+					"store": "forBaby",
+					"tier": "고가",
+					"pricePct": 80
+				},
+				{
+					"id": "832387719644068",
+					"name": "PPSU 베이직 젖병150ml2개 아이쏙3개",
+					"price": 33200,
+					"orig": 38200,
+					"rating": 4.8,
+					"reviews": 2703,
+					"store": "그린맘샵",
+					"tier": "중간",
+					"pricePct": 43
+				},
+				{
+					"id": "808643738584611",
+					"name": "닥터브라운 오피셜 / PPSU 젖병 와이드넥 270ml 2개,",
+					"price": 53800,
+					"orig": 65000,
+					"rating": 4.9,
+					"reviews": 2389,
+					"store": "Dr Browns",
+					"tier": "고가",
+					"pricePct": 85
+				},
+				{
+					"id": "867469787653984",
+					"name": "그린맘 베이직 PPSU 슬림형 150ml 노꼭지 젖병",
+					"price": 24900,
+					"orig": 28700,
+					"rating": 4.8,
+					"reviews": 2301,
+					"store": "그린맘샵",
+					"tier": "저가",
+					"pricePct": 25
+				},
+				{
+					"id": "808643738584608",
+					"name": "닥터브라운 오피셜 / 유리 베이직 젖병 와이드넥 150ml 2개,",
+					"price": 44500,
+					"orig": 52000,
+					"rating": 4.8,
+					"reviews": 2252,
+					"store": "Dr Browns",
+					"tier": "중간",
+					"pricePct": 65
+				},
+				{
+					"id": "906400747190816",
+					"name": "닥터브라운 오피셜 / PPSU 젖병 와이드넥 150ml 2개,꼭지 선택",
+					"price": 51800,
+					"orig": 62000,
+					"rating": 4.9,
+					"reviews": 2229,
+					"store": "Dr Browns",
+					"tier": "고가",
+					"pricePct": 80
+				},
+				{
+					"id": "843435305193992",
+					"name": "필립스아벤트 배앓이방지 아기편한 PPSU 젖병 260ml 4P (1m+",
+					"price": 88900,
+					"orig": 133800,
+					"rating": 4.8,
+					"reviews": 1785,
+					"store": "필립스 아벤트",
+					"tier": "고가",
+					"pricePct": 95
+				},
+				{
+					"id": "823602514667459",
+					"name": "그로미미 PPSU 아기젖병 빨대컵호환 대용량 트윈팩 돗꼼 300ml",
+					"price": 27900,
+					"orig": 46000,
+					"rating": 4.9,
+					"reviews": 1565,
+					"store": "그로미미",
+					"tier": "중간",
+					"pricePct": 33
+				},
+				{
+					"id": "823602514667458",
+					"name": "그로미미 PPSU 아기젖병 신생아젖병 배앓이젖병 트윈팩 돗꼼 200ml",
+					"price": 23900,
+					"orig": 39000,
+					"rating": 4.9,
+					"reviews": 1381,
+					"store": "그로미미",
+					"tier": "저가",
+					"pricePct": 22
+				}
+			]
+		},
+		{
+			"slug": "무선-스틱청소기-가격",
+			"leaf": "무선 스틱청소기",
+			"category": "디지털/가전>청소기>무선청소기>핸디스틱청소기",
+			"top": "디지털/가전",
+			"checkedFrom": "2026-09-27",
+			"checkedTo": "2026-11-10",
+			"price": {
+				"n": 60,
+				"min": 34900,
+				"p25": 88750,
+				"median": 164450,
+				"p75": 314250,
+				"max": 1709000,
+				"mean": 308683
+			},
+			"bins": [
+				{
+					"from": 0,
+					"to": 200000,
+					"n": 39
+				},
+				{
+					"from": 200000,
+					"to": 400000,
+					"n": 10
+				},
+				{
+					"from": 400000,
+					"to": 600000,
+					"n": 0
+				},
+				{
+					"from": 600000,
+					"to": 800000,
+					"n": 7
+				},
+				{
+					"from": 800000,
+					"to": 1000000,
+					"n": 1
+				},
+				{
+					"from": 1000000,
+					"to": 1200000,
+					"n": 0
+				},
+				{
+					"from": 1200000,
+					"to": null,
+					"n": 3
+				}
+			],
+			"binStep": 200000,
+			"discount": {
+				"share": 96.7,
+				"median": 39,
+				"over30": 63.3
+			},
+			"rating": {
+				"n": 56,
+				"median": 4.8,
+				"share48": 82.1
+			},
+			"review": {
+				"total": 139726,
+				"median": 579,
+				"top10Share": 59.7,
+				"top10N": 6,
+				"under10": 0
+			},
+			"tiers": [
+				{
+					"label": "저가",
+					"n": 20,
+					"from": 34900,
+					"to": 104900,
+					"medianReviews": 607,
+					"reviewShare": 37.8,
+					"medianRating": 4.8,
+					"sold": 0
+				},
+				{
+					"label": "중간",
+					"n": 20,
+					"from": 109000,
+					"to": 248000,
+					"medianReviews": 1299,
+					"reviewShare": 42.5,
+					"medianRating": 4.8,
+					"sold": 0
+				},
+				{
+					"label": "고가",
+					"n": 20,
+					"from": 249000,
+					"to": 1709000,
+					"medianReviews": 413,
+					"reviewShare": 19.7,
+					"medianRating": 4.8,
+					"sold": 0
+				}
+			],
+			"corr": -0.07,
+			"stores": [
+				{
+					"store": "홈리아",
+					"n": 9,
+					"reviews": 44621,
+					"reviewShare": 31.9
+				},
+				{
+					"store": "Dibea",
+					"n": 2,
+					"reviews": 22514,
+					"reviewShare": 16.1
+				},
+				{
+					"store": "홈마블",
+					"n": 2,
+					"reviews": 13814,
+					"reviewShare": 9.9
+				},
+				{
+					"store": "샤크닌자 코리아",
+					"n": 3,
+					"reviews": 12470,
+					"reviewShare": 8.9
+				},
+				{
+					"store": "아이룸 공식스토어",
+					"n": 4,
+					"reviews": 9494,
+					"reviewShare": 6.8
+				}
+			],
+			"storeCount": 32,
+			"specs": [],
+			"sold": null,
+			"products": [
+				{
+					"id": "813024503748339",
+					"name": "홈리아 무선청소기 BLDC 차이슨 원룸 진공 가벼운 핸디 청소기 단품",
+					"price": 104900,
+					"orig": 208400,
+					"rating": 4.8,
+					"reviews": 20888,
+					"store": "홈리아",
+					"tier": "저가",
+					"pricePct": 32
+				},
+				{
+					"id": "809720446830336",
+					"name": "디베아 차이슨 무선청소기 ALLNEW22000",
+					"price": 199000,
+					"orig": 279000,
+					"rating": 4.8,
+					"reviews": 20546,
+					"store": "Dibea",
+					"tier": "중간",
+					"pricePct": 57
+				},
+				{
+					"id": "915299471099488",
+					"name": "홈마블 무선청소기 원룸 머리카락 먼지청소 가벼운 핸디형 미니청소기",
+					"price": 54500,
+					"orig": 75700,
+					"rating": 4.8,
+					"reviews": 13616,
+					"store": "홈마블",
+					"tier": "저가",
+					"pricePct": 13
+				},
+				{
+					"id": "863243342978468",
+					"name": "홈리아 무선 청소기 차이슨 원룸 핸디 가벼운 진공 BLDC 자동먼지비움",
+					"price": 159900,
+					"orig": 299000,
+					"rating": 4.8,
+					"reviews": 11160,
+					"store": "홈리아",
+					"tier": "중간",
+					"pricePct": 48
+				},
+				{
+					"id": "827867610081314",
+					"name": "샤크 무선청소기 에보파워시스템 NEO+ 초경량 자동먼지비움 화이트",
+					"price": 699000,
+					"orig": 849000,
+					"rating": 4.9,
+					"reviews": 9575,
+					"store": "샤크닌자 코리아",
+					"tier": "고가",
+					"pricePct": 87
+				},
+				{
+					"id": "887266519062944",
+					"name": "아이룸 차이슨 무선청소기 터보소닉 F9 PLUS 핸디 스틱 진공 청소기",
+					"price": 139000,
+					"orig": 279000,
+					"rating": 4.8,
+					"reviews": 7595,
+					"store": "아이룸 공식스토어",
+					"tier": "중간",
+					"pricePct": 42
+				},
+				{
+					"id": "813024503752430",
+					"name": "무선 청소기 차이슨 원룸 진공 자취방 가벼운 저렴한 핸디 더스트제로 에어",
+					"price": 84900,
+					"orig": 179800,
+					"rating": 4.8,
+					"reviews": 7286,
+					"store": "홈리아",
+					"tier": "저가",
+					"pricePct": 22
+				},
+				{
+					"id": "850761727653568",
+					"name": "에어메이드 자동 먼지비움 무선 청소기 570W AI모드 스마트타워X",
+					"price": 299000,
+					"orig": 449000,
+					"rating": 4.8,
+					"reviews": 7020,
+					"store": "에어메이드",
+					"tier": "고가",
+					"pricePct": 72
+				},
+				{
+					"id": "809785700317315",
+					"name": "비브르 무선청소기 원룸 진공 흡입력 좋은 차이슨 청소기 BLDC",
+					"price": 139000,
+					"orig": 198000,
+					"rating": 4.8,
+					"reviews": 5203,
+					"store": "VIVRE KOREA",
+					"tier": "중간",
+					"pricePct": 42
+				},
+				{
+					"id": "805479909269953",
+					"name": "다룸 무선청소기 무선 진공 청소기 물걸레 제로컬렉션",
+					"price": 169000,
+					"orig": 299000,
+					"rating": 4.8,
+					"reviews": 2665,
+					"store": "다룸 스토어",
+					"tier": "중간",
+					"pricePct": 50
+				}
+			]
+		},
+		{
+			"slug": "무릎보호대-가격",
+			"leaf": "무릎보호대",
+			"category": "스포츠/레저>보호용품>무릎보호대",
+			"top": "스포츠/레저",
+			"checkedFrom": "2026-09-17",
+			"checkedTo": "2026-11-10",
+			"price": {
+				"n": 57,
+				"min": 10900,
+				"p25": 14800,
+				"median": 19900,
+				"p75": 29900,
+				"max": 99000,
+				"mean": 25717
+			},
+			"bins": [
+				{
+					"from": 10000,
+					"to": 20000,
+					"n": 29
+				},
+				{
+					"from": 20000,
+					"to": 30000,
+					"n": 14
+				},
+				{
+					"from": 30000,
+					"to": 40000,
+					"n": 8
+				},
+				{
+					"from": 40000,
+					"to": 50000,
+					"n": 2
+				},
+				{
+					"from": 50000,
+					"to": 60000,
+					"n": 2
+				},
+				{
+					"from": 60000,
+					"to": null,
+					"n": 2
+				}
+			],
+			"binStep": 10000,
+			"discount": {
+				"share": 98.2,
+				"median": 35,
+				"over30": 68.4
+			},
+			"rating": {
+				"n": 53,
+				"median": 4.7,
+				"share48": 43.4
+			},
+			"review": {
+				"total": 70002,
+				"median": 677,
+				"top10Share": 46.5,
+				"top10N": 6,
+				"under10": 3.5
+			},
+			"tiers": [
+				{
+					"label": "저가",
+					"n": 19,
+					"from": 10900,
+					"to": 16900,
+					"medianReviews": 601,
+					"reviewShare": 22.3,
+					"medianRating": 4.7,
+					"sold": 0
+				},
+				{
+					"label": "중간",
+					"n": 19,
+					"from": 17400,
+					"to": 25400,
+					"medianReviews": 568,
+					"reviewShare": 46,
+					"medianRating": 4.8,
+					"sold": 0
+				},
+				{
+					"label": "고가",
+					"n": 19,
+					"from": 29800,
+					"to": 99000,
+					"medianReviews": 1027,
+					"reviewShare": 31.7,
+					"medianRating": 4.8,
+					"sold": 0
+				}
+			],
+			"corr": 0.09,
+			"stores": [
+				{
+					"store": "런워크",
+					"n": 1,
+					"reviews": 14818,
+					"reviewShare": 21.2
+				},
+				{
+					"store": "GRIPIT",
+					"n": 2,
+					"reviews": 8158,
+					"reviewShare": 11.7
+				},
+				{
+					"store": "테이핑테크 공식스토어",
+					"n": 3,
+					"reviews": 5011,
+					"reviewShare": 7.2
+				},
+				{
+					"store": "혁선생",
+					"n": 3,
+					"reviews": 4564,
+					"reviewShare": 6.5
+				},
+				{
+					"store": "바록스 공식몰",
+					"n": 4,
+					"reviews": 4458,
+					"reviewShare": 6.4
+				}
+			],
+			"storeCount": 35,
+			"specs": [],
+			"sold": null,
+			"products": [
+				{
+					"id": "982190767693568",
+					"name": "런워크 러닝 무릎보호대 슬개골 슬개건 마라톤 등산 테이핑 단품",
+					"price": 17900,
+					"orig": 32000,
+					"rating": 4.7,
+					"reviews": 14818,
+					"store": "런워크",
+					"tier": "중간",
+					"pricePct": 37
+				},
+				{
+					"id": "906373123795296",
+					"name": "슬개건 슬개골 보호대 러닝 무릎 보호대 관절 연골 인대 아대 밴드 등산",
+					"price": 18000,
+					"orig": 44160,
+					"rating": 4.8,
+					"reviews": 7590,
+					"store": "GRIPIT",
+					"tier": "중간",
+					"pricePct": 39
+				},
+				{
+					"id": "948543970658848",
+					"name": "잠스트 무릎보호대 JK-Band 2개입 +보호대 파우치 김연경 착용",
+					"price": 39600,
+					"orig": 46000,
+					"rating": 4.8,
+					"reviews": 3347,
+					"store": "트라택 공식스토어",
+					"tier": "고가",
+					"pricePct": 82
+				},
+				{
+					"id": "815048439873356",
+					"name": "미국 얇은 무릎보호대 등산 헬스 러닝 배구 축구 스쿼트 농구",
+					"price": 55000,
+					"orig": 90000,
+					"rating": 4.8,
+					"reviews": 2517,
+					"store": "바록스 공식몰",
+					"tier": "고가",
+					"pricePct": 95
+				},
+				{
+					"id": "811548389089952",
+					"name": "무브탑 군대 무릎보호대 노인 군인 작업용 훈련소 팔꿈치",
+					"price": 11700,
+					"orig": 20400,
+					"rating": 4.7,
+					"reviews": 2189,
+					"store": "가든아미",
+					"tier": "저가",
+					"pricePct": 7
+				},
+				{
+					"id": "843379891069006",
+					"name": "아디다스 무릎보호대 퍼포먼스 니슬리브 러닝 축구 등산 농구 헬스 테니스",
+					"price": 12800,
+					"orig": 15000,
+					"rating": 4.8,
+					"reviews": 2106,
+					"store": "아디다스피트니스",
+					"tier": "저가",
+					"pricePct": 14
+				},
+				{
+					"id": "966579514840865",
+					"name": "테이핑테크 슬개건 무릎보호대 2개입 좌우세트 러닝 등산 헬스 한줄 밴드",
+					"price": 29800,
+					"orig": 39800,
+					"rating": 4.6,
+					"reviews": 2058,
+					"store": "테이핑테크 공식스토어",
+					"tier": "고가",
+					"pricePct": 67
+				},
+				{
+					"id": "966579514812193",
+					"name": "테이핑테크 집중형 무릎보호대 좌우세트 슬개골 압박 헬스 등산 러닝",
+					"price": 29800,
+					"orig": 69800,
+					"rating": 4.6,
+					"reviews": 2018,
+					"store": "테이핑테크 공식스토어",
+					"tier": "고가",
+					"pricePct": 67
+				},
+				{
+					"id": "843379891064925",
+					"name": "아디다스 에센셜 무릎보호대 니슬리브 배구 등산용 댄스 축구 헬스 농구",
+					"price": 12800,
+					"orig": 17000,
+					"rating": 4.7,
+					"reviews": 1909,
+					"store": "아디다스피트니스",
+					"tier": "저가",
+					"pricePct": 14
+				},
+				{
+					"id": "807319319980800",
+					"name": "혁선생 의료용 무릎보호대 관절 지지대 Knee H-03",
+					"price": 33900,
+					"orig": 48900,
+					"rating": 4.7,
+					"reviews": 1833,
+					"store": "혁선생",
+					"tier": "고가",
+					"pricePct": 77
+				}
+			]
+		},
+		{
+			"slug": "보조배터리-가격",
+			"leaf": "보조배터리",
+			"category": "디지털/가전>휴대폰액세서리>휴대폰배터리>보조배터리",
+			"top": "디지털/가전",
+			"checkedFrom": "2026-09-22",
+			"checkedTo": "2026-11-10",
+			"price": {
+				"n": 52,
+				"min": 13900,
+				"p25": 20900,
+				"median": 29900,
+				"p75": 37825,
+				"max": 205900,
+				"mean": 34469
+			},
+			"bins": [
+				{
+					"from": 10000,
+					"to": 20000,
+					"n": 11
+				},
+				{
+					"from": 20000,
+					"to": 30000,
+					"n": 20
+				},
+				{
+					"from": 30000,
+					"to": 40000,
+					"n": 11
+				},
+				{
+					"from": 40000,
+					"to": 50000,
+					"n": 7
+				},
+				{
+					"from": 50000,
+					"to": 60000,
+					"n": 1
+				},
+				{
+					"from": 60000,
+					"to": null,
+					"n": 2
+				}
+			],
+			"binStep": 10000,
+			"discount": {
+				"share": 94.2,
+				"median": 30,
+				"over30": 48.1
+			},
+			"rating": {
+				"n": 48,
+				"median": 4.9,
+				"share48": 95.8
+			},
+			"review": {
+				"total": 201668,
+				"median": 2192,
+				"top10Share": 34.4,
+				"top10N": 5,
+				"under10": 0
+			},
+			"tiers": [
+				{
+					"label": "저가",
+					"n": 17,
+					"from": 13900,
+					"to": 22900,
+					"medianReviews": 2184,
+					"reviewShare": 26.3,
+					"medianRating": 4.8,
+					"sold": 0
+				},
+				{
+					"label": "중간",
+					"n": 18,
+					"from": 24900,
+					"to": 34000,
+					"medianReviews": 2326,
+					"reviewShare": 40.9,
+					"medianRating": 4.9,
+					"sold": 0
+				},
+				{
+					"label": "고가",
+					"n": 17,
+					"from": 34800,
+					"to": 205900,
+					"medianReviews": 1202,
+					"reviewShare": 32.8,
+					"medianRating": 4.9,
+					"sold": 0
+				}
+			],
+			"corr": 0.07,
+			"stores": [
+				{
+					"store": "디엘티테크코리아",
+					"n": 18,
+					"reviews": 104803,
+					"reviewShare": 52
+				},
+				{
+					"store": "삼성공식파트너 엠디텍",
+					"n": 4,
+					"reviews": 19968,
+					"reviewShare": 9.9
+				},
+				{
+					"store": "로모스코리아",
+					"n": 1,
+					"reviews": 18022,
+					"reviewShare": 8.9
+				},
+				{
+					"store": "바우아토",
+					"n": 3,
+					"reviews": 16667,
+					"reviewShare": 8.3
+				},
+				{
+					"store": "알로코리아",
+					"n": 7,
+					"reviews": 12856,
+					"reviewShare": 6.4
+				}
+			],
+			"storeCount": 19,
+			"specs": [
+				{
+					"key": "용도",
+					"have": 38,
+					"values": [
+						{
+							"value": "스마트폰,태블릿PC겸용",
+							"n": 21,
+							"share": 55.3,
+							"median": 27900
+						},
+						{
+							"value": "스마트폰용",
+							"n": 17,
+							"share": 44.7,
+							"median": 29900
+						}
+					]
+				}
+			],
+			"sold": null,
+			"products": [
+				{
+					"id": "823279434028739",
+					"name": "로모스 PEA60 고속충전 대용량 차박 캠핑용 보조배터리 60000mAh",
+					"price": 55900,
+					"orig": 62900,
+					"rating": 4.9,
+					"reviews": 18022,
+					"store": "로모스코리아",
+					"tier": "고가",
+					"pricePct": 94
+				},
+				{
+					"id": "948456594618977",
+					"name": "이어맥 팬톤 일체형 고속 무선 충전 맥세이프 보조배터리 10000mAh",
+					"price": 27900,
+					"orig": 34900,
+					"rating": 4.9,
+					"reviews": 14180,
+					"store": "디엘티테크코리아",
+					"tier": "중간",
+					"pricePct": 40
+				},
+				{
+					"id": "937118286538720",
+					"name": "이어맥 팬톤 일체형 고속 무선 충전 맥세이프 보조배터리 10000mAh",
+					"price": 27900,
+					"orig": 34900,
+					"rating": 4.9,
+					"reviews": 14152,
+					"store": "디엘티테크코리아",
+					"tier": "중간",
+					"pricePct": 40
+				},
+				{
+					"id": "969091366952640",
+					"name": "이어맥 팬톤 일체형 고속 무선 충전 맥세이프 보조배터리 10000mAh",
+					"price": 27900,
+					"orig": 34900,
+					"rating": 4.9,
+					"reviews": 13407,
+					"store": "디엘티테크코리아",
+					"tier": "중간",
+					"pricePct": 40
+				},
+				{
+					"id": "805557007372835",
+					"name": "삼성 초고속 충전 45W 대용량 보조배터리 PD충전 C타입 20000",
+					"price": 49800,
+					"orig": 66000,
+					"rating": 4.9,
+					"reviews": 9607,
+					"store": "삼성공식파트너 제이유",
+					"tier": "고가",
+					"pricePct": 90
+				},
+				{
+					"id": "956639496329024",
+					"name": "삼성 기내반입 대용량 보조배터리 c타입 초고속 보조배터리",
+					"price": 39400,
+					"orig": 44000,
+					"rating": 4.9,
+					"reviews": 7969,
+					"store": "삼성공식파트너 엠디텍",
+					"tier": "고가",
+					"pricePct": 77
+				},
+				{
+					"id": "956640018609824",
+					"name": "삼성 기내반입 대용량 보조배터리 c타입 초고속 보조배터리",
+					"price": 49800,
+					"orig": 66000,
+					"rating": 4.9,
+					"reviews": 7947,
+					"store": "삼성공식파트너 엠디텍",
+					"tier": "고가",
+					"pricePct": 90
+				},
+				{
+					"id": "906344035365632",
+					"name": "이어맥 팬톤 빌트인 케이블 22.5W 고속 충전 보조배터리",
+					"price": 20900,
+					"orig": 31900,
+					"rating": 4.9,
+					"reviews": 7301,
+					"store": "디엘티테크코리아",
+					"tier": "저가",
+					"pricePct": 21
+				},
+				{
+					"id": "958373896853985",
+					"name": "이어맥 팬톤 빌트인 케이블 22.5W 고속 충전 보조배터리",
+					"price": 20900,
+					"orig": 31900,
+					"rating": 4.9,
+					"reviews": 7271,
+					"store": "디엘티테크코리아",
+					"tier": "저가",
+					"pricePct": 21
+				},
+				{
+					"id": "948456594623072",
+					"name": "이어맥 팬톤 빌트인 케이블 22.5W 고속 충전 보조배터리",
+					"price": 22900,
+					"orig": 31900,
+					"rating": 4.9,
+					"reviews": 7194,
+					"store": "디엘티테크코리아",
+					"tier": "저가",
+					"pricePct": 31
+				}
+			]
+		},
+		{
+			"slug": "제습기-가격",
+			"leaf": "제습기",
+			"category": "디지털/가전>계절가전>제습기>일반용제습기",
+			"top": "디지털/가전",
+			"checkedFrom": "2026-10-03",
+			"checkedTo": "2026-11-10",
+			"price": {
+				"n": 53,
+				"min": 15000,
+				"p25": 99000,
+				"median": 187000,
+				"p75": 265000,
+				"max": 633000,
+				"mean": 195551
+			},
+			"bins": [
+				{
+					"from": 0,
+					"to": 100000,
+					"n": 14
+				},
+				{
+					"from": 100000,
+					"to": 200000,
+					"n": 18
+				},
+				{
+					"from": 200000,
+					"to": 300000,
+					"n": 12
+				},
+				{
+					"from": 300000,
+					"to": 400000,
+					"n": 8
+				},
+				{
+					"from": 400000,
+					"to": null,
+					"n": 1
+				}
+			],
+			"binStep": 100000,
+			"discount": {
+				"share": 100,
+				"median": 29,
+				"over30": 49.1
+			},
+			"rating": {
+				"n": 50,
+				"median": 4.8,
+				"share48": 68
+			},
+			"review": {
+				"total": 40424,
+				"median": 221,
+				"top10Share": 57.9,
+				"top10N": 5,
+				"under10": 1.9
+			},
+			"tiers": [
+				{
+					"label": "저가",
+					"n": 17,
+					"from": 15000,
+					"to": 129000,
+					"medianReviews": 221,
+					"reviewShare": 46.2,
+					"medianRating": 4.7,
+					"sold": 0
+				},
+				{
+					"label": "중간",
+					"n": 19,
+					"from": 138000,
+					"to": 229000,
+					"medianReviews": 186,
+					"reviewShare": 24.7,
+					"medianRating": 4.8,
+					"sold": 0
+				},
+				{
+					"label": "고가",
+					"n": 17,
+					"from": 256000,
+					"to": 633000,
+					"medianReviews": 337,
+					"reviewShare": 29.1,
+					"medianRating": 4.8,
+					"sold": 0
+				}
+			],
+			"corr": -0.02,
+			"stores": [
+				{
+					"store": "보아르샵",
+					"n": 3,
+					"reviews": 13758,
+					"reviewShare": 34
+				},
+				{
+					"store": "롯데공식판매점",
+					"n": 7,
+					"reviews": 5737,
+					"reviewShare": 14.2
+				},
+				{
+					"store": "쿠쿠전자",
+					"n": 3,
+					"reviews": 4517,
+					"reviewShare": 11.2
+				},
+				{
+					"store": "에어메이드",
+					"n": 2,
+					"reviews": 4197,
+					"reviewShare": 10.4
+				},
+				{
+					"store": "홈리아",
+					"n": 2,
+					"reviews": 2303,
+					"reviewShare": 5.7
+				}
+			],
+			"storeCount": 33,
+			"specs": [],
+			"sold": null,
+			"products": [
+				{
+					"id": "805509133845026",
+					"name": "보아르 모아M1000 미니 제습기 공기청정 저소음 원룸 욕실 드레스룸",
+					"price": 94000,
+					"orig": 99000,
+					"rating": 4.6,
+					"reviews": 8548,
+					"store": "보아르샵",
+					"tier": "저가",
+					"pricePct": 23
+				},
+				{
+					"id": "805509133845027",
+					"name": "보아르 모아 파인F2000 미니 제습기 펠티어 저소음 욕실 원룸",
+					"price": 93000,
+					"orig": 97000,
+					"rating": 4.5,
+					"reviews": 5033,
+					"store": "보아르샵",
+					"tier": "저가",
+					"pricePct": 21
+				},
+				{
+					"id": "807289730640576",
+					"name": "롯데이라이프 제습기 연속배수 지원 8L-최대12리터 일일제습 화이트",
+					"price": 189000,
+					"orig": 269000,
+					"rating": null,
+					"reviews": 3786,
+					"store": "롯데공식판매점",
+					"tier": "중간",
+					"pricePct": 51
+				},
+				{
+					"id": "805533248962721",
+					"name": "에어메이드 1등급 제습기 17L 가정용 습도조절 UV 냉각 살균",
+					"price": 369000,
+					"orig": 499000,
+					"rating": 4.8,
+					"reviews": 3320,
+					"store": "에어메이드",
+					"tier": "고가",
+					"pricePct": 92
+				},
+				{
+					"id": "834874158345728",
+					"name": "쿠쿠 초슬림 인스퓨어 제습기 16L DH-YNL1652FEB 어스베이지",
+					"price": 256000,
+					"orig": 499000,
+					"rating": 4.8,
+					"reviews": 2712,
+					"store": "쿠쿠전자",
+					"tier": "고가",
+					"pricePct": 68
+				},
+				{
+					"id": "813024503752417",
+					"name": "미니 제습기 원룸 드레스룸 소형 화장실 자취방 저소음 무소음 아기방",
+					"price": 49900,
+					"orig": 98000,
+					"rating": 4.6,
+					"reviews": 1829,
+					"store": "홈리아",
+					"tier": "저가",
+					"pricePct": 6
+				},
+				{
+					"id": "964811407439968",
+					"name": "쿠쿠 인스퓨어 제습기 12L DH-T12701GW 그레이스 화이트,",
+					"price": 265000,
+					"orig": 399000,
+					"rating": 4.8,
+					"reviews": 1786,
+					"store": "쿠쿠전자",
+					"tier": "고가",
+					"pricePct": 74
+				},
+				{
+					"id": "807268384696960",
+					"name": "롯데 실속형 LDH-6700 화이트 가정용 연속배수 제습기",
+					"price": 169000,
+					"orig": 189000,
+					"rating": 4.8,
+					"reviews": 1305,
+					"store": "롯데공식판매점",
+					"tier": "중간",
+					"pricePct": 45
+				},
+				{
+					"id": "832363995927808",
+					"name": "한일전기 BLDC모터 제습기 쾌적마스터 HDH-1225N 12-20L",
+					"price": 219000,
+					"orig": 299000,
+					"rating": 4.8,
+					"reviews": 1278,
+					"store": "한일공식인증스토어",
+					"tier": "중간",
+					"pricePct": 62
+				},
+				{
+					"id": "805533248958624",
+					"name": "에어메이드 1등급 제습기 대용량 듀얼 냉각 살균 제습 2000D",
+					"price": 399000,
+					"orig": 539000,
+					"rating": 4.8,
+					"reviews": 877,
+					"store": "에어메이드",
+					"tier": "고가",
+					"pricePct": 96
+				}
+			]
+		},
+		{
+			"slug": "전기요-가격",
+			"leaf": "전기요",
+			"category": "디지털/가전>계절가전>전기요/담요/방석>전기요",
+			"top": "디지털/가전",
+			"checkedFrom": "2026-09-25",
+			"checkedTo": "2026-11-09",
+			"price": {
+				"n": 52,
+				"min": 39900,
+				"p25": 67625,
+				"median": 89000,
+				"p75": 129000,
+				"max": 288000,
+				"mean": 104103
+			},
+			"bins": [
+				{
+					"from": 0,
+					"to": 50000,
+					"n": 5
+				},
+				{
+					"from": 50000,
+					"to": 100000,
+					"n": 26
+				},
+				{
+					"from": 100000,
+					"to": 150000,
+					"n": 12
+				},
+				{
+					"from": 150000,
+					"to": 200000,
+					"n": 7
+				},
+				{
+					"from": 200000,
+					"to": null,
+					"n": 2
+				}
+			],
+			"binStep": 50000,
+			"discount": {
+				"share": 90.4,
+				"median": 35,
+				"over30": 59.6
+			},
+			"rating": {
+				"n": 45,
+				"median": 4.8,
+				"share48": 93.3
+			},
+			"review": {
+				"total": 87120,
+				"median": 386,
+				"top10Share": 67.6,
+				"top10N": 5,
+				"under10": 0
+			},
+			"tiers": [
+				{
+					"label": "저가",
+					"n": 17,
+					"from": 39900,
+					"to": 69000,
+					"medianReviews": 906,
+					"reviewShare": 75,
+					"medianRating": 4.8,
+					"sold": 0
+				},
+				{
+					"label": "중간",
+					"n": 18,
+					"from": 69900,
+					"to": 116850,
+					"medianReviews": 417,
+					"reviewShare": 12.9,
+					"medianRating": 4.8,
+					"sold": 0
+				},
+				{
+					"label": "고가",
+					"n": 17,
+					"from": 119000,
+					"to": 288000,
+					"medianReviews": 291,
+					"reviewShare": 12.2,
+					"medianRating": 4.9,
+					"sold": 0
+				}
+			],
+			"corr": -0.1,
+			"stores": [
+				{
+					"store": "이노크아든공식몰",
+					"n": 1,
+					"reviews": 44627,
+					"reviewShare": 51.2
+				},
+				{
+					"store": "친구사이",
+					"n": 1,
+					"reviews": 8133,
+					"reviewShare": 9.3
+				},
+				{
+					"store": "몽비오스",
+					"n": 4,
+					"reviews": 7588,
+					"reviewShare": 8.7
+				},
+				{
+					"store": "보국 공식 파트너",
+					"n": 2,
+					"reviews": 3533,
+					"reviewShare": 4.1
+				},
+				{
+					"store": "한일의료기 온라인 스토어",
+					"n": 4,
+					"reviews": 2464,
+					"reviewShare": 2.8
+				}
+			],
+			"storeCount": 36,
+			"specs": [],
+			"sold": null,
+			"products": [
+				{
+					"id": "807309008620256",
+					"name": "이노크 탄소매트 전자파없는 EMF 카본 전기장판 항균 캠핑 전기요",
+					"price": 69000,
+					"orig": 119000,
+					"rating": 4.7,
+					"reviews": 44627,
+					"store": "이노크아든공식몰",
+					"tier": "저가",
+					"pricePct": 31
+				},
+				{
+					"id": "807307991120385",
+					"name": "곰표한일 탄소매트 EMF 카본 전자파없는 전기요 캠핑 심플블랙그레이",
+					"price": 42900,
+					"orig": 94200,
+					"rating": 4.8,
+					"reviews": 8133,
+					"store": "친구사이",
+					"tier": "저가",
+					"pricePct": 2
+				},
+				{
+					"id": "988468697229697",
+					"name": "보국 전기요 1인용 전기장판 캠핑 전기매트 전자파없는 탄소매트",
+					"price": 68000,
+					"orig": 99000,
+					"rating": 4.9,
+					"reviews": 2082,
+					"store": "보국 공식 파트너",
+					"tier": "저가",
+					"pricePct": 25
+				},
+				{
+					"id": "806230386804367",
+					"name": "몽비오스 카본 탄소매트 전기매트 전자파없는 그래핀 온열매트 침대",
+					"price": 139000,
+					"orig": 179000,
+					"rating": null,
+					"reviews": 2056,
+					"store": "몽비오스",
+					"tier": "고가",
+					"pricePct": 79
+				},
+				{
+					"id": "879507657678528",
+					"name": "한일의료기 카본 탄소매트 전기 온열 전자파없는 전기장판 침대용 캠핑",
+					"price": 54900,
+					"orig": null,
+					"rating": 4.8,
+					"reviews": 2027,
+					"store": "디큐브",
+					"tier": "저가",
+					"pricePct": 12
+				},
+				{
+					"id": "848298108642596",
+					"name": "잠온 EMF 탄소매트 전기요 카본 전기매트 그래핀 캠핑 워셔블 1인용",
+					"price": 59800,
+					"orig": 115800,
+					"rating": 4.9,
+					"reviews": 1971,
+					"store": "잠의온도",
+					"tier": "저가",
+					"pricePct": 15
+				},
+				{
+					"id": "806230386804360",
+					"name": "한일온열기 그래핀탄소매트 전자파없는 카본 전기 온열매트 침대 전기장판",
+					"price": 139000,
+					"orig": 159000,
+					"rating": 4.9,
+					"reviews": 1860,
+					"store": "몽비오스",
+					"tier": "고가",
+					"pricePct": 79
+				},
+				{
+					"id": "806230386804363",
+					"name": "한일온열기 그래핀탄소매트 전자파없는 카본 전기 온열매트 침대 전기장판",
+					"price": 89000,
+					"orig": 119000,
+					"rating": 4.9,
+					"reviews": 1837,
+					"store": "몽비오스",
+					"tier": "중간",
+					"pricePct": 44
+				},
+				{
+					"id": "913108552798977",
+					"name": "몽비오스 카본 탄소매트 전기매트 전자파없는 그래핀 온열매트 침대",
+					"price": 89000,
+					"orig": 119000,
+					"rating": 4.9,
+					"reviews": 1835,
+					"store": "몽비오스",
+					"tier": "중간",
+					"pricePct": 44
+				},
+				{
+					"id": "856870479778370",
+					"name": "이메텍 프리미엄 순면 전자파안심 전기요 싱글 IMF-091(플로렌스)",
+					"price": 159000,
+					"orig": null,
+					"rating": 4.9,
+					"reviews": 1776,
+					"store": "IMETEC",
+					"tier": "고가",
+					"pricePct": 83
+				}
+			]
+		},
+		{
+			"slug": "텀블러-가격",
+			"leaf": "텀블러",
+			"category": "생활/건강>주방용품>잔/컵>텀블러",
+			"top": "생활/건강",
+			"checkedFrom": "2026-10-09",
+			"checkedTo": "2026-11-10",
+			"price": {
+				"n": 44,
+				"min": 14500,
+				"p25": 22550,
+				"median": 27900,
+				"p75": 36000,
+				"max": 56900,
+				"mean": 30203
+			},
+			"bins": [
+				{
+					"from": 10000,
+					"to": 20000,
+					"n": 8
+				},
+				{
+					"from": 20000,
+					"to": 30000,
+					"n": 17
+				},
+				{
+					"from": 30000,
+					"to": 40000,
+					"n": 11
+				},
+				{
+					"from": 40000,
+					"to": 50000,
+					"n": 4
+				},
+				{
+					"from": 50000,
+					"to": 60000,
+					"n": 4
+				}
+			],
+			"binStep": 10000,
+			"discount": {
+				"share": 90.9,
+				"median": 20,
+				"over30": 27.3
+			},
+			"rating": {
+				"n": 42,
+				"median": 4.8,
+				"share48": 100
+			},
+			"review": {
+				"total": 59592,
+				"median": 495,
+				"top10Share": 37.8,
+				"top10N": 4,
+				"under10": 0
+			},
+			"tiers": [
+				{
+					"label": "저가",
+					"n": 14,
+					"from": 14500,
+					"to": 22900,
+					"medianReviews": 671,
+					"reviewShare": 50.4,
+					"medianRating": 4.8,
+					"sold": 0
+				},
+				{
+					"label": "중간",
+					"n": 16,
+					"from": 22900,
+					"to": 36000,
+					"medianReviews": 2097,
+					"reviewShare": 42.1,
+					"medianRating": 4.8,
+					"sold": 0
+				},
+				{
+					"label": "고가",
+					"n": 14,
+					"from": 36000,
+					"to": 56900,
+					"medianReviews": 332,
+					"reviewShare": 7.6,
+					"medianRating": 4.9,
+					"sold": 0
+				}
+			],
+			"corr": -0.47,
+			"stores": [
+				{
+					"store": "스토조",
+					"n": 9,
+					"reviews": 17258,
+					"reviewShare": 29
+				},
+				{
+					"store": "1리터텀블러 마켓",
+					"n": 1,
+					"reviews": 13266,
+					"reviewShare": 22.3
+				},
+				{
+					"store": "로티몰닷컴",
+					"n": 4,
+					"reviews": 11841,
+					"reviewShare": 19.9
+				},
+				{
+					"store": "오슬로 공식스토어",
+					"n": 3,
+					"reviews": 3959,
+					"reviewShare": 6.6
+				},
+				{
+					"store": "리빙스토리",
+					"n": 1,
+					"reviews": 3311,
+					"reviewShare": 5.6
+				}
+			],
+			"storeCount": 16,
+			"specs": [],
+			"sold": null,
+			"products": [
+				{
+					"id": "848413982184481",
+					"name": "대용량 텀블러 퀜처 보온 보냉텀블러 빨대 손잡이 대형 차량용",
+					"price": 14500,
+					"orig": 21500,
+					"rating": 4.9,
+					"reviews": 13266,
+					"store": "1리터텀블러 마켓",
+					"tier": "저가",
+					"pricePct": 0
+				},
+				{
+					"id": "862917630234569",
+					"name": "네오플램 대용량 보온 보냉 스텐 텀블러 900ml",
+					"price": 17900,
+					"orig": 28900,
+					"rating": 4.8,
+					"reviews": 3311,
+					"store": "리빙스토리",
+					"tier": "저가",
+					"pricePct": 14
+				},
+				{
+					"id": "806274207853081",
+					"name": "로티캠프 대용량 손잡이 빨대 스텐 텀블러 1.2L, 아이보리",
+					"price": 22900,
+					"orig": 28900,
+					"rating": 4.8,
+					"reviews": 2972,
+					"store": "로티몰닷컴",
+					"tier": "저가",
+					"pricePct": 27
+				},
+				{
+					"id": "806274207857160",
+					"name": "로티캠프 대용량 손잡이 빨대 스텐 텀블러 1.2L, 그린",
+					"price": 22900,
+					"orig": 28900,
+					"rating": 4.8,
+					"reviews": 2970,
+					"store": "로티몰닷컴",
+					"tier": "저가",
+					"pricePct": 27
+				},
+				{
+					"id": "806274207857161",
+					"name": "로티캠프 대용량 손잡이 빨대 스텐 텀블러 1.2L, 핑크",
+					"price": 22900,
+					"orig": 28900,
+					"rating": 4.8,
+					"reviews": 2952,
+					"store": "로티몰닷컴",
+					"tier": "중간",
+					"pricePct": 27
+				},
+				{
+					"id": "806274207857162",
+					"name": "로티캠프 대용량 손잡이 빨대 스텐 텀블러 1.2L, 라벤더",
+					"price": 22900,
+					"orig": 28900,
+					"rating": 4.8,
+					"reviews": 2947,
+					"store": "로티몰닷컴",
+					"tier": "중간",
+					"pricePct": 27
+				},
+				{
+					"id": "866742350533824",
+					"name": "오슬로 아웃백트래블 스텐 손잡이 텀블러 보온병 350ml + 추가",
+					"price": 21000,
+					"orig": 59000,
+					"rating": 4.9,
+					"reviews": 2767,
+					"store": "오슬로 공식스토어",
+					"tier": "저가",
+					"pricePct": 18
+				},
+				{
+					"id": "981734980500352",
+					"name": "스토조 접이식 실리콘 텀블러 비기 컬렉션 470ml, 유칼립투스",
+					"price": 24800,
+					"orig": 31000,
+					"rating": 4.8,
+					"reviews": 2111,
+					"store": "스토조",
+					"tier": "중간",
+					"pricePct": 39
+				},
+				{
+					"id": "981734980471680",
+					"name": "스토조 접이식 실리콘 텀블러 비기 컬렉션 470ml, 캐시미어",
+					"price": 27900,
+					"orig": 31000,
+					"rating": 4.8,
+					"reviews": 2106,
+					"store": "스토조",
+					"tier": "중간",
+					"pricePct": 43
+				},
+				{
+					"id": "981734980516736",
+					"name": "스토조 접이식 실리콘 텀블러 비기 컬렉션 470ml, 젤리 유칼립투스",
+					"price": 32400,
+					"orig": 36000,
+					"rating": 4.8,
+					"reviews": 2106,
+					"store": "스토조",
+					"tier": "중간",
+					"pricePct": 57
+				}
+			]
+		},
+		{
+			"slug": "마그네슘-가격",
+			"leaf": "마그네슘",
+			"category": "식품>건강식품>영양제>마그네슘",
+			"top": "식품",
+			"checkedFrom": "2026-09-29",
+			"checkedTo": "2026-11-10",
+			"price": {
+				"n": 52,
+				"min": 12000,
+				"p25": 24550,
+				"median": 39755,
+				"p75": 69175,
+				"max": 169200,
+				"mean": 49905
+			},
+			"bins": [
+				{
+					"from": 0,
+					"to": 20000,
+					"n": 11
+				},
+				{
+					"from": 20000,
+					"to": 40000,
+					"n": 16
+				},
+				{
+					"from": 40000,
+					"to": 60000,
+					"n": 11
+				},
+				{
+					"from": 60000,
+					"to": 80000,
+					"n": 4
+				},
+				{
+					"from": 80000,
+					"to": 100000,
+					"n": 5
+				},
+				{
+					"from": 100000,
+					"to": 120000,
+					"n": 3
+				},
+				{
+					"from": 120000,
+					"to": null,
+					"n": 2
+				}
+			],
+			"binStep": 20000,
+			"discount": {
+				"share": 90.4,
+				"median": 32,
+				"over30": 50
+			},
+			"rating": {
+				"n": 45,
+				"median": 4.8,
+				"share48": 88.9
+			},
+			"review": {
+				"total": 93482,
+				"median": 640,
+				"top10Share": 42.8,
+				"top10N": 5,
+				"under10": 1.9
+			},
+			"tiers": [
+				{
+					"label": "저가",
+					"n": 17,
+					"from": 12000,
+					"to": 28800,
+					"medianReviews": 344,
+					"reviewShare": 20.7,
+					"medianRating": 4.8,
+					"sold": 0
+				},
+				{
+					"label": "중간",
+					"n": 18,
+					"from": 29800,
+					"to": 54900,
+					"medianReviews": 830,
+					"reviewShare": 40.7,
+					"medianRating": 4.8,
+					"sold": 0
+				},
+				{
+					"label": "고가",
+					"n": 17,
+					"from": 57200,
+					"to": 169200,
+					"medianReviews": 531,
+					"reviewShare": 38.7,
+					"medianRating": 4.8,
+					"sold": 0
+				}
+			],
+			"corr": -0.04,
+			"stores": [
+				{
+					"store": "뉴트원",
+					"n": 4,
+					"reviews": 22254,
+					"reviewShare": 23.8
+				},
+				{
+					"store": "브레인 에센스",
+					"n": 3,
+					"reviews": 14279,
+					"reviewShare": 15.3
+				},
+				{
+					"store": "영롱 YOUNGLONG",
+					"n": 1,
+					"reviews": 13769,
+					"reviewShare": 14.7
+				},
+				{
+					"store": "비타플랜",
+					"n": 2,
+					"reviews": 8284,
+					"reviewShare": 8.9
+				},
+				{
+					"store": "닥터가",
+					"n": 1,
+					"reviews": 7457,
+					"reviewShare": 8
+				}
+			],
+			"storeCount": 31,
+			"specs": [],
+			"sold": null,
+			"products": [
+				{
+					"id": "805946591409894",
+					"name": "영롱 비건 쌀 마그네슘 약사설계 임산부 어린이 섭취가능",
+					"price": 32000,
+					"orig": 51200,
+					"rating": 4.8,
+					"reviews": 13769,
+					"store": "영롱 YOUNGLONG",
+					"tier": "중간",
+					"pricePct": 38
+				},
+				{
+					"id": "998068633061600",
+					"name": "마그도스 마그네슘 400mg 함유 고함량 고용량 미국산 원료 300정",
+					"price": 70000,
+					"orig": null,
+					"rating": 4.9,
+					"reviews": 7457,
+					"store": "닥터가",
+					"tier": "고가",
+					"pricePct": 75
+				},
+				{
+					"id": "805849343726639",
+					"name": "마그네슘 비타민B 컴플렉스 산화마그네슘 90정",
+					"price": 57200,
+					"orig": 69900,
+					"rating": 4.8,
+					"reviews": 7303,
+					"store": "비타플랜",
+					"tier": "고가",
+					"pricePct": 67
+				},
+				{
+					"id": "805607705354348",
+					"name": "뉴트원 마그네슘 액티브 350mg 약사개발 성인 임산부 청소년 영양제",
+					"price": 39610,
+					"orig": 41700,
+					"rating": 4.8,
+					"reviews": 5799,
+					"store": "뉴트원",
+					"tier": "중간",
+					"pricePct": 48
+				},
+				{
+					"id": "847972502762251",
+					"name": "뉴트원 마그네슘 액티브 350mg 약사개발 성인 임산부 청소년 영양제",
+					"price": 75060,
+					"orig": 83400,
+					"rating": 4.8,
+					"reviews": 5694,
+					"store": "뉴트원",
+					"tier": "고가",
+					"pricePct": 79
+				},
+				{
+					"id": "805607705354347",
+					"name": "뉴트원 마그네슘 액티브 350mg 약사개발 성인 임산부 청소년 영양제",
+					"price": 51150,
+					"orig": 55600,
+					"rating": 4.8,
+					"reviews": 5423,
+					"store": "뉴트원",
+					"tier": "중간",
+					"pricePct": 63
+				},
+				{
+					"id": "805607705354350",
+					"name": "뉴트원 마그네슘 액티브 350mg 약사개발 성인 임산부 청소년 영양제",
+					"price": 13900,
+					"orig": null,
+					"rating": 4.8,
+					"reviews": 5338,
+					"store": "뉴트원",
+					"tier": "저가",
+					"pricePct": 6
+				},
+				{
+					"id": "810431949495969",
+					"name": "타임헬스 트레온산 마그네슘 120캡슐 4개월분 채정안 마그네슘 마그테인",
+					"price": 169200,
+					"orig": 240000,
+					"rating": 4.8,
+					"reviews": 4787,
+					"store": "브레인 에센스",
+					"tier": "고가",
+					"pricePct": 98
+				},
+				{
+					"id": "810431949491875",
+					"name": "타임헬스 트레온산 마그네슘 120캡슐 2개월분 채정안 마그네슘 마그테인",
+					"price": 94000,
+					"orig": 120000,
+					"rating": 4.8,
+					"reviews": 4754,
+					"store": "브레인 에센스",
+					"tier": "고가",
+					"pricePct": 85
+				},
+				{
+					"id": "810431949491874",
+					"name": "타임헬스 트레온산 마그네슘 120캡슐 2100mg 채정안 마그네슘",
+					"price": 47000,
+					"orig": 60000,
+					"rating": 4.8,
+					"reviews": 4738,
+					"store": "브레인 에센스",
+					"tier": "중간",
+					"pricePct": 60
+				}
+			]
+		},
+		{
+			"slug": "고데기-가격",
+			"leaf": "고데기",
+			"category": "디지털/가전>이미용가전>헤어기기>고데기/매직기",
+			"top": "디지털/가전",
+			"checkedFrom": "2026-09-28",
+			"checkedTo": "2026-11-10",
+			"price": {
+				"n": 49,
+				"min": 13900,
+				"p25": 36900,
+				"median": 54800,
+				"p75": 89000,
+				"max": 260000,
+				"mean": 70440
+			},
+			"bins": [
+				{
+					"from": 0,
+					"to": 25000,
+					"n": 5
+				},
+				{
+					"from": 25000,
+					"to": 50000,
+					"n": 19
+				},
+				{
+					"from": 50000,
+					"to": 75000,
+					"n": 10
+				},
+				{
+					"from": 75000,
+					"to": 100000,
+					"n": 7
+				},
+				{
+					"from": 100000,
+					"to": 125000,
+					"n": 0
+				},
+				{
+					"from": 125000,
+					"to": 150000,
+					"n": 5
+				},
+				{
+					"from": 150000,
+					"to": null,
+					"n": 3
+				}
+			],
+			"binStep": 25000,
+			"discount": {
+				"share": 71.4,
+				"median": 36,
+				"over30": 49
+			},
+			"rating": {
+				"n": 48,
+				"median": 4.7,
+				"share48": 43.8
+			},
+			"review": {
+				"total": 77327,
+				"median": 497,
+				"top10Share": 60.9,
+				"top10N": 5,
+				"under10": 4.1
+			},
+			"tiers": [
+				{
+					"label": "저가",
+					"n": 16,
+					"from": 13900,
+					"to": 38900,
+					"medianReviews": 619,
+					"reviewShare": 45,
+					"medianRating": 4.7,
+					"sold": 0
+				},
+				{
+					"label": "중간",
+					"n": 17,
+					"from": 39900,
+					"to": 69800,
+					"medianReviews": 424,
+					"reviewShare": 12.2,
+					"medianRating": 4.7,
+					"sold": 0
+				},
+				{
+					"label": "고가",
+					"n": 16,
+					"from": 70000,
+					"to": 260000,
+					"medianReviews": 471,
+					"reviewShare": 42.8,
+					"medianRating": 4.8,
+					"sold": 0
+				}
+			],
+			"corr": 0.01,
+			"stores": [
+				{
+					"store": "글램팜",
+					"n": 4,
+					"reviews": 28342,
+					"reviewShare": 36.7
+				},
+				{
+					"store": "유닉스전자",
+					"n": 7,
+					"reviews": 15609,
+					"reviewShare": 20.2
+				},
+				{
+					"store": "비달사순",
+					"n": 4,
+					"reviews": 10907,
+					"reviewShare": 14.1
+				},
+				{
+					"store": "디하우트랩",
+					"n": 3,
+					"reviews": 8617,
+					"reviewShare": 11.1
+				},
+				{
+					"store": "오아스토어",
+					"n": 5,
+					"reviews": 3328,
+					"reviewShare": 4.3
+				}
+			],
+			"storeCount": 26,
+			"specs": [],
+			"sold": null,
+			"products": [
+				{
+					"id": "848382178235169",
+					"name": "글램팜 글램뮤즈 터치 플랫 판고데기 미용실 매직기 글램 핑크",
+					"price": 260000,
+					"orig": null,
+					"rating": 4.9,
+					"reviews": 17881,
+					"store": "글램팜",
+					"tier": "고가",
+					"pricePct": 96
+				},
+				{
+					"id": "845102223425698",
+					"name": "유닉스 헤어 고데기 UCI-A2521N 세라믹코팅",
+					"price": 24900,
+					"orig": 27900,
+					"rating": 4.8,
+					"reviews": 13679,
+					"store": "유닉스전자",
+					"tier": "저가",
+					"pricePct": 8
+				},
+				{
+					"id": "808785751991714",
+					"name": "디하우트 러블리 미니 무선 고데기 앞머리 볼륨 고데기 휴대용",
+					"price": 34900,
+					"orig": 44900,
+					"rating": 4.7,
+					"reviews": 6009,
+					"store": "디하우트랩",
+					"tier": "저가",
+					"pricePct": 22
+				},
+				{
+					"id": "887334187059776",
+					"name": "비달사순 미니 판 고데기 무선 C타입 충전 경량 매직기 뿌리 볼륨",
+					"price": 32900,
+					"orig": null,
+					"rating": 4.6,
+					"reviews": 5333,
+					"store": "비달사순",
+					"tier": "저가",
+					"pricePct": 14
+				},
+				{
+					"id": "979320694138624",
+					"name": "글램팜 글램시크 OMG(오마이글램) 미들사이즈 미니 고데기 버터",
+					"price": 139000,
+					"orig": null,
+					"rating": 4.9,
+					"reviews": 4222,
+					"store": "글램팜",
+					"tier": "고가",
+					"pricePct": 88
+				},
+				{
+					"id": "848382435931398",
+					"name": "글램팜 글램뮤즈 터치 볼륨 미용실 고데기 블랙",
+					"price": 260000,
+					"orig": null,
+					"rating": 4.9,
+					"reviews": 3808,
+					"store": "글램팜",
+					"tier": "고가",
+					"pricePct": 96
+				},
+				{
+					"id": "808785751991715",
+					"name": "디하우트 미니 무선 고데기 뿌리볼륨고데기 앞머리 휴대용",
+					"price": 47500,
+					"orig": 75000,
+					"rating": 4.7,
+					"reviews": 2608,
+					"store": "디하우트랩",
+					"tier": "중간",
+					"pricePct": 47
+				},
+				{
+					"id": "887334187018816",
+					"name": "뿌리 볼륨고데기 물결 고데기 뽕 32mm 비달사순 VSCD119PIK",
+					"price": 32900,
+					"orig": null,
+					"rating": 4.7,
+					"reviews": 2545,
+					"store": "비달사순",
+					"tier": "저가",
+					"pricePct": 14
+				},
+				{
+					"id": "887334187067968",
+					"name": "뿌리 볼륨 고데기 물결 나이아가라 봉고데기 비달사순 38mm 핑크에디션",
+					"price": 36900,
+					"orig": null,
+					"rating": 4.7,
+					"reviews": 2464,
+					"store": "비달사순",
+					"tier": "저가",
+					"pricePct": 24
+				},
+				{
+					"id": "848382435931395",
+					"name": "글램팜 글램시크 미니 볼륨 고데기 GP103CV 퓨어블랙",
+					"price": 94000,
+					"orig": null,
+					"rating": 4.8,
+					"reviews": 2431,
+					"store": "글램팜",
+					"tier": "고가",
+					"pricePct": 82
+				}
+			]
+		},
+		{
+			"slug": "클렌징폼-가격",
+			"leaf": "클렌징폼",
+			"category": "화장품/미용>클렌징>클렌징폼",
+			"top": "화장품/미용",
+			"checkedFrom": "2026-09-21",
+			"checkedTo": "2026-11-10",
+			"price": {
+				"n": 67,
+				"min": 10500,
+				"p25": 15350,
+				"median": 22500,
+				"p75": 30950,
+				"max": 154000,
+				"mean": 29502
+			},
+			"bins": [
+				{
+					"from": 10000,
+					"to": 20000,
+					"n": 30
+				},
+				{
+					"from": 20000,
+					"to": 30000,
+					"n": 20
+				},
+				{
+					"from": 30000,
+					"to": 40000,
+					"n": 6
+				},
+				{
+					"from": 40000,
+					"to": 50000,
+					"n": 5
+				},
+				{
+					"from": 50000,
+					"to": 60000,
+					"n": 1
+				},
+				{
+					"from": 60000,
+					"to": 70000,
+					"n": 1
+				},
+				{
+					"from": 70000,
+					"to": null,
+					"n": 4
+				}
+			],
+			"binStep": 10000,
+			"discount": {
+				"share": 89.6,
+				"median": 27,
+				"over30": 38.8
+			},
+			"rating": {
+				"n": 61,
+				"median": 4.8,
+				"share48": 91.8
+			},
+			"review": {
+				"total": 191440,
+				"median": 874,
+				"top10Share": 62.2,
+				"top10N": 7,
+				"under10": 6
+			},
+			"tiers": [
+				{
+					"label": "저가",
+					"n": 22,
+					"from": 10500,
+					"to": 16900,
+					"medianReviews": 817,
+					"reviewShare": 33.2,
+					"medianRating": 4.8,
+					"sold": 0
+				},
+				{
+					"label": "중간",
+					"n": 23,
+					"from": 17900,
+					"to": 26130,
+					"medianReviews": 1016,
+					"reviewShare": 33.1,
+					"medianRating": 4.9,
+					"sold": 0
+				},
+				{
+					"label": "고가",
+					"n": 22,
+					"from": 26900,
+					"to": 154000,
+					"medianReviews": 370,
+					"reviewShare": 33.8,
+					"medianRating": 4.9,
+					"sold": 0
+				}
+			],
+			"corr": -0.08,
+			"stores": [
+				{
+					"store": "맥스클리닉",
+					"n": 5,
+					"reviews": 57613,
+					"reviewShare": 30.1
+				},
+				{
+					"store": "이니스프리",
+					"n": 2,
+					"reviews": 32238,
+					"reviewShare": 16.8
+				},
+				{
+					"store": "LAGOM: 본사직영몰",
+					"n": 3,
+					"reviews": 18217,
+					"reviewShare": 9.5
+				},
+				{
+					"store": "안나홀츠",
+					"n": 1,
+					"reviews": 17296,
+					"reviewShare": 9
+				},
+				{
+					"store": "주미소",
+					"n": 2,
+					"reviews": 14097,
+					"reviewShare": 7.4
+				}
+			],
+			"storeCount": 37,
+			"specs": [],
+			"sold": null,
+			"products": [
+				{
+					"id": "849831839311649",
+					"name": "(1+1) 맥스클리닉 반전클렌저 오일투폼 110g",
+					"price": 27000,
+					"orig": 36000,
+					"rating": 4.8,
+					"reviews": 31965,
+					"store": "맥스클리닉",
+					"tier": "고가",
+					"pricePct": 69
+				},
+				{
+					"id": "842070258318657",
+					"name": "이니스프리 그린티 아미노 수분 클렌징 폼 250ml",
+					"price": 13680,
+					"orig": 19000,
+					"rating": null,
+					"reviews": 21333,
+					"store": "이니스프리",
+					"tier": "저가",
+					"pricePct": 7
+				},
+				{
+					"id": "849831839311655",
+					"name": "(1+1) 맥스클리닉 반전클렌저 대용량 오일투폼 클렌징오일 클렌징폼",
+					"price": 58000,
+					"orig": 90000,
+					"rating": 4.9,
+					"reviews": 18552,
+					"store": "맥스클리닉",
+					"tier": "고가",
+					"pricePct": 91
+				},
+				{
+					"id": "808027131764787",
+					"name": "안나홀츠 리터폼 순한 대용량 일리터 폼클렌징 클렌징폼 1000ml",
+					"price": 23500,
+					"orig": 39000,
+					"rating": 4.8,
+					"reviews": 17296,
+					"store": "안나홀츠",
+					"tier": "중간",
+					"pricePct": 55
+				},
+				{
+					"id": "936407197624385",
+					"name": "라곰 마이크로 폼클렌저 150ml",
+					"price": 15300,
+					"orig": 18000,
+					"rating": 4.9,
+					"reviews": 11836,
+					"store": "LAGOM: 본사직영몰",
+					"tier": "저가",
+					"pricePct": 24
+				},
+				{
+					"id": "842070258310486",
+					"name": "이니스프리 비자 트러블 클렌징 폼 150ml",
+					"price": 23400,
+					"orig": 36000,
+					"rating": 4.9,
+					"reviews": 10905,
+					"store": "이니스프리",
+					"tier": "중간",
+					"pricePct": 54
+				},
+				{
+					"id": "849466289969216",
+					"name": "주미소 포어 퓨리파잉 살리실산 클렌징폼 120ml",
+					"price": 20900,
+					"orig": 36000,
+					"rating": 4.9,
+					"reviews": 7106,
+					"store": "주미소",
+					"tier": "중간",
+					"pricePct": 48
+				},
+				{
+					"id": "907038387203776",
+					"name": "주미소 포어 퓨리파잉 살리실산 클렌징폼 120ml",
+					"price": 25900,
+					"orig": 54000,
+					"rating": 4.9,
+					"reviews": 6991,
+					"store": "주미소",
+					"tier": "중간",
+					"pricePct": 61
+				},
+				{
+					"id": "810112827698276",
+					"name": "뉴트로지나 딥클린 젠틀 포밍 클렌저 100g",
+					"price": 15900,
+					"orig": 29700,
+					"rating": 4.8,
+					"reviews": 6490,
+					"store": "켄뷰 공식몰",
+					"tier": "저가",
+					"pricePct": 27
+				},
+				{
+					"id": "936407197640768",
+					"name": "라곰 젤 투 워터 클렌저 220ml",
+					"price": 16150,
+					"orig": 19000,
+					"rating": null,
+					"reviews": 4622,
+					"store": "LAGOM: 본사직영몰",
+					"tier": "저가",
+					"pricePct": 30
+				}
+			]
+		},
+		{
+			"slug": "휴대용-선풍기-가격",
+			"leaf": "휴대용 선풍기",
+			"category": "디지털/가전>계절가전>선풍기>휴대용선풍기",
+			"top": "디지털/가전",
+			"checkedFrom": "2026-09-12",
+			"checkedTo": "2026-11-10",
+			"price": {
+				"n": 165,
+				"min": 6900,
+				"p25": 19900,
+				"median": 29500,
+				"p75": 39900,
+				"max": 119000,
+				"mean": 32580
+			},
+			"bins": [
+				{
+					"from": 0,
+					"to": 10000,
+					"n": 2
+				},
+				{
+					"from": 10000,
+					"to": 20000,
+					"n": 43
+				},
+				{
+					"from": 20000,
+					"to": 30000,
+					"n": 52
+				},
+				{
+					"from": 30000,
+					"to": 40000,
+					"n": 33
+				},
+				{
+					"from": 40000,
+					"to": 50000,
+					"n": 15
+				},
+				{
+					"from": 50000,
+					"to": 60000,
+					"n": 13
+				},
+				{
+					"from": 60000,
+					"to": null,
+					"n": 7
+				}
+			],
+			"binStep": 10000,
+			"discount": {
+				"share": 97.6,
+				"median": 34,
+				"over30": 61.8
+			},
+			"rating": {
+				"n": 131,
+				"median": 4.8,
+				"share48": 59.5
+			},
+			"review": {
+				"total": 140161,
+				"median": 173,
+				"top10Share": 59.9,
+				"top10N": 17,
+				"under10": 7.9
+			},
+			"tiers": [
+				{
+					"label": "저가",
+					"n": 55,
+					"from": 6900,
+					"to": 24900,
+					"medianReviews": 175,
+					"reviewShare": 21.4,
+					"medianRating": 4.8,
+					"sold": 0
+				},
+				{
+					"label": "중간",
+					"n": 55,
+					"from": 24900,
+					"to": 34900,
+					"medianReviews": 178,
+					"reviewShare": 35.4,
+					"medianRating": 4.8,
+					"sold": 0
+				},
+				{
+					"label": "고가",
+					"n": 55,
+					"from": 34900,
+					"to": 119000,
+					"medianReviews": 155,
+					"reviewShare": 43.3,
+					"medianRating": 4.8,
+					"sold": 0
+				}
+			],
+			"corr": -0.02,
+			"stores": [
+				{
+					"store": "fromb",
+					"n": 6,
+					"reviews": 37108,
+					"reviewShare": 26.5
+				},
+				{
+					"store": "하이온 공식스토어",
+					"n": 8,
+					"reviews": 15939,
+					"reviewShare": 11.4
+				},
+				{
+					"store": "지니비몰",
+					"n": 5,
+					"reviews": 11991,
+					"reviewShare": 8.6
+				},
+				{
+					"store": "오아스토어",
+					"n": 5,
+					"reviews": 9480,
+					"reviewShare": 6.8
+				},
+				{
+					"store": "알로코리아",
+					"n": 8,
+					"reviews": 8363,
+					"reviewShare": 6
+				}
+			],
+			"storeCount": 82,
+			"specs": [],
+			"sold": null,
+			"products": [
+				{
+					"id": "805561056920048",
+					"name": "프롬비 윈드스핀 빅팬 무선 폴더블 휴대용 선풍기 FB150 스노우화이트",
+					"price": 49800,
+					"orig": 65800,
+					"rating": 4.9,
+					"reviews": 22766,
+					"store": "fromb",
+					"tier": "고가",
+					"pricePct": 85
+				},
+				{
+					"id": "818604554775457",
+					"name": "슈피겐 무소음 휴대용 선풍기 3세대",
+					"price": 26900,
+					"orig": null,
+					"rating": 4.7,
+					"reviews": 7377,
+					"store": "슈피겐",
+					"tier": "중간",
+					"pricePct": 39
+				},
+				{
+					"id": "963405153158592",
+					"name": "하이온 휴대용 미니 선풍기 무선 초소형 손선풍기 H14",
+					"price": 10900,
+					"orig": 20900,
+					"rating": 4.9,
+					"reviews": 6346,
+					"store": "하이온 공식스토어",
+					"tier": "저가",
+					"pricePct": 2
+				},
+				{
+					"id": "813433882127653",
+					"name": "블루필 미니헤드 제트팬 휴대용 손 선풍기 미니 손풍기 냉각 에어컨 터보",
+					"price": 28800,
+					"orig": 39800,
+					"rating": 4.7,
+					"reviews": 6208,
+					"store": "블루필 공식스토어",
+					"tier": "중간",
+					"pricePct": 45
+				},
+				{
+					"id": "945963418711616",
+					"name": "오아 아이스볼트폴드 휴대용 선풍기 넥 목걸이 미니 급속 냉각 핸디 핸드",
+					"price": 34800,
+					"orig": 39800,
+					"rating": 4.8,
+					"reviews": 4841,
+					"store": "오아스토어",
+					"tier": "중간",
+					"pricePct": 64
+				},
+				{
+					"id": "958765741304512",
+					"name": "프롬비 미스트 아이스제트 급속 냉각 손 선풍기 터보팬 100단",
+					"price": 54800,
+					"orig": 71900,
+					"rating": 4.9,
+					"reviews": 4766,
+					"store": "fromb",
+					"tier": "고가",
+					"pricePct": 90
+				},
+				{
+					"id": "958765741304513",
+					"name": "프롬비 미스트 아이스제트 급속 냉각 손 선풍기 터보팬 100단",
+					"price": 54800,
+					"orig": 71900,
+					"rating": 4.9,
+					"reviews": 4753,
+					"store": "fromb",
+					"tier": "고가",
+					"pricePct": 90
+				},
+				{
+					"id": "947091845339648",
+					"name": "알로코리아 듀얼팬 휴대용 미니 선풍기 F2 핸디 손풍기 손선풍기",
+					"price": 16900,
+					"orig": 22900,
+					"rating": 4.8,
+					"reviews": 4277,
+					"store": "알로코리아",
+					"tier": "저가",
+					"pricePct": 14
+				},
+				{
+					"id": "805911930898336",
+					"name": "넥프로 무선 넥밴드 선풍기 미니 휴대용 목걸이 넥선풍기 냉각 목풍기",
+					"price": 32500,
+					"orig": 49800,
+					"rating": 4.8,
+					"reviews": 2851,
+					"store": "아이오랩",
+					"tier": "중간",
+					"pricePct": 62
+				},
+				{
+					"id": "806584001100178",
+					"name": "1+1 넥선풍기 넥밴드 조용한 목에거는 미니 목걸이 선풍기 에어컨",
+					"price": 39900,
+					"orig": 43900,
+					"rating": 4.6,
+					"reviews": 2648,
+					"store": "에디토의 선택",
+					"tier": "고가",
+					"pricePct": 75
+				}
+			]
+		}
+	]
+}

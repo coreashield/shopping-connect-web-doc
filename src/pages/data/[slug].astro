@@ -1,0 +1,208 @@
+---
+// 분류별 가격·리뷰 데이터 리포트 (2026-11-11, 구글 색인 시험 — scripts/build_market_reports.mjs)
+//   상품 소개 글·가이드가 구글에서 "크롤링됨 – 색인 안 됨"으로 빠지는 상태라, 직접 집계한 숫자로 된 페이지가 색인되는지 본다.
+//   숫자는 전부 src/data/market_reports.json(스크립트 계산), 해석 문단은 src/data/market_notes.json(사람 작성).
+//   본체에만 만든다. 구매 링크를 싣지 않는다(상품명은 review.shopping-log.com 상품 페이지로 연결).
+import BaseHead from '../../components/BaseHead.astro';
+import Footer from '../../components/Footer.astro';
+import Header from '../../components/Header.astro';
+import { SITE_TITLE } from '../../consts';
+import { SITE_CATEGORY } from '../../lib/site';
+import data from '../../data/market_reports.json';
+import notes from '../../data/market_notes.json';
+
+export function getStaticPaths() {
+	if (SITE_CATEGORY) return [];
+	return data.reports.map((r) => ({ params: { slug: r.slug }, props: { r } }));
+}
+type Report = (typeof data.reports)[number];
+const { r } = Astro.props as { r: Report };
+
+const won = (v: number | null) => (v == null ? '-' : `${v.toLocaleString('ko-KR')}원`);
+const num = (v: number) => v.toLocaleString('ko-KR');
+const [y, m] = data.builtAt.split('-');
+const period = `${y}년 ${Number(m)}월`;
+const P = r.price;
+const note: string[] = (notes.notes as Record<string, string[]>)[r.slug] ?? [];
+
+const title = `${r.leaf} 가격 조사: ${num(P.n)}개 상품 중앙값 ${won(P.median)} (${period})`;
+const description = `${r.leaf} ${num(P.n)}개 상품의 판매가를 직접 집계했습니다. 중앙값 ${won(P.median)}, 절반이 ${won(P.p25)}~${won(P.p75)} 사이이고 리뷰 상위 10% 상품이 전체 리뷰의 ${r.review.top10Share}%를 차지합니다.`;
+
+// 가격 분포 막대 그래프(인라인 SVG)
+const maxBin = Math.max(...r.bins.map((b) => b.n));
+const BW = 640, BH = 220, PAD = 28, barW = (BW - PAD * 2) / r.bins.length;
+const short = (v: number) => (v >= 10000 ? `${Math.round(v / 1000) / 10}만` : v >= 1000 ? `${Math.round(v / 100) / 10}천` : `${v}`);
+const medianBin = r.bins.findIndex((b) => P.median >= b.from && (b.to == null || P.median < b.to));
+const peak = r.bins.reduce((a, b) => (b.n > a.n ? b : a));
+
+// 조건에 따라 달라지는 문장
+const spread = Math.round((P.p75 / P.p25) * 10) / 10;
+const skew = P.mean > P.median * 1.15 ? `평균(${won(P.mean)})이 중앙값보다 ${Math.round((P.mean / P.median - 1) * 100)}% 높습니다. 소수의 고가 상품이 평균을 끌어올린 것이라, 일반적인 가격 수준은 중앙값으로 보는 편이 맞습니다.` : `평균은 ${won(P.mean)}으로 중앙값과 큰 차이가 없습니다. 극단적으로 비싼 상품이 평균을 크게 흔들지 않는 분류입니다.`;
+const corrText = r.corr <= -0.2 ? `가격이 낮을수록 리뷰가 많은 경향이 있습니다(순위 상관 ${r.corr}).` : r.corr >= 0.2 ? `가격이 높을수록 리뷰가 많은 경향이 있습니다(순위 상관 ${r.corr}).` : `가격과 리뷰 수 사이에는 뚜렷한 관계가 없습니다(순위 상관 ${r.corr}). 싸다고 더 많이 팔리거나 비싸다고 덜 팔린 흔적이 보이지 않습니다.`;
+const [low, mid, high] = r.tiers;
+const bestTier = [...r.tiers].sort((a, b) => b.reviewShare - a.reviewShare)[0];
+
+const url = `https://shopping-log.com/data/${r.slug}/`;
+const ld = [
+	{
+		'@context': 'https://schema.org', '@type': 'Article', headline: title, description, datePublished: data.builtAt, dateModified: data.builtAt, mainEntityOfPage: url,
+		author: { '@type': 'Organization', name: SITE_TITLE, url: 'https://shopping-log.com/about/' }, publisher: { '@type': 'Organization', name: SITE_TITLE, url: 'https://shopping-log.com/' },
+	},
+	{
+		'@context': 'https://schema.org', '@type': 'Dataset', name: `${r.leaf} 판매가·리뷰 집계 (${period})`, description, url, temporalCoverage: `${r.checkedFrom}/${r.checkedTo}`, dateModified: data.builtAt,
+		creator: { '@type': 'Organization', name: SITE_TITLE, url: 'https://shopping-log.com/' }, isAccessibleForFree: true, license: 'https://creativecommons.org/licenses/by/4.0/',
+		variableMeasured: ['판매가(원)', '표시 정가 대비 할인율(%)', '리뷰 수', '평점'], measurementTechnique: '네이버 스마트스토어 판매 페이지 표시값 수집 후 집계',
+	},
+];
+const others = data.reports.filter((x) => x.slug !== r.slug && x.top === r.top).slice(0, 6);
+---
+
+<!doctype html>
+<html lang="ko">
+	<head>
+		<BaseHead title={`${title} | ${SITE_TITLE}`} description={description} type="article" publishedTime={new Date(data.builtAt)} modifiedTime={new Date(data.builtAt)} ads={false} />
+		{ld.map((x) => <script type="application/ld+json" set:html={JSON.stringify(x)} />)}
+		<style>
+			main { width: 780px; max-width: 100%; margin: 0 auto; padding: 1.6rem 1.2rem 3rem; box-sizing: border-box; }
+			h1 { font-size: clamp(1.45rem, 5.4vw, 2rem); line-height: 1.35; margin: 0 0 0.4em; word-break: keep-all; }
+			.meta { color: rgb(var(--gray)); font-size: 0.88rem; margin: 0 0 1.4em; }
+			h2 { font-size: clamp(1.12rem, 4.6vw, 1.35rem); margin: 2.2em 0 0.6em; padding-top: 1em; border-top: 1px solid rgba(var(--gray), 0.2); }
+			p, li { line-height: 1.75; word-break: keep-all; }
+			.kpi { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.6rem; margin: 1rem 0 1.4rem; padding: 0; list-style: none; }
+			.kpi li { border: 1px solid rgba(var(--gray), 0.25); border-radius: 10px; padding: 0.7rem 0.8rem; line-height: 1.4; }
+			.kpi b { display: block; font-size: 1.25rem; }
+			.kpi span { color: rgb(var(--gray)); font-size: 0.82rem; }
+			.wrap { overflow-x: auto; }
+			table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+			th, td { border: 1px solid rgba(var(--gray), 0.3); padding: 0.45em 0.6em; text-align: right; vertical-align: top; }
+			th:first-child, td:first-child, td.l { text-align: left; }
+			th { background: rgba(var(--gray-light), 0.5); white-space: nowrap; }
+			svg { width: 100%; height: auto; display: block; }
+			svg text { font-size: 11px; fill: rgb(var(--gray-dark)); }
+			.bar { fill: var(--accent); opacity: 0.5; }
+			.bar.m { opacity: 1; }
+			.note { border-left: 4px solid var(--accent); padding: 0.2rem 0 0.2rem 1rem; margin: 1.2rem 0; }
+			.small { color: rgb(var(--gray)); font-size: 0.86rem; }
+			nav.crumb { font-size: 0.86rem; margin-bottom: 0.8rem; }
+		</style>
+	</head>
+	<body>
+		<Header />
+		<main>
+			<nav class="crumb"><a href="/data/">가격 데이터</a> › {r.category.split('>').slice(0, -1).join(' › ')}</nav>
+			<h1>{r.leaf} 가격 조사: {num(P.n)}개 상품 중앙값 {won(P.median)}</h1>
+			<p class="meta">{period} 집계 · 가격 확인 기간 {r.checkedFrom} ~ {r.checkedTo} · {SITE_TITLE} 직접 집계</p>
+
+			<p>네이버 스마트스토어에서 판매 중인 {r.leaf} {num(P.n)}개 상품의 판매가를 모아 집계했습니다. 가운데 값(중앙값)은 <strong>{won(P.median)}</strong>이고, 전체의 절반이 {won(P.p25)}에서 {won(P.p75)} 사이에 있습니다. 가장 싼 상품은 {won(P.min)}, 가장 비싼 상품은 {won(P.max)}입니다.</p>
+
+			<ul class="kpi">
+				<li><span>조사 상품 수</span><b>{num(P.n)}개</b><span>판매처 {num(r.storeCount)}곳</span></li>
+				<li><span>판매가 중앙값</span><b>{won(P.median)}</b><span>평균 {won(P.mean)}</span></li>
+				<li><span>가운데 50% 범위</span><b>{short(P.p25)}~{short(P.p75)}원</b><span>위아래 {spread}배 차이</span></li>
+				<li><span>할인 표시 상품</span><b>{r.discount.share}%</b><span>{r.discount.median != null ? `할인율 중앙값 ${r.discount.median}%` : '할인 표시 없음'}</span></li>
+				<li><span>리뷰 수 중앙값</span><b>{num(r.review.median)}개</b><span>전체 리뷰 {num(r.review.total)}개</span></li>
+				<li><span>평점 중앙값</span><b>{r.rating.median ?? '-'}</b><span>4.8 이상 {r.rating.share48}%</span></li>
+			</ul>
+
+			{note.length > 0 && (
+				<div class="note">
+					{note.map((t) => <p>{t}</p>)}
+				</div>
+			)}
+
+			<h2>{r.leaf} 가격은 어디에 몰려 있나</h2>
+			<p>{num(r.binStep)}원 단위로 나눠 보면 {won(peak.from)}{peak.to ? `~${won(peak.to)}` : ' 이상'} 구간에 {num(peak.n)}개({Math.round((peak.n / P.n) * 100)}%)로 가장 많이 몰려 있습니다. {skew}</p>
+			<svg viewBox={`0 0 ${BW} ${BH + 40}`} role="img" aria-label={`${r.leaf} 판매가 분포 막대 그래프`}>
+				{r.bins.map((b, i) => {
+					const h = maxBin ? Math.round((b.n / maxBin) * (BH - 30)) : 0;
+					const x = PAD + i * barW;
+					return (
+						<g>
+							<rect class={`bar${i === medianBin ? ' m' : ''}`} x={x + 4} y={BH - h} width={barW - 8} height={h} rx="3" />
+							<text x={x + barW / 2} y={BH - h - 6} text-anchor="middle">{b.n}개</text>
+							<text x={x + barW / 2} y={BH + 16} text-anchor="middle">{short(b.from)}{b.to ? '~' : '+'}</text>
+							{b.to && <text x={x + barW / 2} y={BH + 30} text-anchor="middle">{short(b.to)}</text>}
+						</g>
+					);
+				})}
+			</svg>
+			<p class="small">진한 막대가 중앙값({won(P.median)})이 속한 구간입니다. 단위: 원.</p>
+
+			<h2>가격대별로 리뷰와 평점이 어떻게 다른가</h2>
+			<p>상품을 가격순으로 세워 개수 기준으로 셋으로 나눴습니다. {corrText} 리뷰가 가장 많이 쌓인 곳은 {bestTier.label} 구간으로, 전체 리뷰의 {bestTier.reviewShare}%가 여기에 있습니다.</p>
+			<div class="wrap">
+				<table>
+					<thead><tr><th>가격대</th><th>가격 범위</th><th>상품 수</th><th>리뷰 수 중앙값</th><th>전체 리뷰 중 비중</th><th>평점 중앙값</th></tr></thead>
+					<tbody>
+						{r.tiers.map((t) => (
+							<tr><td>{t.label}</td><td>{won(t.from)} ~ {won(t.to)}</td><td>{num(t.n)}개</td><td>{num(t.medianReviews)}개</td><td>{t.reviewShare}%</td><td>{t.medianRating ?? '-'}</td></tr>
+						))}
+					</tbody>
+				</table>
+			</div>
+			{low.medianRating != null && high.medianRating != null && (
+				<p>평점 중앙값은 저가 {low.medianRating}, 중간 {mid.medianRating ?? '-'}, 고가 {high.medianRating}입니다. {Math.abs(low.medianRating - high.medianRating) < 0.15 ? '가격대가 달라도 평점은 사실상 같아서, 평점만으로는 상품을 가려내기 어렵습니다.' : low.medianRating > high.medianRating ? '저가 구간의 평점이 오히려 조금 높습니다.' : '고가 구간의 평점이 조금 높습니다.'}</p>
+			)}
+
+			<h2>리뷰는 소수 상품에 얼마나 쏠려 있나</h2>
+			<p>리뷰가 많은 순으로 상위 10%({num(r.review.top10N)}개 상품)가 전체 리뷰 {num(r.review.total)}개 중 <strong>{r.review.top10Share}%</strong>를 차지합니다. 반대로 리뷰가 10개 미만인 상품은 전체의 {r.review.under10}%입니다. {r.review.top10Share >= 60 ? '소수 인기 상품에 구매가 크게 몰리는 분류입니다.' : r.review.top10Share >= 45 ? '인기 상품 쏠림이 있지만 중위권 상품도 리뷰가 꽤 쌓여 있습니다.' : '리뷰가 여러 상품에 비교적 고르게 퍼져 있는 분류입니다.'}</p>
+			<div class="wrap">
+				<table>
+					<thead><tr><th>판매처</th><th>상품 수</th><th>리뷰 합계</th><th>전체 리뷰 중 비중</th></tr></thead>
+					<tbody>
+						{r.stores.map((s) => (<tr><td>{s.store}</td><td>{num(s.n)}개</td><td>{num(s.reviews)}개</td><td>{s.reviewShare}%</td></tr>))}
+					</tbody>
+				</table>
+			</div>
+			<p class="small">리뷰 합계가 많은 판매처 5곳입니다. 조사 대상 판매처는 모두 {num(r.storeCount)}곳입니다.</p>
+
+			<h2>할인 표시는 얼마나 믿을 만한가</h2>
+			<p>{r.discount.share > 0 ? `조사 상품의 ${r.discount.share}%가 정가보다 낮은 판매가를 표시하고 있고, 그 할인율의 중앙값은 ${r.discount.median}%입니다. 30% 이상 할인으로 표시된 상품은 전체의 ${r.discount.over30}%입니다. ${r.discount.share >= 70 ? '대부분의 상품이 할인 중으로 표시돼 있어서, 할인 표시 자체는 싸다는 근거가 되지 못합니다. 같은 분류의 중앙값과 비교하는 편이 정확합니다.' : '할인 표시가 없는 상품도 적지 않아서, 할인율보다 실제 판매가를 중앙값과 비교하는 편이 정확합니다.'}` : '이 분류에서는 정가 대비 할인을 표시한 상품이 없습니다.'}</p>
+
+			{r.specs.map((sp) => (
+				<>
+					<h2>{sp.key}별 가격 차이</h2>
+					<p>판매 페이지에 {sp.key}를 적어 둔 상품 {num(sp.have)}개를 값별로 나눠 중앙값을 비교했습니다.</p>
+					<div class="wrap">
+						<table>
+							<thead><tr><th>{sp.key}</th><th>상품 수</th><th>비중</th><th>판매가 중앙값</th></tr></thead>
+							<tbody>
+								{sp.values.map((v) => (<tr><td>{v.value}</td><td>{num(v.n)}개</td><td>{v.share}%</td><td>{won(v.median)}</td></tr>))}
+							</tbody>
+						</table>
+					</div>
+				</>
+			))}
+
+			<h2>리뷰가 가장 많은 {r.leaf} {r.products.length}개</h2>
+			<p>아래 표의 "가격 위치"는 조사한 {num(P.n)}개 중 이 상품보다 싼 상품의 비율입니다. 0%에 가까울수록 싼 쪽, 100%에 가까울수록 비싼 쪽입니다.</p>
+			<div class="wrap">
+				<table>
+					<thead><tr><th>상품</th><th>판매가</th><th>가격 위치</th><th>리뷰</th><th>평점</th></tr></thead>
+					<tbody>
+						{r.products.map((p) => (
+							<tr><td class="l"><a href={`https://review.shopping-log.com/p/${p.id}/`}>{p.name}</a><br /><span class="small">{p.store}</span></td><td>{won(p.price)}</td><td>{p.pricePct}%</td><td>{num(p.reviews)}개</td><td>{p.rating ?? '-'}</td></tr>
+						))}
+					</tbody>
+				</table>
+			</div>
+
+			<h2>조사 방법과 한계</h2>
+			<ul>
+				<li>대상: 네이버 브랜드커넥트에 등록된 스마트스토어 상품 가운데 "{r.category.replaceAll('>', ' › ')}" 분류이면서 {r.checkedFrom} 이후 가격을 확인한 {num(P.n)}개입니다. 이 분류의 모든 상품이 아니라 표본입니다.</li>
+				<li>가격: 판매 페이지에 표시된 판매가입니다. 옵션·배송비·쿠폰에 따라 실제 결제 금액은 다를 수 있고, 용량이나 구성 차이는 보정하지 않았습니다.</li>
+				<li>리뷰·평점: 판매 페이지 표시값입니다. 리뷰 수는 판매 기간이 길수록 많아지므로 판매량과 같지 않습니다.</li>
+				<li>중앙값은 가격순으로 줄 세웠을 때 한가운데 상품의 가격입니다. 순위 상관은 −1에서 1 사이 값으로, 0에 가까우면 관계가 없다는 뜻입니다.</li>
+				<li>집계일 {data.builtAt}. 수치는 다음 집계 때 바뀝니다. 오류 제보는 <a href="/contact/">문의</a>로 받습니다.</li>
+			</ul>
+
+			{others.length > 0 && (
+				<>
+					<h2>같은 대분류의 다른 가격 조사</h2>
+					<ul>{others.map((o) => <li><a href={`/data/${o.slug}/`}>{o.leaf} 가격 조사 — {num(o.price.n)}개 상품 중앙값 {won(o.price.median)}</a></li>)}</ul>
+				</>
+			)}
+		</main>
+		<Footer />
+	</body>
+</html>

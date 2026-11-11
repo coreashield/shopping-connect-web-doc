@@ -197,7 +197,9 @@ export default defineConfig({
 			//   /blog/ 1페이지는 슬러그에 숫자가 없어 그대로 남는다.
 			filter: (page) => !/\/blog\/\d+\/?$/.test(page) && !NON_CANONICAL.has(page) && !SOFT_DEAD.has(page) && !PRUNED.has(page)
 				// 서브사이트의 /travel/ 은 홈으로 보내는 빈 리디렉트 페이지(여행은 본체만) — 사이트맵에서 뺀다(10/20 점검)
-				&& !(SITE_CATEGORY_ENV && /\/travel\/?$/.test(page)),
+				&& !(SITE_CATEGORY_ENV && /\/travel\/?$/.test(page))
+				// 가격 데이터 리포트(/data/)는 본체에만 있다 — 서브사이트의 /data/ 는 본체로 보내는 리디렉트 페이지(11/11)
+				&& !(SITE_CATEGORY_ENV && /\/data\/?$/.test(page)),
 			serialize(item) {
 				// 토픽 허브 슬러그는 한글이라 사이트맵에 퍼센트 인코딩되어 들어온다.
 				//   맵 키는 디코딩된 한글이므로 양쪽 다 시도해야 매칭된다.
