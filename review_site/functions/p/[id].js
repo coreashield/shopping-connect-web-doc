@@ -25,7 +25,8 @@ function render(row, env) {
   const canonical = `${SITE.origin}/p/${id}/`;
   const go = (pos) => `/go/${id}/?pos=${pos}`;
   const buy = (pos, label = buyLabel(id, d.discount), cls = 'btn btn-primary btn-buy') => `<a class="${cls}" href="${go(pos)}" rel="nofollow sponsored noopener" target="_blank">${label}</a>`;
-  const title = `${row.name} 후기·장단점${d.reviews ? ` — 리뷰 ${fmtN(d.reviews)}개 분석` : ''} | ${SITE.name}`;
+  // 11/16: 리뷰 수 99,999 는 수집 상한값 — 제목에 "리뷰 99,999개 분석"으로 나가 지어낸 숫자처럼 보였다
+  const title = `${row.name} 후기·장단점${d.reviews ? ` — 리뷰 ${d.reviews >= 99999 ? '10만+' : fmtN(d.reviews)}개 분석` : ''} | ${SITE.name}`;
   const description = `${d.summary} 맞는 사람·안 맞는 사람과 사기 전 확인할 것까지 정리.`.slice(0, 155);
   const trust = trustOf(d.reviews);
   const reasons = reasonsOf(d);

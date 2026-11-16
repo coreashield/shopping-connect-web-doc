@@ -93,8 +93,12 @@
 .r1-pd-price .r1-off{font-size:14px}
 .r1-pd-rate{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--r1-mute)}
 .r1-pd-rate b{color:var(--r1-ink)}
-.r1-stars{position:relative;display:inline-block;width:76px;height:14px;color:#e4e4e7;font-size:14px;line-height:14px;letter-spacing:1px}
-.r1-stars span{position:absolute;inset:0 auto 0 0;overflow:hidden;color:var(--r1-orange);white-space:nowrap}
+/* 11/16: 별을 글자(★)로 넣지 않는다 — 회색 5개+주황 5개가 검색 결과 설명란에 "★★★★★★★★★★"로 나갔다 */
+.r1-stars{position:relative;display:inline-block;width:76px;height:14px;font-size:14px;line-height:14px;letter-spacing:1px;vertical-align:-2px}
+.r1-stars::before{content:"★★★★★";color:#e4e4e7}
+.r1-stars span{position:absolute;inset:0 auto 0 0;overflow:hidden;white-space:nowrap}
+.r1-stars span::before{content:"★★★★★";color:var(--r1-orange)}
+.r1-pd-lead{margin-top:8px !important;font-size:14px;line-height:1.55;color:var(--r1-sub);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .r1-conf{display:flex;align-items:center;gap:16px;margin:16px 0;padding:14px 16px;border-radius:10px;background:#eff6ff;border:1px solid #d6e7fd}
 .r1-conf-score small{display:block;font-size:11px;color:var(--r1-mute)}
 .r1-conf-score b{font-size:30px;font-weight:800;color:var(--r1-primary);line-height:1}

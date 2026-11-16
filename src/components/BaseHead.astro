@@ -29,7 +29,9 @@ interface Props {
 	ads?: boolean;
 }
 
-const { title, description, image = FallbackImage, imageUrl, canonicalPath, type = 'website', publishedTime, modifiedTime, noindex = false, googleNoindex = false, ads = true } = Astro.props;
+const { title, description: rawDescription, image = FallbackImage, imageUrl, canonicalPath, type = 'website', publishedTime, modifiedTime, noindex = false, googleNoindex = false, ads = true } = Astro.props;
+// 11/16: 강조 표시용 [HL]…[/HL] 표식이 설명에 남은 글 288개 — 네이버 검색 결과 설명란에 그대로 보였다.
+const description = String(rawDescription ?? '').replace(/\[\/?HL\]/g, '').replace(/\s+/g, ' ').trim();
 const canonicalURL = new URL(canonicalPath ?? Astro.url.pathname, Astro.site);
 const ogImage = imageUrl ?? new URL(image.src, Astro.url).href;
 ---
@@ -70,6 +72,8 @@ const ogImage = imageUrl ?? new URL(image.src, Astro.url).href;
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content={type} />
+<!-- 11/16: 검색 결과 카드의 출처 이름. 없으면 네이버가 "shopping-log.com" 도메인만 보여준다 -->
+<meta property="og:site_name" content={SITE_TITLE} />
 <meta property="og:url" content={Astro.url} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />

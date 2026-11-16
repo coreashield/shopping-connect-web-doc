@@ -31,8 +31,11 @@ type Props = CollectionEntry<'blog'>['data'] & {
 	relatedCards?: { href: string; name: string; thumb?: string; score: number | null; price: number | null }[];
 };
 
-const { title, description, summary, pubDate, updatedDate, heroImage: heroImageRaw, gallery = [], category, relatedPosts = [], hub = null, comparison = null, faq = [], googleNoindex = false, noindex = false, ads = true, bodyImage,
+const { title, description: rawDescription, summary, pubDate, updatedDate, heroImage: heroImageRaw, gallery = [], category, relatedPosts = [], hub = null, comparison = null, faq = [], googleNoindex = false, noindex = false, ads = true, bodyImage,
 	canonicalPath, guideLink = null, facts = null, sections = [], relatedCards = [], affiliateUrl, productStore, rating, reviewCount, priceCheckedAt, saleStatus, productId, productName, productPrice, headings = [] } = Astro.props;
+// 11/16: 설명에 남은 [HL] 표식 제거(검색 결과 설명란·JSON-LD·상단 한 줄 소개 공통)
+//   옛 글 설명은 본문 앞부분을 잘라 만든 것이라 "… 이런 경우에 맞다 - 일상 속에서 … - 부모"처럼 목록 중간에서 끊긴다 → 목록 앞에서 자른다.
+const description = String(rawDescription ?? '').replace(/\[\/?HL\]/g, '').replace(/\s+/g, ' ').replace(/\s*이런 (경우|분)에(게)? (맞다|맞습니다|추천)\s*[-:·].*$/, '').trim();
 const catName = topCategory(category);
 // 대표 이미지가 판매처 로고·배너면 본문 첫 상품 사진으로 교체 (og:image·구매 카드 썸네일·상단 이미지 공통)
 const heroImage = gallery[0] ?? ((typeof heroImageRaw === 'string' && isLogoImage(heroImageRaw) && bodyImage) ? bodyImage : heroImageRaw);
@@ -98,6 +101,8 @@ const leafCat = String(category || '').split('>').map((x) => x.trim()).filter(Bo
 // 구매 카드(2026-10-03): 첫 화면에 가격·평점·버튼을 한 묶음으로 (네이버 방문→구매버튼 15%, 첫 버튼이 1.8화면 아래였음).
 //   평점은 정수(5·4)가 대부분이라 기본값으로 보인다 — 소수점이 있는 실측값만 보여준다(가짜 신뢰 신호 금지).
 const shownRating = rating && !Number.isInteger(rating) ? rating : null;
+// 11/16: 리뷰 0개는 표시하지 않는다("0개 리뷰"가 검색 결과 설명란에 노출됨)
+const shownReviews = Number(facts?.reviews ?? reviewCount ?? 0) || 0;
 const priceDate = priceCheckedAt || (updatedDate ?? pubDate)?.toISOString?.().slice(0, 10);
 const priceDateLabel = priceDate ? `${Number(priceDate.slice(5, 7))}월 ${Number(priceDate.slice(8, 10))}일` : null;
 // 같은 분류에서 가격이 아래쪽 절반일 때만 순위를 강조한다(위쪽이면 비교표에서만 보여준다)
@@ -114,7 +119,7 @@ const searchTitle = seoTitle({ title, productName });
 <html lang="ko">
 	<head>
 		<BaseHead title={searchTitle} description={metaDescription} type="article" imageUrl={imageUrl} canonicalPath={canonicalPath} publishedTime={pubDate} modifiedTime={updatedDate} googleNoindex={googleNoindex} noindex={noindex} ads={ads} />
-		<link rel="stylesheet" href="/r101.css?v=2" />
+		<link rel="stylesheet" href="/r101.css?v=3" />
 		<SeoSchema
 			title={title}
 			description={description}
@@ -386,15 +391,17 @@ const searchTitle = seoTitle({ title, productName });
 							</div>
 							<h1>{title}</h1>
 							{productName && productName !== title && <p class="r1-pd-brand">{productName}</p>}
-							{leafCat && <p class="r1-pd-kind">{leafCat} 리뷰</p>}
+							{/* 11/16 검색 결과 설명란: 네이버는 제목 바로 아래 본문을 설명으로 가져간다(실측: "★★★★★★★★★★ 4.5 (0개 리뷰)", "수수료를 받습니다"가 설명에 노출).
+							    제목 아래 첫 글이 상품 소개가 되도록 설명을 여기 둔다. 화면에서는 3줄까지만 보인다. */}
+							{description && <p class="r1-pd-lead">{description}</p>}
 							{facts && <p class="r1-pd-line">{verdictLine(facts.score)}</p>}
 							{productPrice && !discontinued ? (
 								<p class="r1-pd-price"><strong>{fmtWon(productPrice)}</strong>{facts?.orig && <s>{fmtWon(facts.orig)}</s>}{facts?.discount && <span class="r1-off">{facts.discount}% 할인</span>}{priceDateLabel && <small>{priceDateLabel} 기준</small>}</p>
 							) : null}
-							{(shownRating || reviewCount || facts?.reviews) && (
+							{(shownRating || shownReviews > 0) && (
 								<p class="r1-pd-rate">
-									{shownRating && <><span class="r1-stars" aria-hidden="true">★★★★★<span style={`width:${(shownRating / 5) * 100}%`}>★★★★★</span></span><b>{shownRating.toFixed(1)}</b></>}
-									<span>({(facts?.reviews ?? reviewCount ?? 0).toLocaleString('ko-KR')}개 리뷰 · 스토어 기준)</span>
+									{shownRating && <><span class="r1-stars" aria-hidden="true"><span style={`width:${(shownRating / 5) * 100}%`}></span></span><b>평점 {shownRating.toFixed(1)}</b></>}
+									{shownReviews > 0 && <span>({shownReviews.toLocaleString('ko-KR')}개 리뷰 · 스토어 기준)</span>}
 								</p>
 							)}
 							{facts && (
@@ -409,7 +416,8 @@ const searchTitle = seoTitle({ title, productName });
 								<>
 									<a class="r1-btn r1-btn-primary r1-btn-buy" id="buy-main" href={posHref(buyHref, "card")} target="_blank" rel="nofollow sponsored noopener">{lbl('할인 적용가 확인하기', facts?.discount)}</a>
 									{productPrice && productPrice >= 100000 && <p class="r1-fine">🛡️ 교환·반품 배송비, 설치비, A/S·보증 조건은 판매 페이지 하단 안내에서 주문 전에 확인할 수 있습니다.</p>}
-									<p class="r1-fine">가격·배송비·재고는 판매처 표시가 기준입니다. 이 링크로 구매하면 쇼핑로그가 수수료를 받습니다.</p>
+									{/* 11/16: 제휴 고지는 페이지 맨 위 한 줄(r1-disc-line)에 있다 — 같은 문장이 카드 안에 또 있어 검색 결과 설명란에 실렸다 */}
+									<p class="r1-fine">가격·배송비·재고는 판매처 표시가 기준입니다.</p>
 								</>
 							) : discontinued ? (
 								<p class="r1-fine">이 상품은 판매처 페이지가 삭제되어 현재 구매할 수 없습니다. {guideLink ? "아래 비교 가이드나" : "아래"} "함께 보면 좋은 글"에서 같은 주제의 다른 상품을 확인하세요.</p>
