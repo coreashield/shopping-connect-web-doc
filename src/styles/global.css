@@ -120,6 +120,21 @@ blockquote {
 	margin: 0;
 	font-size: 1.333em;
 }
+/* 글 맨 위 제휴 고지(remark-disclosure 가 class 를 붙인다) — 본문보다 약간 작게, 보통 굵기 (대표 결정 11/22) */
+blockquote.disclosure {
+	border-left: 0;
+	padding: 0.6em 0.9em;
+	margin: 0 0 1.2em;
+	font-size: 15px;
+	line-height: 1.55;
+	font-weight: 400;
+	color: rgb(var(--gray-dark));
+	background: rgba(var(--gray-light), 0.45);
+	border-radius: 8px;
+}
+blockquote.disclosure p {
+	margin: 0;
+}
 hr {
 	border: none;
 	border-top: 1px solid rgb(var(--gray-light));

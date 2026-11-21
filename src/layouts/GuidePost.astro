@@ -33,7 +33,7 @@ const ld = [
 	{ '@context': 'https://schema.org', '@type': 'ItemList', name: title, numberOfItems: products.length, itemListElement: products.map((p, i) => ({ '@type': 'ListItem', position: i + 1, name: p.name, url: `${url}#p${i + 1}` })) },
 	...(faq.length ? [{ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) }] : []),
 ];
-const disclosure = '이 글에는 네이버 쇼핑 커넥트 제휴 링크가 포함되어 있으며, 구매 시 일정 수수료를 받습니다. 추천은 제휴 여부와 무관하게 작성합니다.';
+const disclosure = '이 글에는 제휴 링크가 포함되어 있으며, 구매 시 일정 수수료를 받습니다. 추천은 제휴 여부와 무관하게 작성합니다.';
 ---
 
 <!doctype html>
