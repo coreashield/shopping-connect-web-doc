@@ -87,6 +87,20 @@ export function parseDetailSpec(text) {
   return { spec: spec.slice(0, 12), attrs: attrs.slice(0, 6) };
 }
 
+// 11/22 CON-06(PM 결재 B): 판매처가 바로잡아 준 사양 — 출처 = 판매처(들꽃잠) 메일 11/22.
+//   스펙 "원산지: 국산"은 제조지인데 카드에 "원산지 국산"으로 보여 팥 원료까지 국산으로 읽혔다.
+//   이 상품들만 원산지·제조국 줄을 빼고 아래 줄을 맨 앞에 둔다. 상품을 늘릴 때도 판매처 확인이 있는 것만.
+const SPEC_OVERRIDES = {
+  '826130453525588': [['제조', '국내 제조(경기도 안산시 상록구), 팥 원료는 수입산']],
+  '826130453529678': [['제조', '국내 제조(경기도 안산시 상록구), 팥 원료는 수입산']],
+  '886916665387488': [['제조', '국내 제조(경기도 안산시 상록구), 팥 원료는 수입산']],
+};
+export function applySpecOverride(productId, spec) {
+  const o = SPEC_OVERRIDES[String(productId)];
+  if (!o) return spec;
+  return [...o, ...spec.filter(([k]) => !/원산지|제조국|^제조$/.test(k))].slice(0, 12);
+}
+
 // 사진: 스토어 로고·배너(파일명에 로고/logo/banner, 240x40 같은 크기 표기)는 뺀다. 사진 대부분이 JPEG 라 JPEG 먼저.
 export function cleanImages(list) {
   const ok = (Array.isArray(list) ? list : []).filter((u) => /^https:\/\/[a-z0-9.-]*pstatic\.net\//.test(u)).filter((u) => {
@@ -154,7 +168,9 @@ function buildPage(p, ctx) {
   // 정수 평점(5·4)은 판매처 기본값 의심이 커서(10/3 실측 88%) 숨긴다 — shopping-log 카드와 같은 규칙
   const rating = p.rating && !Number.isInteger(Number(p.rating)) ? Number(p.rating) : null;
   const reviews = p.review_count ? Number(p.review_count) : 0;
-  const { spec, attrs } = parseDetailSpec(p.detail_spec);
+  const parsed = parseDetailSpec(p.detail_spec);
+  const spec = applySpecOverride(p.product_id, parsed.spec);
+  const { attrs } = parsed;
   const leafPrices = ctx.leafPrices.get(catPath) || [];
   const pricePct = price && leafPrices.length >= 5 ? pctRank(leafPrices, price) : null;
   const leafMedian = leafPrices.length >= 5 ? median(leafPrices) : null;
