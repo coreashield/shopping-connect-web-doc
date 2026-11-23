@@ -8,7 +8,8 @@ import FormattedDate from '../components/FormattedDate.astro';
 import Header from '../components/Header.astro';
 import { categorySlug, topCategory } from '../lib/categories';
 import { AUTHOR_DISPLAY_NAME, SITE_TITLE } from '../consts';
-import { keyAnswer } from '../lib/summary';
+import { answerParagraph } from '../lib/summary';
+import { CURRENT_SUB } from '../lib/site';
 import type { Comparison } from '../lib/compare';
 import type { FaqItem } from '../lib/faq';
 import { seoTitle, isLogoImage, isProductPhoto } from '../lib/snippet';
@@ -41,8 +42,8 @@ const catName = topCategory(category);
 const heroImage = gallery[0] ?? ((typeof heroImageRaw === 'string' && isLogoImage(heroImageRaw) && bodyImage) ? bodyImage : heroImageRaw);
 // GEO: 요약 문단 = 저장된 summary(정의·핵심·장점·대상) + 렌더 시점 가격·평점 문장(productPrice·rating·updatedDate 기준)
 //   + 같은 분류 가격 순위 문장(2026-09-28): 판매 페이지에 없는, 이 사이트만 가진 비교 사실
-const answer = [keyAnswer(summary, { productPrice, rating, reviewCount, priceCheckedAt, saleStatus, productStore, pubDate, updatedDate }), comparison?.sentence]
-	.filter(Boolean).join(' ');
+//   11/22 OPT-06: food 사이트만 — 가격 확인일이 오래된 글은 "YYYY년 M월 기준" 머리말 대신 가격 위치 문장 먼저, 확인 날짜는 맨 뒤(src/lib/summary.ts)
+const answer = answerParagraph(summary, { productPrice, rating, reviewCount, priceCheckedAt, saleStatus, productStore, pubDate, updatedDate }, comparison?.sentence, CURRENT_SUB?.slug === 'food');
 // FAQPage: 본문에 실제로 보이는 질문-답만. 2개 미만이면 넣지 않는다
 const faqLd = faq.length >= 2 ? {
 	'@context': 'https://schema.org',
