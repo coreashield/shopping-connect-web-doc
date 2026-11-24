@@ -94,9 +94,30 @@ const ogImage = imageUrl ?? new URL(image.src, Astro.url).href;
      JS 꺼진 방문자는 기존 /go/ 로 간다. 되돌리려면 이 블록 삭제.
      10/24 클릭 기록 복구: 실제 클릭(click·가운데 클릭) 1번마다 /go/ 로 POST 비콘 1건 — 함수가 GET 과 같은 봇·해외 판정으로
      web_doc_clicks 에 남기고 204. 이동은 기다리지 않는다. 함수 호출은 사람 클릭 수만큼이라 한도에 영향 없음.
-     touchstart·mousedown 은 스크롤·누르다 만 것도 잡혀서 주소 교체에만 쓰고, 기록은 click 에서만. -->
+     touchstart·mousedown 은 스크롤·누르다 만 것도 잡혀서 주소 교체에만 쓰고, 기록은 click 에서만.
+     11/24 STR-02(AI 유입 측정, PM B 조건부 결재·skeptic 조건 5개): 세션 첫 유입처를 sessionStorage sl_src 에 두고 비콘에 s·qk(·rh) 를 덧붙인다.
+     네트워크 요청·함수 호출은 늘지 않는다(기존 비콘 URL 에 값만). 검색어 등 쿼리 값은 안 남기고 키 이름(qk)만, 유입 호스트(rh)는 s=other 일 때만.
+     direct 대신 noref("referer 없음" — 직접·앱·utm 빠진 ChatGPT 가 섞임). review_site/lib/render.js 에 같은 분류가 있다(바꾸면 둘 다). -->
 <script is:inline>
 (function () {
+	var src = (function () {
+		var u = '', h = '', qk = [], cur, v = null;
+		try { var q = new URLSearchParams(location.search); u = (q.get('utm_source') || '').toLowerCase(); q.forEach(function (_, k) { if (qk.length < 5) qk.push(k.toLowerCase().replace(/[^a-z0-9_.-]/g, '').slice(0, 20)); }); } catch (e) {}
+		try { h = document.referrer ? new URL(document.referrer).hostname.toLowerCase() : ''; } catch (e) {}
+		var s = /chatgpt/.test(u) || /(^|\.)(chatgpt\.com|openai\.com)$/.test(h) ? 'chatgpt'
+			: /perplexity/.test(u) || /(^|\.)perplexity\.ai$/.test(h) ? 'perplexity'
+			: /gemini/.test(u) || h === 'gemini.google.com' ? 'gemini'
+			: /claude/.test(u) || /(^|\.)claude\.ai$/.test(h) ? 'claude'
+			: /copilot|bing/.test(u) || /(^|\.)(bing\.com|copilot\.microsoft\.com)$/.test(h) ? 'copilot'
+			: !h ? 'noref' : /(^|\.)shopping-log\.com$/.test(h) ? 'internal'
+			: h === 'm.search.naver.com' ? 'naver_m' : h === 'search.naver.com' ? 'naver_pc' : /(^|\.)naver\.com$/.test(h) ? 'naver_etc'
+			: /(^|\.)google\.[a-z.]+$/.test(h) ? 'google' : /(^|\.)daum\.net$/.test(h) ? 'daum' : 'other';
+		cur = { s: s, q: qk.join(','), h: s === 'other' ? h.slice(0, 60) : '' };
+		try { v = JSON.parse(sessionStorage.getItem('sl_src') || 'null'); } catch (e) {}
+		// 세션 첫 페이지 값 유지. 같은 탭에서 바깥 유입처로 새로 들어오면(internal·noref 아님) 그 값으로 바꾼다.
+		if (!v || !v.s || (s !== 'internal' && s !== 'noref')) { v = cur; try { sessionStorage.setItem('sl_src', JSON.stringify(v)); } catch (e) {} }
+		return v;
+	})();
 	function link(e) {
 		var a = e.target && e.target.closest && e.target.closest('a[data-go], a[href*="/go/"]');
 		if (!a) return null;
@@ -123,6 +144,9 @@ const ogImage = imageUrl ?? new URL(image.src, Astro.url).href;
 		try {
 			var b = new URL(l.url.href);
 			b.searchParams.set('p', location.pathname);
+			if (src && src.s) b.searchParams.set('s', src.s);
+			if (src && src.q) b.searchParams.set('qk', src.q);
+			if (src && src.h) b.searchParams.set('rh', src.h);
 			navigator.sendBeacon(b.pathname + b.search);
 		} catch (err) {}
 	}

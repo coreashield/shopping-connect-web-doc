@@ -61,6 +61,25 @@ export const wonShort = (n) => (!n ? '-' : n >= 10000 ? `${(Math.round(n / 1000)
 // 리뷰 수 짧게: 12431 → 1.2만
 export const cntShort = (n) => (n >= 10000 ? `${(Math.round(n / 1000) / 10).toLocaleString('ko-KR')}만` : fmtN(n));
 
+// 11/24 STR-02(AI 유입 측정, PM B 조건부 결재·skeptic 조건 5개): 세션 첫 유입처를 sessionStorage sl_src 에 두고,
+//   구매 버튼(/go/)을 누르는 순간 그 주소에 s·qk(·rh) 를 붙인다 → functions/go/[id].js 가 referer 끝 '#s=…' 로 기록.
+//   버튼 모양·문구·위치(11/8 A/B)는 그대로, 요청·함수 호출 수도 그대로(같은 GET 1번). 쿼리 값은 안 남기고 키 이름만, 호스트는 s=other 일 때만.
+//   분류는 web_doc src/components/BaseHead.astro 와 같다(바꾸면 둘 다). String.raw — 정규식 역슬래시 보존.
+const SRC_JS = String.raw`<script>(function(){var u='',h='',qk=[],v=null,s;
+try{var q=new URLSearchParams(location.search);u=(q.get('utm_source')||'').toLowerCase();q.forEach(function(_,k){if(qk.length<5)qk.push(k.toLowerCase().replace(/[^a-z0-9_.-]/g,'').slice(0,20));});}catch(e){}
+try{h=document.referrer?new URL(document.referrer).hostname.toLowerCase():'';}catch(e){}
+s=/chatgpt/.test(u)||/(^|\.)(chatgpt\.com|openai\.com)$/.test(h)?'chatgpt':/perplexity/.test(u)||/(^|\.)perplexity\.ai$/.test(h)?'perplexity'
+:/gemini/.test(u)||h==='gemini.google.com'?'gemini':/claude/.test(u)||/(^|\.)claude\.ai$/.test(h)?'claude'
+:/copilot|bing/.test(u)||/(^|\.)(bing\.com|copilot\.microsoft\.com)$/.test(h)?'copilot':!h?'noref':/(^|\.)shopping-log\.com$/.test(h)?'internal'
+:h==='m.search.naver.com'?'naver_m':h==='search.naver.com'?'naver_pc':/(^|\.)naver\.com$/.test(h)?'naver_etc'
+:/(^|\.)google\.[a-z.]+$/.test(h)?'google':/(^|\.)daum\.net$/.test(h)?'daum':'other';
+try{v=JSON.parse(sessionStorage.getItem('sl_src')||'null');}catch(e){}
+if(!v||!v.s||(s!=='internal'&&s!=='noref')){v={s:s,q:qk.join(','),h:s==='other'?h.slice(0,60):''};try{sessionStorage.setItem('sl_src',JSON.stringify(v));}catch(e){}}
+function tag(e){var a=e.target&&e.target.closest&&e.target.closest('a[href*="/go/"]');if(!a)return;
+try{var x=new URL(a.href,location.href);if(x.origin!==location.origin||x.pathname.indexOf('/go/')!==0||x.searchParams.has('s'))return;
+x.searchParams.set('s',v.s);if(v.q)x.searchParams.set('qk',v.q);if(v.h)x.searchParams.set('rh',v.h);a.href=x.href;}catch(err){}}
+['mousedown','touchstart','keydown','click','contextmenu'].forEach(function(t){document.addEventListener(t,tag,{capture:true,passive:true});});})();</script>`;
+
 // 11/3: image = 검색결과·공유 썸네일(og:image). 그동안 없어서 네이버 웹문서에 사진 없이 떴다(리뷰 사이트 CTR 0.07%).
 export function layout({ title, description, canonical, body, jsonld = [], noindex = false, env = {}, nav = '', image = '' }) {
   // 서치어드바이저 HTML 태그 인증값(공개 메타, 2026-10-21 등록). env 가 있으면 그것이 우선.
@@ -98,6 +117,7 @@ ${ld}
   <p class="foot-links"><a href="/about/">점수 계산 방법</a> · <a href="${SITE.parent}/about/">운영자 소개</a> · <a href="${SITE.parent}/contact/">광고 및 게시물 문의</a> · <a href="${SITE.parent}/">쇼핑로그 본사이트</a></p>
   <p class="copy">2026 © 쇼핑로그 리뷰</p>
 </div></footer>
+${SRC_JS}
 </body></html>`;
 }
 

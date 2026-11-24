@@ -42,10 +42,15 @@ export async function onRequestGet(context) {
   try { if (referer) slug = new URL(referer).pathname; } catch (e) { /* ignore */ }
   const pos = (url.searchParams.get('pos') || '').replace(/[^a-z0-9_-]/gi, '').slice(0, 20);
   if (slug && pos) slug = `${slug}#${pos}`;
+  // 11/24 STR-02: lib/render.js 클릭 스크립트가 /go/ 주소에 붙인 s·qk·rh(rh 는 s=other 일 때만) → referer 끝 '#s=…'.
+  //   본체 functions/go/[id].js 와 같은 형식(바꾸면 둘 다). 스키마·함수 호출 수 불변.
+  const tag = (k, n) => (url.searchParams.get(k) || '').toLowerCase().replace(/[^a-z0-9_.,-]/g, '').slice(0, n);
+  const s = tag('s', 20), qk = tag('qk', 60), rh = s === 'other' ? tag('rh', 60) : '';
+  const src = s ? `#s=${s}${qk ? `&qk=${qk}` : ''}${rh ? `&rh=${rh}` : ''}` : '';
   context.waitUntil(fetch(`${env.SUPABASE_URL}/rest/v1/web_doc_clicks`, {
     method: 'POST',
     headers: { apikey: env.SUPABASE_SERVICE_KEY, Authorization: `Bearer ${env.SUPABASE_SERVICE_KEY}`, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
-    body: JSON.stringify({ product_id: id || null, slug: slug ? `review:${slug}` : 'review:', channel: reason ? `review_blocked:${reason}` : 'review', referer, ua: ua || null, country, ip }),
+    body: JSON.stringify({ product_id: id || null, slug: slug ? `review:${slug}` : 'review:', channel: reason ? `review_blocked:${reason}` : 'review', referer: (referer || '') + src || null, ua: ua || null, country, ip }),
   }).catch(() => {}));
 
   const noStore = { 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex, nofollow' };
