@@ -114,11 +114,17 @@ function logClick(context) {
     //   표 구조를 안 바꾸려고 slug 에 붙인다. 집계는 split('#'). 제휴 URL(u=)은 손대지 않는다.
     const pos = (url.searchParams.get('pos') || '').replace(/[^a-z0-9_-]/gi, '').slice(0, 20);
     if (slug && pos) slug = `${slug}#${pos}`;
+    // 11/24 STR-02: 비콘이 준 세션 첫 유입처(s)·착지 쿼리 키 이름(qk)·유입 호스트(rh, s=other 일 때만)를 referer 끝 '#s=…' 로.
+    //   스키마 불변. 브라우저 Referer 에는 # 조각이 없어서 겹치지 않고, 옛 파서(utm_source=chatgpt 검사)는 그대로 동작.
+    //   IP 새 칼럼 없음(기존 행에 값만). 해석은 라이브 repo tools/webdoc_real_clicks.js parseSrc.
+    const tag = (k, n) => (url.searchParams.get(k) || '').toLowerCase().replace(/[^a-z0-9_.,-]/g, '').slice(0, n);
+    const s = tag('s', 20), qk = tag('qk', 60), rh = s === 'other' ? tag('rh', 60) : '';
+    const src = s ? `#s=${s}${qk ? `&qk=${qk}` : ''}${rh ? `&rh=${rh}` : ''}` : '';
     const row = {
       product_id: params.id || null,
       slug,
       channel: reason ? `web_doc_blocked:${reason}` : 'web_doc',
-      referer,
+      referer: (referer || '') + src || null,
       ua: ua || null,
       country,
       ip,  // 내부(대표/개발) 테스트 클릭 제외용
